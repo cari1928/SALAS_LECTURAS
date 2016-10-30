@@ -1,0 +1,108 @@
+{include file='header.html'}
+<center>
+    {$encabezado}
+       <form class="form-inline" action='registrar.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
+  <br/>
+  <div class="form-group">
+    <label>Alumno: </label><input type="radio" name="datos[tipo]" value="U">
+<<<<<<< HEAD
+    <label>Promotor: </label><input type="radio" name="datos[tipo]" value="P"> 
+  </div>
+  <br/> 
+  {$tipo}    
+  <br/>      
+=======
+    <label>Promotor: </label><input type="radio" name="datos[tipo]" value="P">
+  </div>
+  <br/>
+  {$tipo}
+  <br/>
+>>>>>>> Inicio Proyecto v2
+  <div class="form-group">
+    <label>Nombre Completo: </label>
+    <br/>
+    <input class="form-control" id="exampleInputEmail3" placeholder="Nombre y Apellidos" name="datos[nombre]" id="producto" required>
+  </div>
+  <br/>
+  <br/>
+  <label>Especialidad: </label>
+    <br/>
+<<<<<<< HEAD
+      <select name="datos[especialidad]" class="form-control" id="exampleInputEmail3" id="producto">
+      <option>Ingenieria En Sistemas Computacionales</option>
+      <option>Ingenieria Informatica</option>
+      <option>Ingenieria Mecatronica</option>
+      <option>Ingenieria Ambiental</option>
+      <option>Ingenieria Bioquimica</option>
+      <option>Ingenieria Gestion Empresarial</option>
+      <option>Ingenieria Industrial</option>
+      <option>Ingenieria Mecanica</option>
+      <option>Ingenieria Electronica</option>
+      <option>Ingenieria Quimica</option>
+      <option>Licenciatura en Administracion</option>
+    </select>
+=======
+      {$especialidad}
+>>>>>>> Inicio Proyecto v2
+    <br/>
+    <br/>
+    <div class="form-group">
+    <label>Usuario: </label>
+    <br/>
+    <input class="form-control" id="exampleInputPassword3" placeholder="noControl/RFC" name="datos[usuario]" id="producto" maxlength="13" required>
+  </div>
+  <br/>
+<<<<<<< HEAD
+=======
+  {$noControl} {$rfc}
+  <br/>
+>>>>>>> Inicio Proyecto v2
+  <br/>
+  <div class="form-group">
+  <label>Correo: </label>
+    <br/>
+    <input class="form-control" placeholder="Correo" name="datos[correo]" id="producto" maxlength="75" required>
+    <label>@itcelaya.edu.mx </label>
+<<<<<<< HEAD
+    <br/>  
+    {$correo}
+  </div>
+  <br/>
+  {$noControl} {$rfc}
+=======
+    <br/>
+    {$correo}
+  </div>
+  <br/>
+>>>>>>> Inicio Proyecto v2
+  <br/>
+  <div class="form-group">
+    <label>Contraseña:</label>
+    <br/>
+    <input type="password" class="form-control" id="exampleInputEmail3" placeholder="Contraseña" name="datos[contrasena]" id="producto" required>
+  </div>
+  <div class="form-group">
+    <label>Confirmar contraseña:</label>
+    <br/>
+    <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Confirmar contraseña" name="datos[confcontrasena]" id="producto" required>
+  </div>
+  <br/>
+  {$contrasena}
+  <br/>
+  <br/>
+  <button type="submit" class="btn btn-default" value='Registrar' name="guardar">Registrar</button> </br>
+  {$usuario}
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+</form>
+</center>
+    </body>
+</html>
+<<<<<<< HEAD
+{include file='footer.html'}
+=======
+{include file='footer.html'}
+>>>>>>> Inicio Proyecto v2

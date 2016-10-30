@@ -1,0 +1,71 @@
+{include file='header.html'}
+{$ruta}
+<center>
+
+       <form class="form-inline" action='inscripcion.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
+  <br/>
+  <br/>
+  <div class="form-group">
+    <label id ="r1">Sala: </label><input type="radio" name="datos[tipo]" onclick ="mostrar()" value="cvesala">
+    <label id ="r2">Ubicacion: </label><input type="radio" name="datos[tipo]" onclick ="mostrar()" value="ubicacion"> 
+    <label id ="r3">Horario: </label><input type="radio" name="datos[tipo]" onclick ="mostrar()" value="horario"> 
+    <label id ="r4">Promotor: </label><input type="radio" name="datos[tipo]" onclick ="mostrar()" value="cvepromotor"> 
+  </div>
+<br/>
+  <div class="form-group">
+    
+    <br/>
+    {$combosala}
+    <br/>
+    {$comboubicacion}
+    <br/>
+    {$combohorario}
+    <br/>
+    {$combopromo}
+
+  </div>
+  <br/>
+  <br/>
+    <button type="submit" class="btn btn-default" value='Registrar' name="Mostrar" {$estado}>Mostrar</button> <br/>
+  {$table}
+</form>
+</center>
+    <script>
+    var bandera=0;
+      function mostrar()
+      {
+        var test = document.getElementsByName('datos[tipo]');
+         if(test[0].checked == true)
+          {
+            document.getElementById('cvesala').style.display="block";
+            document.getElementById('horario').style.display="none";
+            document.getElementById('ubicacion').style.display="none";
+            document.getElementById('cvepromotor').style.display="none";
+          }
+          if(test[1].checked == true)
+          {
+            document.getElementById('cvesala').style.display="none";
+            document.getElementById('horario').style.display="none";
+            document.getElementById('ubicacion').style.display="block";
+            document.getElementById('cvepromotor').style.display="none";
+          }
+          if(test[2].checked == true)
+          {
+            document.getElementById('cvesala').style.display="none";
+            document.getElementById('horario').style.display="block";
+            document.getElementById('ubicacion').style.display="none";
+            document.getElementById('cvepromotor').style.display="none";
+          }
+        if(test[3].checked == true)
+          {
+            document.getElementById('cvesala').style.display="none";
+            document.getElementById('horario').style.display="none";
+            document.getElementById('ubicacion').style.display="none";
+            document.getElementById('cvepromotor').style.display="block";
+          }
+      }
+    </script>
+
+    </body>
+</html>
+{include file='footer.html'}

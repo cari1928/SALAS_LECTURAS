@@ -1,0 +1,27 @@
+{include file="header.html"}
+{$ruta}   
+<center>
+    
+       <form class="form-inline" action='updateperiodos.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
+  <div class="form-group">
+    <label>Fecha Inicio:</label>
+    <br/>
+    <input TYPE="date"  class="form-control" id="exampleInputEmail3" name="datos[fechaInicio]" id="producto" require value="{$fechaInicio}">
+  </div>
+  <br/>
+  <br/>
+  <div class="form-group">
+    <label>Fecha Final:</label>
+    <br/>
+    <input TYPE="date"  class="form-control" id="exampleInputEmail3" name="datos[fechaFinal]" id="producto" require value="{$fechaFinal}">
+  </div>
+  <br/>
+  <br/>
+  
+  <button type="submit" class="btn btn-default" value="{$cve}" name="datos[cve]">Crear</button></br>
+
+</form>
+</center>
+    </body>
+</html>
+{include file="footer.html"}

@@ -1,0 +1,60 @@
+#contenedor {
+	width: 95%;
+	margin: auto;
+
+}
+
+header {
+	height: 200px;	
+	background-image: url("../Images/banner.png");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#formulario{
+	width: 50%;
+	margin: auto;	
+}
+
+/*esto es para el formulario al agregar un usuario empleado*/
+#divAdmin{
+	background-position: center;
+	width: 25%;
+	margin: auto;
+	margin-bottom: 50px;
+	background-color: #f0f0f0;	
+}
+#titulo{	
+	font-size: 25px;
+	font-style: normal;
+	color: black;	
+}
+#input{
+	width: 250px;
+	height: 35px;		
+	margin:-10px 35px;
+	padding: 0px 10px;
+	color: #6d6d6d;
+	text-align: center;	
+}
+#boton{
+	padding: 10px 50px;
+  	font-size: 16x;
+	cursor: pointer;
+	text-align: center;	
+	color: #000;
+	background-color:gray;
+	border:none;
+	border-radius: 10px;
+	box-shadow:0px 2px #000;
+}
+#boton:hover{background-color:blue;}
+/*---------------------------------------------------------*/
+#error{
+	font-size: 50px;	
+	background-color: red;
+	margin-top: 500px;
+	background-image: url("../images/calavera.jpg");
+	background-repeat: no-repeat;
+	background-position: center;
+}
