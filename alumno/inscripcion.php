@@ -1,14 +1,16 @@
-<?php 
-include("../sistema.php");
+<?php
+	include("../sistema.php");
 
-if ($_SESSION['roles'] =='U')
-{
+	if ($_SESSION['roles'] !='U') {
+		$web->checklogin();
+	}
+
 	$grupos= $web->grupos($_SESSION['cveUser']);
 	$web->iniClases('usuario', "index inscripcion");
 	$web->smarty->assign('grupos',$grupos);
+
 	if(isset($_POST['datos']['tipo']))
 	{
-
 		$sql = "select * from periodo";
 		$datos_rs = $web->DB->GetAll($sql);
 
@@ -17,14 +19,12 @@ if ($_SESSION['roles'] =='U')
 		$date1 = new DateTime($fechaAct);
 
 		$cont = 0;
-
 		while($cont < count($datos_rs))
 		{
 			$date2 = new DateTime($datos_rs[$cont]['fechainicio']);
 			$date3 = new DateTime($datos_rs[$cont]['fechafinal']);
 
-			if($date1 >= $date2 && $date1 < $date3)
-			{
+			if($date1 >= $date2 && $date1 < $date3) {
 				$cveperiodo = $datos_rs[$cont]['cveperiodo'];
 			}
 			$cont++;
@@ -32,29 +32,30 @@ if ($_SESSION['roles'] =='U')
 
 		$campo=$_POST['datos']['tipo'];
 		$seleccion=$_POST['datos'][$campo];
-		$inners="from lectura inner join usuarios on usuarios.cveusuario= lectura.cvepromotor 
-						 			  inner join periodo on periodo.cveperiodo=lectura.cveperiodo 
-						 			  inner join abecedario on abecedario.cve=lectura.cveletra 
+		$inners="from lectura inner join usuarios on usuarios.cveusuario= lectura.cvepromotor
+						 			  inner join periodo on periodo.cveperiodo=lectura.cveperiodo
+						 			  inner join abecedario on abecedario.cve=lectura.cveletra
 						 			  inner join sala on lectura.cvesala=sala.cvesala ";
 		if($campo!="ubicacion")
-			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion 
-						 ".$inners."where lectura.".$campo."='".$seleccion."' and cveestado='O' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
+						 ".$inners."where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 		else
-			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion 
-						 ".$inners."where ubicacion = '".$seleccion."' and cveestado='O' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and cvelectura not in (select cvelectura from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
+						 ".$inners."where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and cvelectura not in (select cvelectura from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 
+	  echo $sql;
 		$table=$web->showTable($sql,"verlecturas",4,1,'sala');
 		$web->smarty->assign('table',$table);
 
-		$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor where cvesala in (select cvesala from sala where cveestado='O' ) and not in () ";
+		$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor";
 		$combopromo=combo($sql,"cvepromotor",$web);
-		$sql="select distinct cvesala from sala where cveestado='O'";
+		$sql="select distinct cvesala from sala";
 		$combosala=combo($sql,"cvesala",$web);
-		$sql="select distinct horario from sala where cveestado='O' ";
+		$sql="select distinct horario from sala ";
 		$combohorario=combo($sql,"horario",$web);
-		$sql="select distinct ubicacion from sala where cveestado='O'";
+		$sql="select distinct ubicacion from sala";
 		$comboubicacion=combo($sql,"ubicacion",$web);
-		
+
 		$web->smarty->assign('combosala',$combosala);
 		$web->smarty->assign('combohorario',$combohorario);
 		$web->smarty->assign('comboubicacion',$comboubicacion);
@@ -64,7 +65,6 @@ if ($_SESSION['roles'] =='U')
 	}
 	else
 	{
-
 		if(isset($_GET['info4']))
 		{
 			$cvepromotor=$_SESSION['cveUser'];
@@ -79,21 +79,21 @@ if ($_SESSION['roles'] =='U')
 			$web->query($sql);
 			$sql="insert into evaluacion (cvepromotor,cvesala,nocontrol,cveperiodo,horario,cveletra,comprension,motivacion,reporte,tema,participacion,terminado) values ('".$cvepromotor."','".$cvesala."','".$nocontrol."',".$cveperiodo.",'".$cvehorario."',".($letra + 1) .",50,0,0,0,0,0)";
 			$web->query($sql);
-			$sql="update sala set cveestado='O' where cvesala= '".$cvesala."' and horario='".$cvehorario."'";
+			$sql="update sala set where cvesala= '".$cvesala."' and horario='".$cvehorario."'";
 			$web->query($sql);
 		}
 		else
 		{
-			$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor where cvesala in (select cvesala from sala where cveestado='O' ) ";
+			$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor";
 			$combopromo=combo($sql,"cvepromotor",$web);
-			$sql="select distinct cvesala from sala where cveestado='O'";
+			$sql="select distinct cvesala from sala";
 			$combosala=combo($sql,"cvesala",$web);
-			$sql="select distinct horario from sala where cveestado='O' ";
+			$sql="select distinct horario from sala ";
 			$combohorario=combo($sql,"horario",$web);
-			$sql="select distinct ubicacion from sala where cveestado='O'";
+			$sql="select distinct ubicacion from sala";
 			$comboubicacion=combo($sql,"ubicacion",$web);
 
-			$web->smarty->assign('table',"");		
+			$web->smarty->assign('table',"");
 			$web->smarty->assign('combosala',$combosala);
 			$web->smarty->assign('combohorario',$combohorario);
 			$web->smarty->assign('comboubicacion',$comboubicacion);
@@ -101,38 +101,32 @@ if ($_SESSION['roles'] =='U')
 			$web->smarty->display("inscripcion.html");
 		}
 	}
-}
-else
-{
-	$web->checklogin();	
-}
 
-function combo($sql,$campo,$web)
-	{
-	
-		
-		$datos=$web->DB->GetAll($sql);
-		if (isset($datos[0]))
+//------------------------------------------------------------------------------------------------------------------------
+	function combo($sql,$campo,$web)
 		{
-			$web->query($sql);
-			$nombrescolumnas=array_keys($web->rs->fields);
-			$datos_rs = $web->DB->GetAll($sql);
-			$combito='<select id="'.$campo.'" name="datos['.$campo.']" class="form-control" id="exampleInputEmail3" id="producto" style ="display:none">';
-			
-			for ($i=0; $i <count($datos_rs); $i++)  
-				 {
-				 	$combito.='<option value="'.$datos_rs[$i][$campo].'">'.$datos_rs[$i][$nombrescolumnas[0]].' </option>';
-				 }
-			
-				 	$combito.='</select>';
-					$estado='style ="display:block"';
+			$datos=$web->DB->GetAll($sql);
+			if (isset($datos[0]))
+			{
+				$web->query($sql);
+				$nombrescolumnas=array_keys($web->rs->fields);
+				$datos_rs = $web->DB->GetAll($sql);
+				$combito='<select id="'.$campo.'" name="datos['.$campo.']" class="form-control" id="exampleInputEmail3" id="producto" style ="display:none">';
+
+				for ($i=0; $i <count($datos_rs); $i++)
+					 {
+					 	$combito.='<option value="'.$datos_rs[$i][$campo].'">'.$datos_rs[$i][$nombrescolumnas[0]].' </option>';
+					 }
+
+					 	$combito.='</select>';
+						$estado='style ="display:block"';
+			}
+			else
+			{
+					 	$combito='<label id="'.$campo.'" name="datos['.$campo.']" class="form-control" id="exampleInputEmail3" id="producto" style ="display:none"> No hay elementos</label>';
+					 	$estado='style ="display:none"';
+			}
+			$web->smarty->assign('estado',$estado);
+			return $combito;
 		}
-		else
-		{
-				 	$combito='<label id="'.$campo.'" name="datos['.$campo.']" class="form-control" id="exampleInputEmail3" id="producto" style ="display:none"> No hay elementos</label>';
-				 	$estado='style ="display:none"';
-		}
-		$web->smarty->assign('estado',$estado);
-		return $combito;
-	}
  ?>

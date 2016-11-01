@@ -12,28 +12,20 @@ if ($_SESSION['roles'] =='P')
 		$cveperiodo=periodo($web);
 		$campo=$_POST['datos']['tipo'];
 		$seleccion=$_POST['datos'][$campo];
-<<<<<<< HEAD
-		$sql="select * from sala where ".$campo."='".$seleccion."' and cveestado not in (select cveestado from sala where cveestado='O')";
-=======
-		$sql="select * from sala where ".$campo."='".$seleccion."' and cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
->>>>>>> Inicio Proyecto v2
+		//$sql="select s.cvesala, s.horario, s.ubicacion, s.numalumnos, s.limite  from sala s inner join lectura l on s.cvesala=l.cvesala where  l.cveperiodo  in (select cveperiodo from lectura where cveperiodo =".periodo($web)." and ".$campo."='".$seleccion."' and cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura))";
+		$sql="select s.cvesala, s.horario, s.ubicacion, s.numalumnos, s.limite  from sala s where  ".$campo."='".$seleccion."' and (s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web)."))";
+		//die($sql);
 		$table=$web->showTable($sql,"consulta",4,1,'sala',"&info4=".$cveperiodo);
 		$web->smarty->assign('table',$table);
 
 
-<<<<<<< HEAD
-		$sql="select distinct cvesala from sala where cveestado='L'";
+		$sql="select distinct s.cvesala from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$combosala=combo($sql,"cvesala",$web);
-		$sql="select distinct horario from sala where cveestado='L' ";
+//		$sql="select distinct horario from sala where cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura)";
+		$sql="select distinct s.horario from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$combohorario=combo($sql,"horario",$web);
-		$sql="select distinct ubicacion from sala where cveestado='L'";
-=======
-		$sql="select distinct cvesala from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
-		$combosala=combo($sql,"cvesala",$web);
-		$sql="select distinct horario from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
-		$combohorario=combo($sql,"horario",$web);
-		$sql="select distinct ubicacion from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
->>>>>>> Inicio Proyecto v2
+//		$sql="select distinct ubicacion from sala where cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura)";
+		$sql="select distinct s.ubicacion from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$comboubicacion=combo($sql,"ubicacion",$web);
 
 		$msjboton="";		
@@ -52,19 +44,15 @@ if ($_SESSION['roles'] =='P')
 		}
 
 		periodo($web);
-<<<<<<< HEAD
-		$sql="select distinct cvesala from sala where cveestado='L'";
+//		$sql="select distinct cvesala from sala where cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura)";
+		//$sql="select distinct s.cvesala from sala s inner join lectura l on l.cvesala=s.cvesala where s.cvesala not in (select cvesala from lectura where cveperiodo='".periodo($web)."') and s.horario not in (select horario from lectura where cveperiodo='".periodo($web)."'))";
+		$sql="select distinct s.cvesala from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$combosala=combo($sql,"cvesala",$web);
-		$sql="select distinct horario from sala where cveestado='L' ";
+//		$sql="select distinct horario from sala where cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura)";
+		$sql="select distinct s.horario from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$combohorario=combo($sql,"horario",$web);
-		$sql="select distinct ubicacion from sala where cveestado='L'";
-=======
-		$sql="select distinct cvesala from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
-		$combosala=combo($sql,"cvesala",$web);
-		$sql="select distinct horario from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
-		$combohorario=combo($sql,"horario",$web);
-		$sql="select distinct ubicacion from sala where cvesala not in (select cvesala from grupo) and horario not in (select horario from grupo)";
->>>>>>> Inicio Proyecto v2
+//		$sql="select distinct ubicacion from sala where cvesala not in (select cvesala from lectura) and horario not in (select horario from lectura)";
+		$sql="select distinct s.ubicacion from sala s where s.cvesala not in (select cvesala from lectura where cveperiodo = ".periodo($web).") or s.horario not in (select horario from lectura where cveperiodo = ".periodo($web).")";
 		$comboubicacion=combo($sql,"ubicacion",$web);
 
 		$web->smarty->assign('combosala',$combosala);
@@ -128,19 +116,27 @@ function combo($sql,$campo,$web)
 			$date2 = new DateTime($datos_rs[$cont]['fechainicio']);
 			$date3 = new DateTime($datos_rs[$cont]['fechafinal']);
 
-			if($date1 >= $date2 && $date1 < $date3)
+			if($date1 >= $date2 && $date1 <= $date3)
 			{
 				$cveperiodo = $datos_rs[$cont]['cveperiodo'];
 			}
 			$cont++;
 		}
-
-		$sql="select fechainicio,fechafinal from periodo where cveperiodo='".$cveperiodo."'";
-		$datos=$web->DB->GetAll($sql);
-		$periodo="El periodo es: ".$datos[0]['fechainicio']." a ".$datos[0]['fechafinal'];
+		if (isset($cveperiodo)) 
+		{
+			$sql="select fechainicio,fechafinal from periodo where cveperiodo='".$cveperiodo."'";
+			$datos=$web->DB->GetAll($sql);
+			$periodo="El periodo es: ".$datos[0]['fechainicio']." a ".$datos[0]['fechafinal'];
+			
+			$web->smarty->assign('periodo',$periodo);
+			return $cveperiodo;	
+		}
+		else
+		{
+			$web->smarty->assign('periodo',"No hay periodos actuales");
+			return "";
+		}
 		
-		$web->smarty->assign('periodo',$periodo);
-		return $cveperiodo;
 	}
 
  ?>
