@@ -1,36 +1,27 @@
-<?php 
-include("../sistema.php");
-if ($_SESSION['roles'] =='A')
-{
+<?php
+	include("../sistema.php");
+
+	if ($_SESSION['roles'] !='A') {
+		$web->checklogin();
+	}
+
 	$web->iniClases('admin', "index salas");
 
-	if (isset($_GET['info1'])) 
-	{
+	if (isset($_GET['info1'])) {
 		$elimina=$_GET['info1'];
-<<<<<<< HEAD
-=======
 		$sql="delete from evaluacion where cvesala='".$elimina."' and horario='".$_GET['info3']."'";
 		$web->query($sql);
 		$sql="delete from lectura where cvesala='".$elimina."' and horario='".$_GET['info3']."'";
 		$web->query($sql);
 		$sql="delete from grupo where cvesala='".$elimina."' and horario='".$_GET['info3']."'";
 		$web->query($sql);
->>>>>>> Inicio Proyecto v2
-		$sql="delete from sala where cvesala='".$elimina."'and horario='".$_GET['info3']."'";		
+		$sql="delete from sala where cvesala='".$elimina."'and horario='".$_GET['info3']."'";
 		$web->query($sql);
 	}
 
-<<<<<<< HEAD
-	$sql="select * from sala";
-=======
-	$sql="select cvesala,horario,ubicacion,numalumnos,limite from sala";
->>>>>>> Inicio Proyecto v2
+	$sql='select cvesala AS "ID", horario AS "Horario", ubicacion AS "Ubicación",
+		numalumnos AS "Número de Alumnos", limite AS "Límite" from sala';
 	$salones=$web->showTable($sql,"salas",1,1,'sala');
-	$web->smarty->assign('salones',$salones);	
-$web->smarty->display("salas.html");
-}
-else
-{
-	$web->checklogin();	
-}
+	$web->smarty->assign('salones',$salones);
+	$web->smarty->display("salas.html");
  ?>

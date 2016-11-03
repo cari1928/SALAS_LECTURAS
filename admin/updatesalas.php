@@ -13,33 +13,17 @@ if ($_SESSION['roles'] =='A')
 		$horario = $_POST['datos']['horainicial']."-".$_POST['datos']['horafinal'];
 		$ubicacion = $_POST['datos']['ubicacion'];
 		$limite = $_POST['datos']['limite'];
-<<<<<<< HEAD
-		$cveestado = $_POST['datos']['cveestado'];
-
-		if($limite <= 40)//Dudoso ->preguntar profa
-		{
-			$sql = "update sala set horario='".$horario."', ubicacion='".$ubicacion."', limite='".$limite."', cveestado='".$cveestado."' where cvesala ='".$_POST['datos']['guardar']."'and horario ='".$_POST['datos']['respaldo']."' ";
-			$web->query($sql);
-
-=======
 
 		if($limite <= 40)//Dudoso ->preguntar profa
 		{
 			$sql = "update sala set horario='".$horario."', ubicacion='".$ubicacion."', limite='".$limite."' where cvesala ='".$_POST['datos']['guardar']."'and horario ='".$_POST['datos']['respaldo']."' ";
 			$web->query($sql);
->>>>>>> Inicio Proyecto v2
 			header('Location: salas.php');
 		}
 		else
 		{
 			relleno($web,'<label style= "color:red">Supera el limite</label>');
 		}
-<<<<<<< HEAD
-
-		if($cveestado=='L')
-			deleteTupla($_POST['datos']['guardar'],$horario,$web);
-=======
->>>>>>> Inicio Proyecto v2
 	}
 }
 else

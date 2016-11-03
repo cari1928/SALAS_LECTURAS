@@ -357,14 +357,20 @@ class Sistema extends Conexion
 
 	}
 
-	function evaluacion($grupo,$display="block",$promoaux="")
-	{
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+	function evaluacion($grupo,$display="block",$promoaux="") {
 		$cvep=$promoaux;
 		if ($_SESSION['roles'] !='A') {
 			$cvep=$_SESSION['cveUser'];
 		}
 
-		$query="select nombre,comprension,motivacion,reporte, tema,participacion,terminado from evaluacion inner join usuarios on usuarios.cveusuario = evaluacion.nocontrol where cveletra in (select cve from abecedario where letra= '".$grupo."') and cvepromotor='".$cvep."' order by cveeval";
+		$query="select distinct nombre AS \"Alumno\", comprension AS \"Comprensión\", motivacion AS \"Motivación\", reporte AS \"Reporte\", tema AS \"Tema\", participacion AS \"Participación\", terminado AS \"Terminado\"
+		from evaluacion inner join usuarios on usuarios.cveusuario = evaluacion.nocontrol
+			where cveletra in (select cve from abecedario where letra= '".$grupo."')
+				and cvepromotor='".$cvep."'
+			order by nombre,comprension,motivacion,reporte, tema,participacion,terminado";
+
+		echo $query;
 
 		$this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
 		$this->query($query);
@@ -372,6 +378,9 @@ class Sistema extends Conexion
 		$cantidadregistros=$this->rs->_numOfRows;
 		$tabla="<table class='table table-striped' width='500'>";
 		$datos=$this->DB->GetAll($query);
+
+		echo "<pre>";
+		var_dump($datos);
 
 		if (!isset($datos[0]["nombre"])) {
 			$tabla="No hay alumnos inscritos";
