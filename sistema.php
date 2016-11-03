@@ -372,10 +372,12 @@ class Sistema extends Conexion
 		$cantidadregistros=$this->rs->_numOfRows;
 		$tabla="<table class='table table-striped' width='500'>";
 		$datos=$this->DB->GetAll($query);
+
 		if (!isset($datos[0]["nombre"])) {
 			$tabla="No hay alumnos inscritos";
 			return $tabla;
 		}
+
 		$nombrescolumnas=array_keys($this->rs->fields);
 		$datos=$this->DB->GetAll($query);
 		$nocontroles=$this->DB->GetAll("select nocontrol from evaluacion inner join usuarios on usuarios.cveusuario = evaluacion.nocontrol where cveletra in (select cve from abecedario where letra= '".$grupo."') and cvepromotor='".$cvep."' order by cveeval");
