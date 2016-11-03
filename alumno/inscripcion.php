@@ -38,14 +38,26 @@
 						 			  inner join sala on lectura.cvesala=sala.cvesala ";
 		if($campo!="ubicacion")
 			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-						 ".$inners."where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+						 ".$inners."where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 		else
 			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-						 ".$inners."where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and cvelectura not in (select cvelectura from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+						 ".$inners."where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and cvelectura in (select cvelectura from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 
-	  echo $sql;
-		$table=$web->showTable($sql,"verlecturas",4,1,'sala');
-		$web->smarty->assign('table',$table);
+		$result = $web->DB->GetAll($sql);
+		if(count($result) > 0) {
+			$web->smarty->assign('table', '<div class="alert alert-danger" role="alert"> Ya estás inscrito </div>');
+		} else {
+
+			if($campo!="ubicacion")
+				$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
+							 ".$inners."where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+			else
+				$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
+							 ".$inners."where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and cvelectura not in (select cvelectura from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+
+			$table=$web->showTable($sql,"verlecturas",4,1,'sala');
+			$web->smarty->assign('table',$table);
+		}
 
 		$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor";
 		$combopromo=combo($sql,"cvepromotor",$web);
@@ -62,11 +74,10 @@
 		$web->smarty->assign('combopromo',$combopromo);
 
 		$web->smarty->display("inscripcion.html");
-	}
-	else
-	{
-		if(isset($_GET['info4']))
-		{
+
+	} else {
+
+		if(isset($_GET['info4'])) {
 			$cvepromotor=$_SESSION['cveUser'];
 			$cvesala=$_GET['info1'];
 			$nocontrol='00000000';
@@ -81,9 +92,8 @@
 			$web->query($sql);
 			$sql="update sala set where cvesala= '".$cvesala."' and horario='".$cvehorario."'";
 			$web->query($sql);
-		}
-		else
-		{
+
+		} else {
 			$sql="select distinct nombre,cvepromotor from lectura inner join usuarios on usuarios.cveusuario = lectura.cvepromotor";
 			$combopromo=combo($sql,"cvepromotor",$web);
 			$sql="select distinct cvesala from sala";

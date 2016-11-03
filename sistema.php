@@ -329,8 +329,9 @@ class Sistema extends Conexion
 	{
 		$cantidad=strlen($rfc);
 		if ($cantidad>8) {
-			$sql="select letra from abecedario where cve in (select cveletra from lectura where cvepromotor='".$rfc."')";
-			echo $sql;
+			$sql="select horario, letra from lectura
+							inner join abecedario on abecedario.cve = lectura.cveletra
+							where cvepromotor='".$rfc."'";
 		} else {
 			$sql="select nombre, letra
 							from lectura inner join abecedario on abecedario.cve = lectura.cveletra
