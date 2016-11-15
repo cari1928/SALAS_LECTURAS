@@ -101,6 +101,7 @@ class Sistema extends Conexion
 	{
 
 		$datos=$this->DB->GetAll($query);
+        //print_r($datos);
 		$tabla2="<table class='table table-striped'>";
 		if ($add==1) {
 			$tabla2.="<tr>
@@ -325,17 +326,17 @@ class Sistema extends Conexion
 		return is_numeric($email);
 	}
 
-	function grupos($rfc) //METODO PARA LA BARRA DE PROMOTOR MUESTR GRUPOS
-	{
+	function grupos($rfc) { //METODO PARA LA BARRA DE PROMOTOR MUESTR GRUPOS
 		$cantidad=strlen($rfc);
+
 		if ($cantidad>8) {
 			$sql="select horario, letra from lectura
 							inner join abecedario on abecedario.cve = lectura.cveletra
 							where cvepromotor='".$rfc."'";
 		} else {
-			$sql="select nombre, letra
-							from lectura inner join abecedario on abecedario.cve = lectura.cveletra
-													 inner join usuarios on lectura.cvepromotor = usuarios.cveusuario
+			$sql="select nombre, letra from lectura
+							inner join abecedario on abecedario.cve = lectura.cveletra
+						  inner join usuarios on lectura.cvepromotor = usuarios.cveusuario
 						  where nocontrol='".$rfc."'";
 		}
 
@@ -358,10 +359,14 @@ class Sistema extends Conexion
 	}
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------
-	function evaluacion($grupo,$display="block",$promoaux="") {
-		$cvep=$promoaux;
-		if ($_SESSION['roles'] !='A') {
-			$cvep=$_SESSION['cveUser'];
+	//$aux Array contiene dos campos: promoaux y periodaux
+	function evaluacion($grupo, $display="block", $aux="") {
+		if(isset($aux['promoaux'])) {
+			$cvep=$aux['promoaux'];
+
+			if ($_SESSION['roles'] !='A') {
+				$cvep=$_SESSION['cveUser'];
+			}
 		}
 
 		$query="select distinct nombre AS \"Alumno\", comprension AS \"Comprensión\", motivacion AS \"Motivación\", reporte AS \"Reporte\", tema AS \"Tema\", participacion AS \"Participación\", terminado AS \"Terminado\"
@@ -370,8 +375,6 @@ class Sistema extends Conexion
 				and cvepromotor='".$cvep."'
 			order by nombre,comprension,motivacion,reporte, tema,participacion,terminado";
 
-		echo $query;
-
 		$this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
 		$this->query($query);
 		$cantidadcolumnas=$this->rs->_numOfFields;
@@ -379,10 +382,7 @@ class Sistema extends Conexion
 		$tabla="<table class='table table-striped' width='500'>";
 		$datos=$this->DB->GetAll($query);
 
-		echo "<pre>";
-		var_dump($datos);
-
-		if (!isset($datos[0]["nombre"])) {
+		if (!isset($datos[0]["Alumno"])) {
 			$tabla="No hay alumnos inscritos";
 			return $tabla;
 		}
@@ -393,59 +393,60 @@ class Sistema extends Conexion
 		$cveeval=$this->DB->GetAll("select cveeval from evaluacion inner join usuarios on usuarios.cveusuario = evaluacion.nocontrol where cveletra in (select cve from abecedario where letra= '".$grupo."') and cvepromotor='".$cvep."' order by cveeval");
 		$cont=0;
 		$cont2=0;
-		while ( $cont< $cantidadregistros+1)
-		{
+
+		while ( $cont< $cantidadregistros+1) {
 			$tabla.="<tr> <form class='form-inline' action='grupo.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>";
 			$tabla.='<input type="hidden"  name="datos[grupo]" value="'.$grupo.'">';
-			while ( $cont2<$cantidadcolumnas)
-			{
 
+			while ( $cont2<$cantidadcolumnas) {
 				if ($cont==0) {
 					$tabla.='<th width="500">';
 					$tabla.=$nombrescolumnas[$cont2];
 					$tabla.='</th>';
+
+					if($cont2 == $cantidadcolumnas - 1) {
+						$tabla.= '<th>Opciones</th>';
+					}
 				} else {
 					$tabla.="<td width='500'> ";
-
 					$nomField = $nombrescolumnas[$cont2];
-					if ($cont2<1) {
 
+					if ($cont2<1) {
 						if ($display=='none') {
 							$tabla.="<a href='updatealumnos.php?info2=".$nocontroles[$cont-1]['nocontrol']."'>".$datos[$cont-1][$nomField]."</a>";
-						}
-						else
+						} else {
 							$tabla.=$datos[$cont-1][$nomField];
-					}
-					else
-					{
+						}
+					} else {
 						$tabla.='<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;"> <div id="mybar" style="position: absolute; width: '.$datos[$cont-1][$nomField].'% ;height: 100%; background-color: #4caf50;"><div id="label" style="text-align: center; line-height: 30px; color: white;">'.$datos[$cont-1][$nomField].'%';
 						$tabla.='</div></div></div></br> <center>  <input class="form-control" id="exampleInputPassword3" name="datos['.$nomField.']" id="producto" required value="'.$datos[$cont-1][$nomField].'" style="width:65px ; display:'.$display.';" maxlength="3"> </center>';
 					}
 
-					if($cont2 == $cantidadcolumnas -1)
-					{
+					if($cont2 == $cantidadcolumnas -1) {
 						$display2='none';
-						$valorBoton="Cabiar";
+						$valorBoton="Cambiar";
+
 						if ($display=='none') {
 							$display2='block';
 							$valorBoton="Eliminar";
-							$tabla.='<input type="hidden"  name="datos[promotor]" value="'.$promoaux.'">';
+							$tabla.='<input type="hidden"  name="datos[promotor]" value="'.$aux['promoaux'].'">';
+							$tabla.='<input type="hidden"  name="datos[periodo]" value="'.$aux['periodaux'].'">';
 						}
-						$tabla.='</br><button type="submit" class="btn btn-default" value="'.$cveeval[$cont-1]['cveeval'].'" name="datos[cveeval]" style="display:'.$display2.'">'.$valorBoton.'</button>';
+						$tabla.='<th><button type="submit" class="btn btn-danger" value="'.$cveeval[$cont-1]['cveeval'].'" name="datos[cveeval]" style="display:'.$display2.'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></th>';
 					}
 					$tabla.="</td>";
 				}
-			$cont2++;
+				$cont2++;
 			}
 			$cont2=0;
 			$cont++;
 			$tabla.='</form> </tr>';
 		}
-
 		$tabla.='</table>';
 		return $tabla;
 	}
 
+//---------------------------------------------------------------------------------------
 	function checklogin() {
 		if ($_SESSION['logueado'] == true)
 	{

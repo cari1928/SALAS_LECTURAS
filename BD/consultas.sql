@@ -1,15 +1,5 @@
-select distinct nombre AS "Alumno", comprension AS "Comprensión", motivacion AS "Motivación", reporte AS "Reporte", tema AS "Tema", participacion AS "Participación", terminado AS "Terminado" from evaluacion inner join usuarios on usuarios.cveusuario = evaluacion.nocontrol where cveletra in (select cve from abecedario where letra= 'A') and cvepromotor='2222222222222' order by nombre,comprension,motivacion,reporte, tema,participacion,terminado
+select cveperiodo AS "ID", fechainicio AS "Fecha de Inicio", fechafinal AS "Fecha Final" from periodo
 
-select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cveletra in (select cve from abecedario where letra ='A') and cvepromotor='2222222222222'
+select s.cvesala, s.horario, s.ubicacion, s.numalumnos, s.limite from sala s where cvesala='abq' and (s.cvesala not in (select cvesala from lectura where cveperiodo = 8) or s.horario not in (select horario from lectura where cveperiodo = 8))
 
-select letra, cvesala, horario, periodo from lectura inner join abecedario on lectura.cveletra = abecedario.cve inner join periodo on lectura.cveperiodo = periodo.cveperiodo where cvepromotor='2222222222222' and cveperiodo=7
-
-select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-from lectura
-	inner join usuarios on usuarios.cveusuario= lectura.cvepromotor
-	inner join periodo on periodo.cveperiodo=lectura.cveperiodo
-	inner join abecedario on abecedario.cve=lectura.cveletra
-	inner join sala on lectura.cvesala=sala.cvesala
-where ubicacion = 'Templo'
-	and lectura.cveperiodo='7'
-	and nocontrol in (select nocontrol from lectura where nocontrol ='22222222')
+insert into lectura (cvepromotor,cvesala,nocontrol,cveperiodo,horario,cvelibro,cveletra) values ('8750321429604','zof','00000000',8,'pyh',0,1)

@@ -1,33 +1,36 @@
 <?php 
-include("../sistema.php");
+  include("../sistema.php");
 
-if ($_SESSION['roles'] =='P')
-{
-	$web->iniClases('promotor', "index grupos");
-	$grupos= $web->grupos($_SESSION['cveUser']);
-	$web->smarty->assign('grupos',$grupos);
-	$cveperiodo=periodo($web);
-	$sql="select letra from abecedario where cve in (select cveletra from lectura where cvepromotor='".$_SESSION['cveUser']."' and cveperiodo ='".$cveperiodo."')";
-	$tabla=$web->showTable($sql,"grupo",5,1,'grupos');
-	$web->smarty->assign('tabla',$tabla);
-	$web->smarty->display('vergrupos.html');
-}
-else
-{
-	$web->checklogin();	
-}
+  if ($_SESSION['roles'] =='P') {
+    $web->checklogin();	
+  }
+
+  $web->iniClases('promotor', "index grupos");
+  $grupos= $web->grupos($_SESSION['cveUser']);
+  $web->smarty->assign('grupos',$grupos);
+  $cveperiodo=periodo($web);  
+
+  $sql = "select letra, cvesala, horario, fechainicio, fechafinal from lectura 
+            inner join abecedario on lectura.cveletra = abecedario.cve
+            inner join periodo on lectura.cveperiodo = periodo.cveperiodo";
+
+  die($sql);
+
+  //$sql="select letra from abecedario where cve in (select cveletra from lectura where cvepromotor='".$_SESSION['cveUser']."' and cveperiodo ='".$cveperiodo."')";
+  $tabla=$web->showTable($sql,"grupo",5,1,'grupos');
+  $web->smarty->assign('tabla',$tabla);
+  $web->smarty->display('vergrupos.html');
 
 
-function periodo($web)
-	{
-		$sql = "select * from periodo";
-		$datos_rs = $web->DB->GetAll($sql);
+function periodo($web) {
+  $sql = "select * from periodo";
+  $datos_rs = $web->DB->GetAll($sql);
 
-		$date = getdate();
-		$fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
-		$date1 = new DateTime($fechaAct);
+  $date = getdate();
+  $fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
+  $date1 = new DateTime($fechaAct);
 
-		$cont = 0;
+  $cont = 0;
 
 		while($cont < count($datos_rs))
 		{

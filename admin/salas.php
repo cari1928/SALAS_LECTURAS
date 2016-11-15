@@ -19,8 +19,7 @@
 		$web->query($sql);
 	}
 
-	$sql='select cvesala AS "ID", horario AS "Horario", ubicacion AS "Ubicación",
-		numalumnos AS "Número de Alumnos", limite AS "Límite" from sala';
+	$sql='select cvesala AS "ID", horario AS "Horario", ubicacion AS "Ubicación", limite AS "Límite" from sala';
 	$salones=$web->showTable($sql,"salas",1,1,'sala');
 	$web->smarty->assign('salones',$salones);
 	$web->smarty->display("salas.html");

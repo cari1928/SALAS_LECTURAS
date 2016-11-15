@@ -4,19 +4,21 @@ if ($_SESSION['roles'] =='P')
 {
 	if(isset($_GET['info4']))
 	{
-		$cvepromotor=$_SESSION['cveUser'];
-		$cvesala=$_GET['info1'];
-		$nocontrol='00000000';
-		$cveperiodo=$_GET['info4'];
-		$cvehorario=$_GET['info2'];
-		$sql="select COALESCE(MAX(cveletra),0) as cveletra from lectura l where  l.cveperiodo in (select cveperiodo from lectura where cveperiodo ='".periodo($web)."' and cvepromotor= '".$cvepromotor."')";
-		
-		$datos_rs =$web->DB->GetAll($sql);
-		$letra=$datos_rs[0]['cveletra'];
-		$sql="insert into lectura (cvepromotor,cvesala,nocontrol,cveperiodo,horario,cvelibro,cveletra) values ('".$cvepromotor."','".$cvesala."','".$nocontrol."',".$cveperiodo.",'".$cvehorario."',0,". ($letra + 1) .")";
-		//$sql="insert into lectura values('".$cvesala."','".$cvehorario."','".$cveperiodo."')";
-		$web->query($sql);
-		header('Location: vergrupos.php');
+      $cvepromotor=$_SESSION['cveUser'];
+      $cvesala=$_GET['info1'];
+      $nocontrol='00000000';
+      $cveperiodo=$_GET['info4'];
+      $cvehorario=$_GET['info2'];
+      $sql="select COALESCE(MAX(cveletra),0) as cveletra from lectura l where  l.cveperiodo in (select cveperiodo from lectura where cveperiodo ='".periodo($web)."' and cvepromotor= '".$cvepromotor."')";
+
+      $datos_rs =$web->DB->GetAll($sql);
+      $letra=$datos_rs[0]['cveletra'];
+      $sql="insert into lectura (cvepromotor,cvesala,nocontrol,cveperiodo,horario,cvelibro,cveletra) values ('".$cvepromotor."','".$cvesala."','".$nocontrol."',".$cveperiodo.",'".$cvehorario."',0,". ($letra + 1) .")";
+      
+      //die($sql);
+
+      $web->query($sql);
+      header('Location: vergrupos.php');
 	}
 	else
 	{
