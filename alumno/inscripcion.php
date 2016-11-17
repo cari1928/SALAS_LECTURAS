@@ -10,23 +10,7 @@
 	$web->smarty->assign('grupos',$grupos);
 
 	if(isset($_POST['datos']['tipo'])) {
-		$sql = "select * from periodo";
-		$datos_rs = $web->DB->GetAll($sql);
-
-		$date = getdate();
-		$fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
-		$date1 = new DateTime($fechaAct);
-
-		$cont = 0;
-		while($cont < count($datos_rs)) {
-			$date2 = new DateTime($datos_rs[$cont]['fechainicio']);
-			$date3 = new DateTime($datos_rs[$cont]['fechafinal']);
-
-			if($date1 >= $date2 && $date1 < $date3) {
-				$cveperiodo = $datos_rs[$cont]['cveperiodo'];
-			}
-			$cont++;
-		}
+		$cveperiodo = periodo($web);
 
 		$campo=$_POST['datos']['tipo'];
 		$seleccion=$_POST['datos'][$campo];
@@ -37,13 +21,13 @@
 
 		if($campo!="ubicacion")
 			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-						 ".$inners." where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."'
+						 ".$inners." where lectura.".$campo."='".$seleccion."' and lectura.cveperiodo='".$cveperiodo."'
 							and nocontrol in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 		else
 			$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-						 ".$inners." where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."'
+						 ".$inners." where ubicacion = '".$seleccion."' and lectura.cveperiodo='".$cveperiodo."'
 						 and nocontrol in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
-
+		
 		$result = $web->DB->GetAll($sql);
 		if(count($result) > 0) {
 			$web->smarty->assign('table', '<div class="alert alert-danger" role="alert"> Ya estás inscrito </div>');
@@ -51,11 +35,11 @@
 
 			if($campo!="ubicacion")
 				$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-							 ".$inners."where lectura.".$campo."='".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+							 ".$inners."where lectura.".$campo."='".$seleccion."' and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
 			else
 				$sql="select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion
-							 ".$inners."where ubicacion = '".$seleccion."' and numalumnos <=15 and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
-
+							 ".$inners."where ubicacion = '".$seleccion."' and lectura.cveperiodo='".$cveperiodo."' and nocontrol not in (select nocontrol from lectura where nocontrol ='".$_SESSION['cveUser']."')";
+			
 			$table=$web->showTable($sql,"vergrupos",4,1,'sala');
 			$web->smarty->assign('table',$table);
 		}
@@ -143,4 +127,45 @@
 			$web->smarty->assign('estado',$estado);
 			return $combito;
 		}
+
+//---------------------------------------------------------------------------------------
+	function periodo($web)
+	{
+			$sql = "select * from periodo";
+			$datos_rs = $web->DB->GetAll($sql);
+
+			$date = getdate();
+			$fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
+			$date1 = new DateTime($fechaAct);
+
+			$cont = 0;
+
+			while($cont < count($datos_rs))
+			{
+					$date2 = new DateTime($datos_rs[$cont]['fechainicio']);
+					$date3 = new DateTime($datos_rs[$cont]['fechafinal']);
+
+					if($date1 >= $date2 && $date1 <= $date3)
+					{
+							$cveperiodo = $datos_rs[$cont]['cveperiodo'];
+					}
+					$cont++;
+			}
+		
+			if (isset($cveperiodo)) 
+			{
+					$sql="select fechainicio,fechafinal from periodo where cveperiodo='".$cveperiodo."'";
+					$datos=$web->DB->GetAll($sql);
+					$periodo="El periodo es: ".$datos[0]['fechainicio']." a ".$datos[0]['fechafinal'];
+
+					$web->smarty->assign('periodo',$periodo);
+					return $cveperiodo;	
+			}
+			else
+			{
+					$web->smarty->assign('periodo',"No hay periodos actuales");
+					return "";
+			}
+
+	}
  ?>

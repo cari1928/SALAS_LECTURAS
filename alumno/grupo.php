@@ -9,16 +9,20 @@
 	$grupos= $web->grupos($_SESSION['cveUser']);
 	$web->smarty->assign('grupos',$grupos);
 
-	if(isset($_GET['info1'])) {
-		$sql="select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal
-      from lectura
+	//info1 = grupo
+	//info2 = promotor
+	if(isset($_GET['info2'])) {
+		$sql="select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal,
+			nombre from lectura
         inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario
         inner join periodo on periodo.cveperiodo = lectura.cveperiodo
-      where cvepromotor in (select cveusuario from usuarios where nombre ='".$_GET['info1']."')
+				inner join usuarios on usuarios.cveusuario = lectura.cvepromotor
+      where cvepromotor in (select cveusuario from usuarios where nombre ='".$_GET['info2']."')
         and nocontrol='".$_SESSION['cveUser']."'";
     $datos_rs=$web->DB->GetAll($sql);
 
-		$info="Sala: ".$datos_rs[0]['cvesala']."<br>";
+		$info="Promotor: ".$datos_rs[0]['nombre']."<br>";
+		$info.="Sala: ".$datos_rs[0]['cvesala']."<br>";
 		$info.="Ubicacion: ".$datos_rs[0]['ubicacion']."<br>";
 		$info.="Horario: ".$datos_rs[0]['horario']."<br>";
 		$info.="Periodo: ".$datos_rs[0]['fechainicio']." : ".$datos_rs[0]['fechafinal'];
@@ -30,6 +34,7 @@
 
 		if(isset($_POST['datos'])) {
 			$sql="select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura  inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cveletra in (select cve from abecedario where letra ='".$_POST['datos']['grupo']."') and cvepromotor='".$_SESSION['cveUser']."'";
+			
 			$datos_rs=$web->DB->GetAll($sql);
 			$info="Sala: ".$datos_rs[0]['cvesala']."<br>";
 			$info.="Ubicacion: ".$datos_rs[0]['ubicacion']."<br>";

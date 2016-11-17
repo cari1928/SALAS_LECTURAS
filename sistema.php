@@ -97,24 +97,19 @@ class Sistema extends Conexion
 		}
 	}
 
-	function showTable($query,$direccion,$option,$add,$table,$extra="")
-	{
-
+	//-----------------------------------------------------------------------------
+	function showTable($query,$direccion,$option,$add,$table,$extra="")	{
 		$datos=$this->DB->GetAll($query);
-        //print_r($datos);
 		$tabla2="<table class='table table-striped'>";
-		if ($add==1) {
-			$tabla2.="<tr>
-						<td colspan='4' align='right'>
-							<a href='add".$direccion.".php?tabla=".$table."'><img src='../Images/add.png' /> </a>
-						</td>
-					</tr> </table>";
-
+		
+		if ($add == 1) {
+			$tabla2.="<tr><td colspan='4' align='right'>
+				<a href='add".$direccion.".php?tabla=".$table."'>
+				<img src='../Images/add.png' /></a></td></tr></table>";
 				$this->smarty->assign('tabla2',$tabla2);
 		}
 
-		if ($datos==false)
-		{
+		if ($datos==false) {
 			$tabla='<label>No se encuentran elementos </label>';
 			return $tabla;
 		}
@@ -122,7 +117,6 @@ class Sistema extends Conexion
 		$this->query($query);
 		$cantidadcolumnas=$this->rs->_numOfFields;
 		$cantidadregistros=$this->rs->_numOfRows;
-
 
 		if ($this->rs->fields==false) {
 			$tabla='No hay ningun dato';
@@ -134,99 +128,68 @@ class Sistema extends Conexion
 		$cont=0;
 		$cont2=0;
 
-		//var_dump($datos);
-		//die();
-		 //<div>Iconos diseñados por <a href="http://www.freepik.com" title="Freepik">Freepik</a> desde <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> con licencia <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
-
-		while ( $cont< $cantidadregistros+1)
-		{
+		while ( $cont< $cantidadregistros+1) {
 			$tabla.='<tr>';
-			while ( $cont2<$cantidadcolumnas)
-			{
+			
+			while ( $cont2<$cantidadcolumnas) {
+				if ($cont==0) {
+					$tabla.='<th>'.$nombrescolumnas[$cont2].'</th>';
 
-				if ($cont==0)
-				{
-					$tabla.='<th>';
-					$tabla.=$nombrescolumnas[$cont2];
-					$tabla.='</th>';
-
-					if ($cont2== $cantidadcolumnas-1 && $option==1)
-					{
-						$tabla.='<th>';
-						$tabla.="Eliminar";
-						$tabla.='</th>';
-
-						$tabla.='<th>';
-						$tabla.="Actualizar";
-						$tabla.='</th>';
+					if ($cont2== $cantidadcolumnas-1 && $option==1) {
+						$tabla.='<th>Eliminar</th>';
+						$tabla.='<th>Actualizar</th>';
 					}
-					if ($cont2== $cantidadcolumnas-1 && ($option==2 || $option==3) )
-					{
-						$tabla.='<th>';
-						$tabla.="Eliminar";
-						$tabla.='</th>';
-
-						$tabla.='<th>';
-						$tabla.="Actualizar";
-						$tabla.='</th>';
-
-						$tabla.='<th>';
-						$tabla.="Mostrar";
-						$tabla.='</th>';
+					
+					if ($cont2== $cantidadcolumnas-1 && ($option==2 || $option==3)) {
+						$tabla.='<th>Eliminar</th>';
+						$tabla.='<th>Actualizar</th>';
+						$tabla.='<th>Mostrar</th>';
 					}
 
-				}
-				else
-				{
+				} else {
+					if($option!=4 && $option!=5) {
+						$tabla.='<td>';
+						$nomField = $nombrescolumnas[$cont2];
+						$tabla.=$datos[$cont-1][$nomField];
+						$tabla.='</td>';
 
-						if($option!=4 && $option!=5)
-						{
+					} else {
+						if($cont2==0) {
+							$nomField = $nombrescolumnas[0];
+							$contenido=$datos[$cont-1][$nomField];
+
+							if($option==4) {
+								$nomField2 = $nombrescolumnas[1];
+								$contenido2=$datos[$cont-1][$nomField2];
+								$tabla.='<td> <a href="'.$direccion.'.php?info1='.$contenido.'&info2='.$contenido2.''.$extra.'">';
+							}
+
+							if($option==5) {
+								if ($direccion=='grupoHistorial') {
+								$contenido2=$datos[$cont-1]['cveusuario'];
+								$tabla.='<td> <a href="'.$direccion.'.php?info='.$contenido2.'&info1='.$contenido.$extra.'">';
+
+								} else {
+									$tabla.='<td> <a href="'.$direccion.'.php?info1='.$contenido.$extra.'">';
+								}
+							}
+
+							if($contenido!="GHOST") {
+								$nomField = $nombrescolumnas[$cont2];
+								$tabla.=$datos[$cont-1][$nomField];
+							}
+								$tabla.='</a></td>';
+
+						}	else 	{
 							$tabla.='<td>';
 							$nomField = $nombrescolumnas[$cont2];
 							$tabla.=$datos[$cont-1][$nomField];
 							$tabla.='</td>';
 						}
-						else
-						{
-							if($cont2==0)
-							{
-								$nomField = $nombrescolumnas[0];
-								$contenido=$datos[$cont-1][$nomField];
-
-								if($option==4)
-								{
-									$nomField2 = $nombrescolumnas[1];
-									$contenido2=$datos[$cont-1][$nomField2];
-									$tabla.='<td> <a href="'.$direccion.'.php?info1='.$contenido.'&info2='.$contenido2.''.$extra.'">';
-								}
-								if($option==5)
-									{
-										if ($direccion=='grupoHistorial') {
-										$contenido2=$datos[$cont-1]['cveusuario'];
-										$tabla.='<td> <a href="'.$direccion.'.php?info='.$contenido2.'&info1='.$contenido.$extra.'">';		# code...
-										}
-										else
-										$tabla.='<td> <a href="'.$direccion.'.php?info1='.$contenido.$extra.'">';
-									}
-								if($contenido!="GHOST")
-								{
-									$nomField = $nombrescolumnas[$cont2];
-									$tabla.=$datos[$cont-1][$nomField];
-								}
-									$tabla.='</a></td>';
-
-							}
-							else
-							{
-								$tabla.='<td>';
-								$nomField = $nombrescolumnas[$cont2];
-								$tabla.=$datos[$cont-1][$nomField];
-								$tabla.='</td>';
-							}
-						}
+					}
 				}
-				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==1)
-				{
+				
+				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==1)	{
 						$nomField = $nombrescolumnas[0];
 						$nomField2 = $nombrescolumnas[1];
 						$contenido=$datos[$cont-1][$nomField];
@@ -234,8 +197,8 @@ class Sistema extends Conexion
 						$tabla.="<td> <a href='".$direccion.".php?info1=".$contenido."&info3=".$contenido2."'><img src='../Images/cancelar.png' /> </a></td>";
 						$tabla.="<td> <a href='update".$direccion.".php?info2=".$contenido."&info3=".$contenido2."'><img src='../Images/edit.png' /> </a></td>";
 				}
-				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==2)
-				{
+				
+				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==2) {
 						$nomField = $nombrescolumnas[0];
 						$contenido=$datos[$cont-1][$nomField];
 						$tabla.="<td> <a href='".$direccion.".php?info1=".$contenido."'><img src='../Images/cancelar.png' /> </a></td>";
@@ -243,8 +206,7 @@ class Sistema extends Conexion
 						$tabla.="<td> <a href='".$extra.".php?info1=".$contenido."'><img src='../Images/mostrar.png' /> </a></td>"; //Se colo co el $extra epara redireccionar a grupos
 				}
 
-				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==3)
-				{
+				if ($cantidadcolumnas==$cont2+1 && $cont != 0 && $option==3) 	{
 						$nomField = $nombrescolumnas[0];
 						$contenido=$datos[$cont-1][$nomField];
 						$tabla.="<td> <a href='".$direccion.".php?info1=".$contenido."'><img src='../Images/cancelar.png' /> </a></td>";
@@ -321,30 +283,34 @@ class Sistema extends Conexion
 		return false;
 	}
 
+//-------------------------------------------------------------------------------------
 	function validarEmail($email) //modificar
 	{
 		return is_numeric($email);
 	}
 
-	function grupos($rfc) { //METODO PARA LA BARRA DE PROMOTOR MUESTR GRUPOS
-		$cantidad=strlen($rfc);
+//-------------------------------------------------------------------------------------
+	function grupos($rfc) { //METODO PARA LA BARRA DE PROMOTOR MUESTR GRUPOS	
+		$rol = $_SESSION['roles'];
 
-		if ($cantidad>8) {
+		if ($rol == 'P') { //es un promotor
 			$sql="select horario, letra from lectura
 							inner join abecedario on abecedario.cve = lectura.cveletra
 							where cvepromotor='".$rfc."'";
-		} else {
+		
+		} else { //es un alumno
 			$sql="select nombre, letra from lectura
 							inner join abecedario on abecedario.cve = lectura.cveletra
 						  inner join usuarios on lectura.cvepromotor = usuarios.cveusuario
 						  where nocontrol='".$rfc."'";
 		}
-
+		
 		$this->query($sql);
 		$cantidadregistros=$this->rs->_numOfRows;
 
 		if($cantidadregistros==0) {
 			return "No existentes";
+			
 		} else {
 			$cadena="";
 			$datos_rs=$this->DB->GetAll($sql);
@@ -355,10 +321,9 @@ class Sistema extends Conexion
 			}
 			return $cadena;
 		}
-
 	}
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
 	//$aux Array contiene dos campos: promoaux y periodaux
 	function evaluacion($grupo, $display="block", $aux="") {
 		if(isset($aux['promoaux'])) {
@@ -448,28 +413,23 @@ class Sistema extends Conexion
 
 //---------------------------------------------------------------------------------------
 	function checklogin() {
-		if ($_SESSION['logueado'] == true)
-	{
-		if ($_SESSION['roles'] =='A')
-		{
-			header('Location: ../admin/index.php');
-		}
+		if ($_SESSION['logueado'] == true) {
+			
+			if ($_SESSION['roles'] =='A') {
+				header('Location: ../admin/index.php');
+			}
 
-		if ($_SESSION['roles'] =='P')
-		{
-			header('Location: ../promotor/index.php');
-		}
+			if ($_SESSION['roles'] =='P') {
+				header('Location: ../promotor/index.php');
+			}
 
-		if ($_SESSION['roles'] =='U')
-		{
-			header('Location: ../alumno/index.php');
+			if ($_SESSION['roles'] =='U') {
+				header('Location: ../alumno/index.php');
+			}
+			
+		} else {
+			header('Location: ../index.php');
 		}
-
-	}
-	else
-	{
-		header('Location: ../index.php');
-	}
 	}
 
 	function login($email, $contrasena)

@@ -101,43 +101,44 @@ function combo($sql,$campo,$web)
 
 }
 
-function periodo($web)
-{
-    $sql = "select * from periodo";
-    $datos_rs = $web->DB->GetAll($sql);
+//---------------------------------------------------------------------------------------
+	function periodo($web)
+	{
+			$sql = "select * from periodo";
+			$datos_rs = $web->DB->GetAll($sql);
 
-    $date = getdate();
-    $fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
-    $date1 = new DateTime($fechaAct);
+			$date = getdate();
+			$fechaAct = $date['year']."-".$date['mon']."-".$date['mday'];
+			$date1 = new DateTime($fechaAct);
 
-    $cont = 0;
+			$cont = 0;
 
-    while($cont < count($datos_rs))
-    {
-        $date2 = new DateTime($datos_rs[$cont]['fechainicio']);
-        $date3 = new DateTime($datos_rs[$cont]['fechafinal']);
+			while($cont < count($datos_rs))
+			{
+					$date2 = new DateTime($datos_rs[$cont]['fechainicio']);
+					$date3 = new DateTime($datos_rs[$cont]['fechafinal']);
 
-        if($date1 >= $date2 && $date1 <= $date3)
-        {
-            $cveperiodo = $datos_rs[$cont]['cveperiodo'];
-        }
-        $cont++;
-    }
-    if (isset($cveperiodo)) 
-    {
-        $sql="select fechainicio,fechafinal from periodo where cveperiodo='".$cveperiodo."'";
-        $datos=$web->DB->GetAll($sql);
-        $periodo="El periodo es: ".$datos[0]['fechainicio']." a ".$datos[0]['fechafinal'];
+					if($date1 >= $date2 && $date1 <= $date3)
+					{
+							$cveperiodo = $datos_rs[$cont]['cveperiodo'];
+					}
+					$cont++;
+			}
+		
+			if (isset($cveperiodo)) 
+			{
+					$sql="select fechainicio,fechafinal from periodo where cveperiodo='".$cveperiodo."'";
+					$datos=$web->DB->GetAll($sql);
+					$periodo="El periodo es: ".$datos[0]['fechainicio']." a ".$datos[0]['fechafinal'];
 
-        $web->smarty->assign('periodo',$periodo);
-        return $cveperiodo;	
-    }
-    else
-    {
-        $web->smarty->assign('periodo',"No hay periodos actuales");
-        return "";
-    }
+					$web->smarty->assign('periodo',$periodo);
+					return $cveperiodo;	
+			}
+			else
+			{
+					$web->smarty->assign('periodo',"No hay periodos actuales");
+					return "";
+			}
 
-}
-
+	}
  ?>
