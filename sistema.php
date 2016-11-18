@@ -465,6 +465,12 @@ class Sistema extends Conexion
         }
     }
 
+    /**
+     * Gestiona el proceso de logueo: validaciones y creación de variables de sesión
+     * @param  [String] $email      [Clave del usuario, no es el email]
+     * @param  [String] $contrasena [Contraseña ingresada por el usuario]
+     * @return [Boolean]            [Representa si el logueo fue exitoso]
+     */
     public function login($email, $contrasena)
     {
         $msj        = '';
@@ -482,9 +488,10 @@ class Sistema extends Conexion
             }
 
         } else {
-            $this->query("select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'");
-            if ($this->rs->_numOfRows > 0) {
+            $sql      = "select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'";
+            $datos_rs = $this->DB->GetAll($sql);
 
+            if (isset($datos_rs[0])) {
                 $datos_rs = $this->DB->GetAll("select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'");
                 $rol      = $datos_rs[0]["rol"];
                 $nombre   = $datos_rs[0]["nombre"];
@@ -497,7 +504,7 @@ class Sistema extends Conexion
                     $_SESSION['cveUser']  = $email;
                     $_SESSION['logueado'] = true;
                     $_SESSION['roles']    = $rol;
-                    header('Location : alumno');
+                    header('Location: alumno');
                 }
                 if ($rol == "P") {
                     // Crear las variables de sesión
@@ -517,9 +524,9 @@ class Sistema extends Conexion
                 }
 
             }
-            return true;
         }
 
+        return true;
     }
 
     public function logout()
@@ -536,7 +543,8 @@ class Sistema extends Conexion
             while (!$this->rs->EOF) {
                 $id = $this->rs->fields['id'];
                 $this->rs->MoveNext();
-            }return $id;
+            }
+            return $id;
 
         } else {
             $this->error('erroralingresarelmail');

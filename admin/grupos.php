@@ -11,9 +11,9 @@ if (isset($_GET['info1'])) {
     $cveperiodo = periodo($web);
 
     $sql = "select distinct letra AS \"Grupo\", cvesala AS \"Sala\", horario AS \"Horario\" from lectura
-			inner join abecedario on lectura.cveletra = abecedario.cve
-			inner join periodo on lectura.cveperiodo = periodo.cveperiodo
-		where cvepromotor='" . $_GET['info1'] . "'";
+            inner join abecedario on lectura.cveletra = abecedario.cve
+            inner join periodo on lectura.cveperiodo = periodo.cveperiodo
+        where cvepromotor='" . $_GET['info1'] . "'";
 
     $tabla = $web->showTable($sql, "grupo", 5, 1, 'grupos', '&info2=' . $_GET['info1']);
     $web->smarty->assign('tabla', $tabla);
