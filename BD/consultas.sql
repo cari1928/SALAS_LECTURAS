@@ -1,5 +1,16 @@
-select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion from lectura inner join usuarios on usuarios.cveusuario= lectura.cvepromotor inner join periodo on periodo.cveperiodo=lectura.cveperiodo inner join abecedario on abecedario.cve=lectura.cveletra inner join sala on lectura.cvesala=sala.cvesala where lectura.cvesala='abq' and lectura.cveperiodo='7' and nocontrol not in (select nocontrol from lectura where nocontrol ='0052309689504') 
+select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cveletra in (select cve from abecedario where letra ='pyh') and cvepromotor='15834759'
 
-select horario, letra from lectura inner join abecedario on abecedario.cve = lectura.cveletra where cvepromotor='0052309689504' 
+select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cvesala='pyh' and cvepromotor='15834759'
 
-select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cvepromotor in (select cveusuario from usuarios where nombre ='A') and nocontrol='0052309689504'
+select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where sala.cvesala='pyh' and cvepromotor='15834759'
+
+select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura 
+	inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario 
+	inner join periodo on periodo.cveperiodo = lectura.cveperiodo 
+where sala.cvesala='A' 
+	and cvepromotor='15834759'
+
+select distinct letra AS "Grupo", cvesala AS "Sala", horario AS "Horario" from lectura 
+	inner join abecedario on lectura.cveletra = abecedario.cve 
+	inner join periodo on lectura.cveperiodo = periodo.cveperiodo 
+where cvepromotor='1111111111111'	
