@@ -63,6 +63,20 @@
           </ul>
         </li>
       </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <div class="form-group">
+          {if isset($bandera)}
+            <a style="color:white" class="navbar-brand" href="redacta.php?info={$para}&accion=ver&periodo{$cveperiodo}.php">Mensajes</a> 
+          {/if}
+        </div>
+      </ul>   
+      <ul class="nav navbar-nav navbar-right">
+        <div class="form-group">
+          {if isset($bandera)}
+            <h6><a href="redacta.php?info={$para}&accion=redactar&periodo={$cveperiodo}"><img src="../Images/sobre.png"></a></h6>
+          {/if}
+        </div>
+      </ul>   
       <label class="navbar-brand"><p style="color: white">{$nombrecuenta}</p></label>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

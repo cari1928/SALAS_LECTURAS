@@ -11,7 +11,7 @@ if (isset($_GET['info4'])) {
   $nocontrol   = '00000000';
   $cveperiodo  = $_GET['info4'];
   $cvehorario  = $_GET['info2'];
-  $sql         = "select COALESCE(MAX(cveletra),0) as cveletra from lectura l where  l.cveperiodo in (select cveperiodo from lectura where cveperiodo ='" . periodo($web) . "' and cvepromotor= '" . $cvepromotor . "')";
+  $sql         = "select COALESCE(MAX(cveletra),0) as cveletra from lectura l where l.cveperiodo in (select cveperiodo from lectura where cveperiodo='".periodo($web)."' and cvepromotor='".$cvepromotor."')";
 
   $datos_rs = $web->DB->GetAll($sql);
   $letra    = $datos_rs[0]['cveletra'];
@@ -26,7 +26,11 @@ if (isset($_GET['info4'])) {
   header('Location: index.php');
 }
 
-//-------------------------------------------------------------------------------------
+/**
+ * Obtiene el periodo actual para devolver el id correspondiente
+ * @param  [Sistema] $web [Objeto de tipo Sistema para poder hacer uso de sus métodos]
+ * @return [String|int] [Regresa la clave del periodo actual o un mensaje indicando su nula existencia]
+ */
 function periodo($web)
 {
   $sql      = "select * from periodo";

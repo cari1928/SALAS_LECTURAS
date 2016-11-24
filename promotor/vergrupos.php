@@ -1,20 +1,18 @@
 <?php
 include "../sistema.php";
 
-if ($_SESSION['roles'] != 'P') {
-  $web->checklogin();
-}
+if ($_SESSION['roles'] != 'P') { $web->checklogin(); }
 
 $web->iniClases('promotor', "index grupos");
-$grupos = $web->grupos($_SESSION['cveUser']);
+$grupos     = $web->grupos($_SESSION['cveUser']);
 $web->smarty->assign('grupos', $grupos);
 $cveperiodo = periodo($web);
 
 $sql = "select letra AS \"Grupo\", cvesala AS \"Sala\", horario AS \"Horario\",
-        fechainicio AS \"Fecha Inicial\", fechafinal AS \"Fecha Final\" from lectura
-            inner join abecedario on lectura.cveletra = abecedario.cve
-            inner join periodo on lectura.cveperiodo = periodo.cveperiodo
-        where cvepromotor='" . $_SESSION['cveUser'] . "'";
+  fechainicio AS \"Fecha Inicial\", fechafinal AS \"Fecha Final\" from lectura
+      inner join abecedario on lectura.cveletra = abecedario.cve
+      inner join periodo on lectura.cveperiodo = periodo.cveperiodo
+  where cvepromotor='" . $_SESSION['cveUser'] . "'";
 
 $tabla = $web->showTable($sql, "grupo", 4, 1, 'grupos');
 $web->smarty->assign('tabla', $tabla);

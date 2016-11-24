@@ -1,6 +1,5 @@
 {include file="header.html"}
-{$ruta}
-
+{$ruta} {if isset($msj)}<label style="color:red;">{$msj}</label>{/if}
 <center>
  <div class="form-group" style ="background-color:#f0f0f0">
     <label>{$info}</label>
