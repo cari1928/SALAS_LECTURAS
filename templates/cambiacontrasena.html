@@ -1,24 +1,35 @@
 {include file='header.html'}
 <center>
-    <h3>¡Bienvenido! <br><br/></h3>
-       <form class="form-inline" action='cambiacontrasena.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
-   <div class="form-group">
-    <label>Usuario:</label>
-    <br/>
-    <input  class="form-control" id="exampleInputEmail3" name="datos[cveUsuario]" id="producto" readonly ="readonly" value="{$user}">
-  </div>
-    <br/>
-    <br/>
-  <div class="form-group">
-    <label>Contraseña nueva: </label>
-    <br/>
-    <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Password" name="datos[contrasena]" id="producto" required >
-  </div>
-  <br/>
-  <br/>
-  <button type="submit" class="btn btn-default" value='cambiar' name="guardar">Cambiar</button> </br>
-</form>
+    <h3>
+        ¡Bienvenido!
+        <br>
+            <br/>
+        </br>
+    </h3>
+    <form accept-charset="utf-8" action="cambiacontrasena.php" class="form-inline" enctype="multipart/form-data" method="post">
+        <div class="form-group">
+            <label>
+                Usuario:
+            </label>
+            <br/>
+            <input class="form-control" id="producto" name="datos[cveUsuario]" readonly="readonly" value="{$user}">
+            </input>
+        </div>
+        <br/>
+        <br/>
+        <div class="form-group">
+            <label>
+                Contraseña nueva:
+            </label>
+            <br/>
+            <input class="form-control" id="producto" name="datos[contrasena]" placeholder="Password" required="" type="password">
+            </input>
+        </div>
+        <br/>
+        <br/>
+        <button class="btn btn-default" name="guardar" type="submit" value="cambiar">
+            Cambiar
+        </button>
+    </form>
 </center>
-    </body>
-</html>
 {include file='footer.html'}
