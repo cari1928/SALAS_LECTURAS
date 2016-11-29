@@ -13,9 +13,15 @@ if (isset($_GET['info1'])) {
     $sql = "select distinct letra AS \"Grupo\", cvesala AS \"Sala\", horario AS \"Horario\" from lectura
             inner join abecedario on lectura.cveletra = abecedario.cve
             inner join periodo on lectura.cveperiodo = periodo.cveperiodo
-        where cvepromotor='" . $_GET['info1'] . "'";
+        where cvepromotor='" . $_GET['info1'] . "'
+        order by cvesala";
 
-    $tabla = $web->showTable($sql, "grupo", 5, 1, 'grupos', '&info2=' . $_GET['info1']);
+    $datos = $web->DB->GetAll($sql);
+
+    $tabla = $web->showTable($sql, "grupo", 5, 1, 'grupos',
+        '&info2=' . $_GET['info1'] .
+        '&info3=' . $datos[0]['Sala'] .
+        '&info4=' . $datos[0]['Horario']);
     $web->smarty->assign('tabla', $tabla);
     $web->smarty->display('grupos.html');
 

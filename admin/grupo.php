@@ -8,7 +8,7 @@ if ($_SESSION['roles'] != 'A') {
 $web->iniClases('admin', "index promotor grupo");
 
 if (isset($_POST['datos'])) {
-    header('Location: grupoHistorial .php?info=' . $_POST['datos']['promotor'] . '&info1=' . $_POST['datos']['grupo'] . '&info2=' . $_POST['datos']['periodo']);
+    header('Location: grupoHistorial.php?info=' . $_POST['datos']['promotor'] . '&info1=' . $_POST['datos']['grupo'] . '&info2=' . $_POST['datos']['periodo']);
     die();
 }
 
@@ -34,10 +34,25 @@ $info .= "Horario: " . $datos_rs[0]['horario'] . "<br>";
 $info .= "Periodo: " . $datos_rs[0]['fechainicio'] . " : " . $datos_rs[0]['fechafinal'];
 
 if (isset($_GET['info'])) {
-    $tabla = $web->evaluacion($_GET['info1'], "none", array('promoaux' => $_GET['info'], 'periodaux' => $_GET['info2']));
+    $tabla = $web->evaluacion(array(
+        'grupo'   => $_GET['info1'],
+        'cvesala' => "",
+        'horario' => "",
+    ), "none", array(
+        'promoaux'  => $_GET['info'],
+        'periodaux' => $_GET['info2'],
+    ));
 
 } else {
-    $tabla = $web->evaluacion($_GET['info1'], "none", array('promoaux' => $_GET['info2'], 'periodaux' => null));
+    //info1
+    $tabla = $web->evaluacion(array(
+        'grupo'   => $_GET['info1'],
+        'cvesala' => $_GET['info3'],
+        'horario' => $_GET['info4'],
+    ), "none", array(
+        'promoaux'  => $_GET['info2'],
+        'periodaux' => null,
+    ));
 }
 
 $web->smarty->assign('info', $info);
