@@ -14,14 +14,19 @@ if (isset($_GET['info1'])) {
             inner join abecedario on lectura.cveletra = abecedario.cve
             inner join periodo on lectura.cveperiodo = periodo.cveperiodo
         where cvepromotor='" . $_GET['info1'] . "'
-        order by cvesala";
+        order by letra";
 
     $datos = $web->DB->GetAll($sql);
 
-    $tabla = $web->showTable($sql, "grupo", 5, 1, 'grupos',
-        '&info2=' . $_GET['info1'] .
-        '&info3=' . $datos[0]['Sala'] .
-        '&info4=' . $datos[0]['Horario']);
+    if (sizeof($datos) > 0) {
+        $tabla = $web->showTable($sql, "grupo", 5, 1, 'grupos',
+            '&info2=' . $_GET['info1'] .
+            '&info3=' . $datos[0]['Sala'] .
+            '&info4=' . $datos[0]['Horario']);
+    } else {
+        $tabla = '<div class="alert alert-danger" role="alert">No se encuentran elementos</div>';
+    }
+
     $web->smarty->assign('tabla', $tabla);
     $web->smarty->display('grupos.html');
 

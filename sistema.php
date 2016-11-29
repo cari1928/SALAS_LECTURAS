@@ -293,9 +293,12 @@ class Sistema extends Conexion
         return false;
     }
 
-//-------------------------------------------------------------------------------------
-    public function validarEmail($email) //modificar
-
+    /**
+     * Verifica si un elemento es numérico
+     * @param  [type] $email Elemento a checar
+     * @return boolean       Resultado de la verificación
+     */
+    public function validarEmail($email)
     {
         return is_numeric($email);
     }
@@ -374,6 +377,8 @@ class Sistema extends Conexion
                 and cvepromotor='" . $cvep . "'
         order by nombre";
 
+        // echo $query;
+
         $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
         $this->query($query);
         $cantidadcolumnas  = $this->rs->_numOfFields;
@@ -418,7 +423,8 @@ class Sistema extends Conexion
                             $tabla .= $datos[$cont - 1][$nomField];
                         }
                     } else {
-                        $tabla .= ' <div id="myprogress" style="position: relative; width: 100%; height: 30px; background-color: #ddd;"> <div id="mybar" style="position: absolute; width: ' . $datos[$cont - 1][$nomField] . '% ;height: 100%; background-color: #4caf50;"> <div id="label" style="text-align: center; line-height: 30px; color: white;"> ' . $datos[$cont - 1][$nomField] . ' % ';
+                        $tabla .= ' <div id="myprogress" style="position: relative; width: 100%; height: 30px; background-color: #ddd ;"> <div id="mybar" style="position: absolute; width: ' . $datos[$cont - 1][$nomField] . '% ; height: 100%; background-color: #4caf50 ;"> <div id="label" style="text-align: center; line-height: 30px; color: white ;"> ' . $datos[$cont - 1][$nomField] . ' % ';
+
                         $tabla .= '</div></div></div></br><center><input class="form-control" id= "exampleInputPassword3" name="datos[' . $nomField . ']" id="producto" required value="' . $datos[$cont - 1][$nomField] . '" style="width:65px; display:' . $display . ';"maxlength="3"></center>';
                     }
 
@@ -432,7 +438,9 @@ class Sistema extends Conexion
                             $tabla .= ' <input type="hidden" name="datos[promotor]" value="' . $aux['promoaux'] . '">';
                             $tabla .= ' <input type="hidden" name="datos[periodo]" value="' . $aux['periodaux'] . '">';
                         }
-                        $tabla .= ' <th><button type="submit" class="btn btn-danger" value="' . $datos[$cont - 1]['ID'] . '" name="datos[cveeval]" style="display:' . $display2 . '" > <span class="glyphicon glyphicon-remove" aria-hidden= "true"> </span></button></th>';
+                        $tabla .= ' <th>
+                        <input type="hidden" name="datos[cveeval]" value="' . $datos[$cont - 1]['ID'] . '">
+                        <button type="submit" class="btn btn-danger" name="datos[accion]" value="eliminar" style="display:' . $display2 . '" > <span class="glyphicon glyphicon-remove" aria-hidden= "true"></span></button></th>';
                     }
                     $tabla .= "</td>";
                 }
