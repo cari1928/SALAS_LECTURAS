@@ -108,11 +108,21 @@ class Sistema extends Conexion
         $datos  = $this->DB->GetAll($query);
         $tabla2 = "<table class='table table-striped'>";
 
-        if ($add == 1) {
-            $tabla2 .= "<tr><td colspan='4' align='right'>
+        switch ($add) {
+            case 1: //se redirecciona a una página con add en su nombre
+                $tabla2 .= "<tr><td colspan='4' align='right'>
                 <a href='add" . $direccion . ".php?tabla=" . $table . "'>
                 <img src='../Images/add.png' /></a></td></tr></table>";
-            $this->smarty->assign('tabla2', $tabla2);
+                $this->smarty->assign('tabla2', $tabla2);
+                break;
+
+            case 2: //se redirecciona a la misma página
+                $tabla2 .= "<tr><td colspan='4' align='right'>
+                <a href='" . $direccion . ".php?tabla=" . $table . "&accion=form_insert'>
+                <img src='../Images/add.png' /></a></td></tr></table>";
+                $this->smarty->assign('tabla2', $tabla2);
+                break;
+
         }
 
         if ($datos == false) {
