@@ -122,7 +122,6 @@ class Sistema extends Conexion
                 <img src='../Images/add.png' /></a></td></tr></table>";
                 $this->smarty->assign('tabla2', $tabla2);
                 break;
-
         }
 
         if ($datos == false) {
@@ -218,22 +217,40 @@ class Sistema extends Conexion
                     $contenido  = $datos[$cont - 1][$nomField];
                     $contenido2 = $datos[$cont - 1][$nomField2];
                     $tabla .= "<td> <a href='" . $direccion . ".php?info1=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/cancelar.png' /> </a></td>";
-                    $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/edit.png' /> </a></td>";
+
+                    if ($add == 2) {
+                        $tabla .= "<td> <a href='" . $direccion . ".php?accion=form_update&info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/  edit.png' /> </a></td>";
+                    } else {
+                        $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/  edit.png' /> </a></td>";
+                    }
+
                 }
 
                 if ($cantidadcolumnas == $cont2 + 1 && $cont != 0 && $option == 2) {
                     $nomField  = $nombrescolumnas[0];
                     $contenido = $datos[$cont - 1][$nomField];
                     $tabla .= "<td> <a href='" . $direccion . ".php?info1=" . $contenido . "'><img src='../Images/cancelar.png' /> </a></td>";
-                    $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+
+                    if ($add == 2) {
+                        $tabla .= "<td> <a href='" . $direccion . ".php?accion=form_update&info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+                    } else {
+                        $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+                    }
+
                     $tabla .= "<td> <a href='" . $extra . ".php?info1=" . $contenido . "'><img src='../Images/mostrar.png' /> </a></td>"; //Se colo co el $extra epara redireccionar a grupos
                 }
 
                 if ($cantidadcolumnas == $cont2 + 1 && $cont != 0 && $option == 3) {
                     $nomField  = $nombrescolumnas[0];
                     $contenido = $datos[$cont - 1][$nomField];
-                    $tabla .= "<td> <a href='" . $direccion . ".php?info1=" . $contenido . "'><img src='../Images/cancelar.png' /> </a></td>";
-                    $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+                    $tabla .= "<td> <a href='" . $direccion . ".php?accion=delete&info1=" . $contenido . "'><img src='../Images/cancelar.png' /> </a></td>";
+
+                    if ($add == 2) {
+                        $tabla .= "<td> <a href='" . $direccion . ".php?accion=form_update&info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+                    } else {
+                        $tabla .= "<td> <a href='" . $direccion . ".php?info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
+                    }
+
                     $tabla .= "<td> <a href='show" . $direccion . ".php?info1=" . $contenido . "'><img src='../Images/mostrarL.png' /> </a></td>";
                 }
 
@@ -246,7 +263,14 @@ class Sistema extends Conexion
         $tabla .= '</table>';
         return $tabla;
     }
-//----------------------------------------------------------------------------------------
+
+    /**
+     * Inicializa variables necesarias para desplegar un template
+     * Entre ellas la ruta a mostrar con links de la página
+     *
+     * @param  String $ubicacion Ubicación del template
+     * @param  String $ruta      Estructura a poner links
+     */
     public function iniClases($ubicacion, $ruta)
     {
         $nombre = $this->tipoCuenta();
@@ -256,16 +280,17 @@ class Sistema extends Conexion
 
         $ruta = explode(" ", $ruta);
         $cad  = "<div>";
+
         for ($i = 0; $i < count($ruta); $i++) {
             if ($i < count($ruta) - 1) {
                 $cad .= '<label><a href="' . $ruta[$i] . '.php">' . $ruta[$i] . '</a></label> > ';
+
             } else {
                 $cad .= '<label>' . $ruta[$i] . '</label>';
             }
         }
         $cad .= "</div>";
         $this->smarty->assign('ruta', $cad);
-
     }
 
     public function smarty()

@@ -2,7 +2,7 @@
 include ('sistema.php');
 $contraseña='';
 $web=new sistema;
-<<<<<<< HEAD
+
 if (isset($_REQUEST['datos'])) 
 {	
 	$nombre=$_POST['datos']['nombre'];
@@ -16,7 +16,8 @@ if (isset($_REQUEST['datos']))
 		$coorreo=$_POST['datos']['correo']."@itcelaya.edu.mx";
 		$tipo=$_POST['datos']['tipo'];
 		if ($contrasena==$confcontrasena) 
-=======
+
+
 if (isset($_POST['datos']))
 {
 
