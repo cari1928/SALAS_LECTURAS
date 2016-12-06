@@ -12,11 +12,16 @@ $web->smarty->assign('grupos', $grupos);
 
 if (isset($_GET['info1']) && isset($_GET['info2']) && isset($_GET['info3'])) {
     $web->smarty->assign('bandera', 'true');
-    $sql = "select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura  inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario
-        inner join periodo on periodo.cveperiodo = lectura.cveperiodo
-    where cveletra in (select cve from abecedario where letra='" . $_GET['info1'] . "') and
-        sala.cvesala='" . $_GET['info2'] . "' and sala.horario='" . $_GET['info3'] . "' and
-        cvepromotor='" . $_SESSION['cveUser'] . "'";
+    $sql = "
+    select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal, periodo.cveperiodo from lectura
+            inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario
+            inner join periodo on periodo.cveperiodo = lectura.cveperiodo
+        where cveletra in
+            (select cve from abecedario
+                where letra='" . $_GET['info1'] . "') and
+            sala.cvesala='" . $_GET['info2'] . "' and
+            sala.horario='" . $_GET['info3'] . "' and
+            cvepromotor='" . $_SESSION['cveUser'] . "'";
     $datos_rs = $web->DB->GetAll($sql);
 
     $info = "Sala:" . $datos_rs[0]['cvesala'] . "<br>";
@@ -25,12 +30,13 @@ if (isset($_GET['info1']) && isset($_GET['info2']) && isset($_GET['info3'])) {
     $info .= "Periodo:" . $datos_rs[0]['fechainicio'] . ":" . $datos_rs[0]['fechafinal'];
     $web->smarty->assign('info', $info);
 
-    // die(print_r($_GET));
-
     $tabla = $web->evaluacion(array(
         'grupo'   => $_GET['info1'],
         'cvesala' => $_GET['info2'],
         'horario' => $_GET['info3'],
+    ), "none", array(
+        'promoaux'  => $_SESSION['cveUser'],
+        'periodaux' => $datos_rs[0]['cveperiodo'],
     ));
 
     $web->smarty->assign('para', $_GET['info1']);

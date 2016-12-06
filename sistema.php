@@ -219,9 +219,9 @@ class Sistema extends Conexion
                     $tabla .= "<td> <a href='" . $direccion . ".php?info1=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/cancelar.png' /> </a></td>";
 
                     if ($add == 2) {
-                        $tabla .= "<td> <a href='" . $direccion . ".php?accion=form_update&info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/  edit.png' /> </a></td>";
+                        $tabla .= "<td> <a href='" . $direccion . ".php?accion=form_update&info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/edit.png' /> </a></td>";
                     } else {
-                        $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/  edit.png' /> </a></td>";
+                        $tabla .= "<td> <a href='update" . $direccion . ".php?info2=" . $contenido . "&info3=" . $contenido2 . "'><img src='../Images/edit.png'/> </a></td>";
                     }
 
                 }
@@ -412,8 +412,6 @@ class Sistema extends Conexion
                 and cvepromotor='" . $cvep . "'
         order by nombre";
 
-        // echo $query;
-
         $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
         $this->query($query);
         $cantidadcolumnas  = $this->rs->_numOfFields;
@@ -444,7 +442,7 @@ class Sistema extends Conexion
                     $tabla .= $nombrescolumnas[$cont2];
                     $tabla .= '</th>';
 
-                    if ($cont2 == $cantidadcolumnas - 1) {
+                    if ($cont2 == $cantidadcolumnas - 1 && $display != null) {
                         $tabla .= '<th> Opciones </th>';
                     }
                 } else {
@@ -460,7 +458,9 @@ class Sistema extends Conexion
                     } else {
                         $tabla .= ' <div id="myprogress" style="position: relative; width: 100%; height: 30px; background-color: #ddd ;"> <div id="mybar" style="position: absolute; width: ' . $datos[$cont - 1][$nomField] . '% ; height: 100%; background-color: #4caf50 ;"> <div id="label" style="text-align: center; line-height: 30px; color: white ;"> ' . $datos[$cont - 1][$nomField] . ' % ';
 
-                        $tabla .= '</div></div></div></br><center><input class="form-control" id= "exampleInputPassword3" name="datos[' . $nomField . ']" id="producto" required value="' . $datos[$cont - 1][$nomField] . '" style="width:65px; display:' . $display . ';"maxlength="3"></center>';
+                        // if ($display != null) {
+                        $tabla .= '</div></div></div></br><center><input class="form-control" name="datos[' . $nomField . ']"  required value="' . $datos[$cont - 1][$nomField] . '" style="width:65px; display:' . $display . '    ;"maxlength="3"></center>';
+                        // }
                     }
 
                     if ($cont2 == $cantidadcolumnas - 1) {
@@ -474,8 +474,13 @@ class Sistema extends Conexion
                             $tabla .= ' <input type="hidden" name="datos[periodo]" value="' . $aux['periodaux'] . '">';
                         }
                         $tabla .= ' <th>
-                        <input type="hidden" name="datos[cveeval]" value="' . $datos[$cont - 1]['ID'] . '">
-                        <button type="submit" class="btn btn-danger" name="datos[accion]" value="eliminar" style="display:' . $display2 . '" > <span class="glyphicon glyphicon-remove" aria-hidden= "true"></span></button></th>';
+                        <input type="hidden" name="datos[cveeval]"
+                            value="' . $datos[$cont - 1]['ID'] . '">
+                        <button type="submit" class="btn btn-danger"
+                            name="datos[accion]" value="eliminar"
+                            style="display:' . $display2 . '" >
+                            <span class="glyphicon glyphicon-remove"
+                                aria-hidden= "true"></span></button></th>';
                     }
                     $tabla .= "</td>";
                 }

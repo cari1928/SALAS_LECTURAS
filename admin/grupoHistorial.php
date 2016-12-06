@@ -25,8 +25,8 @@ if (isset($_GET['info1'])) {
 
     $tabla = $web->evaluacion(array(
         'grupo'   => $_GET['info1'],
-        'cvesala' => $_GET['info3'],
-        'horario' => $_GET['info4'],
+        'cvesala' => $datos_rs[0]['cvesala'],
+        'horario' => $datos_rs[0]['horario'],
     ), "none", array('promoaux' => $_GET['info'], 'periodaux' => $_GET['info2']));
     $web->smarty->assign('tabla', $tabla);
     $web->smarty->display("grupo.html");
