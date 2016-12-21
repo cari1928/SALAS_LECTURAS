@@ -22,14 +22,14 @@ if (isset($_POST['datos']['tipo'])) {
 
     if ($campo != "ubicacion") {
         $sql = "
-        select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
+        select distinct letra,usuarios.nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
             where lectura." . $campo . "='" . $seleccion . "' and lectura.cveperiodo='" . $cveperiodo . "'and
                 nocontrol in
         (select nocontrol from lectura
             where nocontrol ='" . $_SESSION['cveUser'] . "')
         order by letra";
     } else {
-        $sql = "select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
+        $sql = "select distinct letra,usuarios.nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
             where ubicacion = '" . $seleccion . "' and
                 lectura.cveperiodo='" . $cveperiodo . "'and
                 nocontrol in
@@ -40,18 +40,18 @@ if (isset($_POST['datos']['tipo'])) {
 
     $result = $web->DB->GetAll($sql);
     if (count($result) > 0) {
-        $web->smarty->assign('table', '<div class="alert alert-danger" role="alert"> Ya estás inscrito </div>');
+        $web->smarty->assign('table', '<div class="alert alert-danger" role="alert"> No se puede completar la operación </div>');
     } else {
 
         if ($campo != "ubicacion") {
-            $sql = "select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
+            $sql = "select distinct letra, usuarios.nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
                 where lectura." . $campo . "='" . $seleccion . "' and lectura.cveperiodo='" . $cveperiodo . "' and
                     nocontrol not in
                         (select nocontrol from lectura
                             where nocontrol ='" . $_SESSION['cveUser'] . "')
                 order by letra";
         } else {
-            $sql = "select distinct letra,nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
+            $sql = "select distinct letra, usuarios.nombre,lectura.cvesala,fechainicio,fechafinal,lectura.horario,ubicacion " . $inners . "
                 where ubicacion = '" . $seleccion . "' and
                     lectura.cveperiodo='" . $cveperiodo . "' and
                     nocontrol not in

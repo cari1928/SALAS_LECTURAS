@@ -9,9 +9,6 @@ $web->iniClases('admin', "index promotor grupo");
 
 if (isset($_POST['datos']['accion'])) {
 
-    // echo "<pre>";
-    // print_r($_POST);
-
     switch ($_POST['datos']['accion']) {
         case 'eliminar':
             $sql   = "select * from evaluacion where cveeval=" . $_POST['datos']['cveeval'];
@@ -33,12 +30,7 @@ if (isset($_POST['datos']['accion'])) {
             break;
     }
 
-    // echo "<pre>";
-    // print_r($_GET);
-    // die(print_r($_POST));
-
     header('Location: grupoHistorial.php?info=' . $_POST['datos']['promotor'] . '&info1=' . $_POST['datos']['grupo'] . '&info2=' . $_POST['datos']['periodo'] . '&info3=' . $_POST['datos']['cvesala'] . '&info4=' . $_POST['datos']['horario']);
-    die();
 }
 
 if (isset($_GET['info'])) {

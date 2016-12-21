@@ -1,10 +1,6 @@
 <?php
 /**
-<<<<<<< HEAD
-	@version   v5.20.6  31-Aug-2016
-=======
 	@version   v5.20.3  01-Jan-2016
->>>>>>> Inicio Proyecto v2
 	@copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
 	@copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
 
@@ -200,10 +196,6 @@ class ADODB_pdo extends ADOConnection {
 
 			$this->_driver->_connectionID = $this->_connectionID;
 			$this->_UpdatePDO();
-<<<<<<< HEAD
-			$this->_driver->database = $this->database;
-=======
->>>>>>> Inicio Proyecto v2
 			return true;
 		}
 		$this->_driver = new ADODB_pdo_base();
@@ -274,19 +266,6 @@ class ADODB_pdo extends ADOConnection {
 		return $this->_driver->OffsetDate($dayFraction,$date);
 	}
 
-<<<<<<< HEAD
-	function SelectDB($dbName)
-	{
-		return $this->_driver->SelectDB($dbName);
-	}
-
-	function SQLDate($fmt, $col=false)
-	{
-		return $this->_driver->SQLDate($fmt, $col);
-	}
-
-=======
->>>>>>> Inicio Proyecto v2
 	function ErrorMsg()
 	{
 		if ($this->_errormsg !== false) {
@@ -720,31 +699,12 @@ class ADORecordSet_pdo extends ADORecordSet {
 		}
 		//adodb_pr($arr);
 		$o->name = $arr['name'];
-<<<<<<< HEAD
-		if (isset($arr['sqlsrv:decl_type']) && $arr['sqlsrv:decl_type'] <> "null") 
-		{
-		    /*
-		    * If the database is SQL server, use the native built-ins
-		    */
-		    $o->type = $arr['sqlsrv:decl_type'];
-		}
-		elseif (isset($arr['native_type']) && $arr['native_type'] <> "null") 
-		{
-		    $o->type = $arr['native_type'];
-		}
-		else 
-		{
-		     $o->type = adodb_pdo_type($arr['pdo_type']);
-		}
-		
-=======
 		if (isset($arr['native_type']) && $arr['native_type'] <> "null") {
 			$o->type = $arr['native_type'];
 		}
 		else {
 			$o->type = adodb_pdo_type($arr['pdo_type']);
 		}
->>>>>>> Inicio Proyecto v2
 		$o->max_length = $arr['len'];
 		$o->precision = $arr['precision'];
 

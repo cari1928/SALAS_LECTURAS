@@ -6,11 +6,7 @@ global $ADODB_INCLUDED_LIB;
 $ADODB_INCLUDED_LIB = 1;
 
 /*
-<<<<<<< HEAD
-  @version   v5.20.6  31-Aug-2016
-=======
   @version   v5.20.3  01-Jan-2016
->>>>>>> Inicio Proyecto v2
   @copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
   @copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
   Released under both BSD license and Lesser GPL library license.
@@ -430,11 +426,7 @@ function _adodb_getcount(&$zthis, $sql,$inputarr=false,$secs2cache=0)
 		if ( strpos($sql, '_ADODB_COUNT') !== FALSE ) {
 			$rewritesql = preg_replace('/^\s*?SELECT\s+_ADODB_COUNT(.*)_ADODB_COUNT\s/is','SELECT COUNT(*) ',$sql);
 		} else {
-<<<<<<< HEAD
-			$rewritesql = preg_replace('/^\s*SELECT\s.*\s+FROM\s/Uis','SELECT COUNT(*) FROM ',$sql);
-=======
 			$rewritesql = preg_replace('/^\s*?SELECT\s.*?\s+(.*?)\s+FROM\s/is','SELECT COUNT(*) FROM ',$sql);
->>>>>>> Inicio Proyecto v2
 		}
 		// fix by alexander zhukov, alex#unipack.ru, because count(*) and 'order by' fails
 		// with mssql, access and postgresql. Also a good speedup optimization - skips sorting!

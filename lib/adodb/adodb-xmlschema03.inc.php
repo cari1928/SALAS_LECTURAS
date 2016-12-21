@@ -175,10 +175,7 @@ class dbObject {
 	* Destroys the object
 	*/
 	function destroy() {
-<<<<<<< HEAD
-=======
 		unset( $this );
->>>>>>> Inicio Proyecto v2
 	}
 
 	/**
@@ -293,22 +290,12 @@ class dbTable extends dbObject {
 		switch( $this->currentElement ) {
 			case 'INDEX':
 				if( !isset( $attributes['PLATFORM'] ) OR $this->supportedPlatform( $attributes['PLATFORM'] ) ) {
-<<<<<<< HEAD
-					$index = $this->addIndex( $attributes );
-					xml_set_object( $parser,  $index );
-=======
 					xml_set_object( $parser, $this->addIndex( $attributes ) );
->>>>>>> Inicio Proyecto v2
 				}
 				break;
 			case 'DATA':
 				if( !isset( $attributes['PLATFORM'] ) OR $this->supportedPlatform( $attributes['PLATFORM'] ) ) {
-<<<<<<< HEAD
-					$data = $this->addData( $attributes );
-					xml_set_object( $parser, $data );
-=======
 					xml_set_object( $parser, $this->addData( $attributes ) );
->>>>>>> Inicio Proyecto v2
 				}
 				break;
 			case 'DROP':
@@ -2391,10 +2378,7 @@ class adoSchema {
 	function Destroy() {
 		ini_set("magic_quotes_runtime", $this->mgq );
 		#set_magic_quotes_runtime( $this->mgq );
-<<<<<<< HEAD
-=======
 		unset( $this );
->>>>>>> Inicio Proyecto v2
 	}
 }
 

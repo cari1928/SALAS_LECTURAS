@@ -1,5 +1,38 @@
 {include file="header.html"}
 {$ruta}   
-{$tabla2}
-{$salones}
+<table class='table table-striped'>
+	<tr>
+		<td colspan='4' align='right'>
+			<a href='addsalas.php?tabla=sala'><img src='../Images/add.png' /> </a>
+		</td>
+	</tr> 
+</table>
+{if isset($msj)}
+	{$msj}
+{else}
+<table class='table table-striped'>
+<tr>		
+<th>CLAVE SALA</th>
+<th>NOMBRE</th>
+<th>HORARIO</th>
+<th>UBICACION</th>
+<th>LIMITE</th>
+<th>LABORAL</th>
+<th>ELIMINAR</th>
+<th>ACTUALIZAR</th>
+</tr>
+{foreach $salones as $salon}
+	<tr>
+	<td>{$salon.cvesala}</td>
+	<td>{$salon.nombre}</td>
+	<td>{$salon.horario}</td>
+	<td>{$salon.ubicacion}</td>
+	<td>{$salon.limite}</td>
+	<td>{$salon.laboral}</td>
+	<td><a href="salas.php?info1={$salon.cvesala}&info3={$salon.horario}"> <img src="../Images/cancelar.png"></a></td>
+	<td><a href="updatesalas.php?info2={$salon.cvesala}&info3={$salon.horario}"> <img src="../Images/edit.png"></a></td>
+	</tr>
+{/foreach}
+</table>
+{/if}
 {include file="footer.html"}

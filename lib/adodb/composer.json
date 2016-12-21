@@ -20,11 +20,7 @@
 
 	"keywords" : [ "database", "abstraction", "layer", "library", "php" ],
 
-<<<<<<< HEAD
-	"homepage": "http://adodb.org/",
-=======
 	"homepage": "http://adodb.sourceforge.net/",
->>>>>>> Inicio Proyecto v2
 	"support" : {
 		"issues" : "https://github.com/ADOdb/ADOdb/issues",
 		"source" : "https://github.com/ADOdb/ADOdb"

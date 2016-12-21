@@ -347,11 +347,17 @@ class Sistema extends Conexion
     {
         $rol = $_SESSION['roles'];
 
+        $periodo = $this->periodo();
+
+        if ($periodo == "") {
+            return "No existentes";
+        }
+
         if ($rol == 'P') {
             //es un promotor
             $sql = "select distinct cvesala, letra, horario from lectura
-                        inner join abecedario on abecedario.cve = lectura.cveletra
-                    where cvepromotor='" . $rfc . "'
+                        inner join abecedario on abecedario.cve=lectura.cveletra
+                    where cvepromotor='" . $rfc . "' and cveperiodo=" . $periodo . "
                     order by letra";
 
         } else {
@@ -363,6 +369,7 @@ class Sistema extends Conexion
                     order by letra";
         }
 
+        // echo $sql;
         $this->query($sql);
         $cantidadregistros = $this->rs->_numOfRows;
         if ($cantidadregistros == 0) {
@@ -730,6 +737,41 @@ class Sistema extends Conexion
         } else {
             return (false);
         }
+    }
+
+    /**
+     * [periodo description]
+     * @param  [type] $web [description]
+     * @return [type]      [description]
+     */
+    public function periodo()
+    {
+        $sql      = "select * from periodo";
+        $datos_rs = $this->DB->GetAll($sql);
+        $date     = getdate();
+        $fechaAct = $date['year'] . "-" . $date['mon'] . "-" . $date['mday'];
+        $date1    = new DateTime($fechaAct);
+        $cont     = 0;
+        while ($cont < count($datos_rs)) {
+            $date2 = new DateTime($datos_rs[$cont]['fechainicio']);
+            $date3 = new DateTime($datos_rs[$cont]['fechafinal']);
+            if ($date1 >= $date2 && $date1 <= $date3) {
+                $cveperiodo = $datos_rs[$cont]['cveperiodo'];
+            }
+            $cont++;
+        }
+        if (isset($cveperiodo)) {
+            $sql     = "select fechainicio,fechafinal from periodo where cveperiodo='" . $cveperiodo . "'";
+            $datos   = $this->DB->GetAll($sql);
+            $periodo = "El periodo es: " . $datos[0]['fechainicio'] . " a " . $datos[0]['fechafinal'];
+
+            $this->smarty->assign('periodo', $periodo);
+            return $cveperiodo;
+        } else {
+            $this->smarty->assign('periodo', "No hay periodos actuales");
+            return "";
+        }
+
     }
 
 }

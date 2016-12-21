@@ -1,5 +1,34 @@
 {include file='header.html'}
-{$ruta}
-{$tabla2}
-{$alumnos}
+{$ruta}   
+<table class='table table-striped'>
+	<tr>
+		<td colspan='4' align='right'>
+			<a href='addalumnos.php?tabla=usuarios'><img src='../Images/add.png' /> </a>
+		</td>
+	</tr> 
+</table>
+{if isset($msj)}
+	{$msj}
+{else}
+<table class='table table-striped'>
+<tr>		
+<th>CLAVE USUARIO</th>
+<th>NOMBRE</th>
+<th>ESPECIALIDAD</th>
+<th>ELIMINAR</th>
+<th>ACTUALIZAR</th>
+<th>MOSTRAR</th>
+</tr>
+{foreach $alumnos as $alumno}
+	<tr>
+	<td>{$alumno.cveusuario}</td>
+	<td>{$alumno.Usuario}</td>
+	<td>{$alumno.Especialidad}</td>
+	<td><a href="alumnos.php?info1={$alumno.cveusuario}"> <img src="../Images/cancelar.png"></a></td>
+	<td><a href="updatealumnos.php?info2={$alumno.cveusuario}"> <img src="../Images/edit.png"></a></td>
+	<td><a href="showalumnos.php?info1={$alumno.cveusuario}"> <img src="../Images/mostrarL.png"></a></td>
+	</tr>
+{/foreach}
+</table>
+{/if}
 {include file='footer.html'}

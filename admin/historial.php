@@ -1,24 +1,25 @@
 <?php
-include('../sistema.php');
+include '../sistema.php';
 
-if ($_SESSION['roles'] =='A')
-{
-	$web->iniClases('admin', "index historial");
-
-	if (isset($_GET['info1']))
-	{
-		$elimina=$_GET['info1'];
-		$sql="delete from periodo where cveperiodo='".$elimina."'";
-		$web->query($sql);
-	}
-
-	$sql="select cveperiodo AS \"ID\",fechainicio AS \"Fecha de Inicio\",fechafinal AS \"Fecha Final\" from periodo";
-	$periodos=$web->showTable($sql,"gruposHistorial",4,1,'periodo');
-	$web->smarty->assign('periodos',$periodos);
-	$web->smarty->display("periodos.html");
+if ($_SESSION['roles'] != 'A') {
+    $web->checklogin();
 }
-else
-{
-	$web->checklogin();
+
+$web->iniClases('admin', "index historial");
+
+if (isset($_GET['info1'])) {
+    $elimina = $_GET['info1'];
+    $sql     = "delete from periodo where cveperiodo='" . $elimina . "'";
+    $web->query($sql);
 }
- ?>
+
+$sql      = "select cveperiodo,fechainicio,fechafinal from periodo";
+$periodos = $web->DB->GetAll($sql);
+if (isset($periodos[0])) {
+    $web->smarty->assign('periodos', $periodos);
+    $web->smarty->assign('bandera', true);
+} else {
+    $web->smarty->assign('msj', "No hay periodos registrados");
+}
+
+$web->smarty->display("periodos.html");

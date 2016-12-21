@@ -15,7 +15,7 @@ if (isset($_POST['datos']['contrasena'])) {
         $msg = 'La contraseña y/o usuario son incorrectos';
         $web->smarty->assign('mensaje', ' <label style= "color:red">' . $msg . '</label>');
         $web->smarty->display('formulario_login.html');
-        die();
+        // die();
     }
 }
 

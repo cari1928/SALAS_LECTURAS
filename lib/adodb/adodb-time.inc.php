@@ -3,11 +3,7 @@
 ADOdb Date Library, part of the ADOdb abstraction library
 Download: http://adodb.sourceforge.net/#download
 
-<<<<<<< HEAD
-@version   v5.20.6  31-Aug-2016
-=======
 @version   v5.20.3  01-Jan-2016
->>>>>>> Inicio Proyecto v2
 @copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
 @copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
 

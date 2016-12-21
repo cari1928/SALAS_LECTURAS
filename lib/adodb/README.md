@@ -2,10 +2,6 @@ ADOdb Library for PHP5
 ======================
 
 [![Join chat on Gitter](https://img.shields.io/gitter/room/form-data/form-data.svg)](https://gitter.im/adodb/adodb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-<<<<<<< HEAD
-[![Download ADOdb](https://img.shields.io/sourceforge/dm/adodb.svg)](https://sourceforge.net/projects/adodb/files/latest/download)
-=======
->>>>>>> Inicio Proyecto v2
 
 (c) 2000-2013 John Lim (jlim@natsoft.com)  
 (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
@@ -16,11 +12,7 @@ licenses.
 This means you can use it in proprietary products; 
 see [License](https://github.com/ADOdb/ADOdb/blob/master/LICENSE.md) for details.
 
-<<<<<<< HEAD
-Home page: http://adodb.org/
-=======
 Home page: http://adodb.sourceforge.net/
->>>>>>> Inicio Proyecto v2
 
 > **WARNING: known issue with Associative Fetch Mode in ADOdb v5.19
 -- PLEASE UPGRADE TO v5.20 !**  
@@ -74,16 +66,6 @@ print "</pre>";
 Documentation and Examples
 ==========================
 
-<<<<<<< HEAD
-Refer to the [ADOdb website](http://adodb.org/) for library documentation and examples. The documentation can also be [downloaded for offline viewing](https://sourceforge.net/projects/adodb/files/Documentation/).
-
-- [Main documentation](http://adodb.org/dokuwiki/doku.php?id=v5:userguide:userguide_index): Query, update and insert records using a portable API.
-- [Data dictionary](http://adodb.org/dokuwiki/doku.php?id=v5:dictionary:dictionary_index) describes how to create database tables and indexes in a portable manner.
-- [Database performance monitoring](http://adodb.org/dokuwiki/doku.php?id=v5:performance:performance_index) allows you to perform health checks, tune and monitor your database.
-- [Database-backed sessions](http://adodb.org/dokuwiki/doku.php?id=v5:session:session_index).
-
-There is also a [tutorial](http://adodb.org/dokuwiki/doku.php?id=v5:userguide:mysql_tutorial) that contrasts ADOdb code with PHP native MySQL code.
-=======
 Refer to the `docs` directory for library documentation and examples.
 
 - Main documentation: `docs-adodb.htm`.
@@ -96,7 +78,6 @@ Refer to the `docs` directory for library documentation and examples.
 
 There is also a tutorial `tute.htm` that contrasts ADOdb code with
 mysql code.
->>>>>>> Inicio Proyecto v2
 
 
 Files
