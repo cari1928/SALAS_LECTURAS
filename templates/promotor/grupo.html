@@ -1,130 +1,132 @@
 {include file="header.html"}
-{$ruta} {if isset($msj)}<label style="color:red;">{$msj}</label>{/if}
-{if isset($info)}
-<center>
- <div class="form-group" style ="background-color:#f0f0f0">
-    <label>
-    	Sala: {$info.cvesala}<br>
-    	Ubicación: {$info.ubicacion}<br>
-    	Horario: {$info.horario}<br>
-    	Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
-    </label>
-    <br/>
-  </div>
- </center>
- {/if}
-{if isset($datos)}
-<table class='table table - striped' width='500'>
-	<tr>
-	<th width = "500" > Alumno</th>
-	<th width = "500" > Comprensión</th> 
-	<th width = "500" > Motivación</th>
-	<th width = "500" > Reporte</th> 
-	<th width = "500" > Tema</th>
-	<th width = "500" > Participación</th> 
-	<th width = "500" > Terminado</th>
-	<th width = "500" > Opciones </th>
-	</tr>
-	{foreach $datos as $alumno}
-<tr> 
-	 <form class='form - inline' action='grupo.php' method='post' enctype='multipart / form - data' accept-charset='utf-8'> 
-		 <input type="hidden" name="datos[grupo]" value="{$grupo}" > 
-		 <td width='500'> {$alumno.nombre} </td>
-		 
-		 <td width='500'>  
-		 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.comprension}% ;height: 100%; background-color: #4caf50;"> 
-		 			<div id="label"style="text-align: center; line-height: 30px; color: white;"> 
-		 				{$alumno.comprension}% 
-		 			</div>
-		 		</div>
-		 	</div>
-		 </br>
-		 <center>
-	 		<input class="form-control" id= "exampleInputPassword3" name="datos[comprension]" id="producto" required value = "{$alumno.comprension}" style="width:65px ; display:block; "maxlength="3">
-	 	</center>
-		 </td>
-
-		 <td width='500'>
-		 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.motivacion}% ;height: 100%; background-color: #4caf50;">
-		 			<div id="label"style="text-align: center; line-height: 30px; color: white;">
-		 				{$alumno.motivacion}% 
-		 			</div>
-		 		</div>
-		 	</div>
-		 </br>
-	 	<center>
-	 		<input class="form-control" id= "exampleInputPassword3" name="datos[motivacion]" id="producto" required value = "{$alumno.motivacion}" style="width:65px ; display:block; "maxlength="3">
-	 	</center>
-		</td>
-
-		<td width='500'>
-			<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
-				<div id="mybar" style="position: absolute; width: {$alumno.reporte}% ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
-					{$alumno.reporte}% 
-					</div>
-				</div>
-			</div>
-			</br>
-			<center>
-				<input class="form-control" id= "exampleInputPassword3" name="datos[reporte]" id="producto" required value = "{$alumno.reporte}" style="width:65px ; display:block; "maxlength="3">
-			</center>
-		</td>
-
-		<td width='500'>
-			<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;"> 	<div id="mybar" style="position: absolute; width: {$alumno.tema}% ;height: 100%; background-color: #4caf50;">		<div id="label"style="text-align: center; line-height: 30px; color: white;">
-						{$alumno.tema}%
-					</div>
-				</div>
-			</div>
-		</br>
-		<center>
-			<input class="form-control" id= "exampleInputPassword3" name="datos[tema]" id="producto" required value = "{$alumno.tema}" style="width:65px ; display:block; "maxlength="3">
-		</center>
-		</td>
-
-		<td width='500'>
-			<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
-				<div id="mybar" style="position: absolute; width: {$alumno.participacion}% ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
-						{$alumno.participacion}%
-					</div>
-				</div>
-			</div>
-			</br>
-			<center>
-				<input class="form-control" id= "exampleInputPassword3" name="datos[participacion]" id="producto" required value = "{$alumno.participacion}" style="width:65px ; display:block; "maxlength="3">
-			</center>
-		</td>
-
-		<td width='500'>
-			<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
-				<div id="mybar" style="position: absolute; width: {$alumno.terminado}% ;height: 100%; background-color: #4caf50;">
-					<div id="label"style="text-align: center; line-height: 30px; color: white;">
-						{$alumno.terminado}%
-					</div>
-				</div>
-			</div>
-			</br>
-			<center>
-				<input class="form-control" id= "exampleInputPassword3" name="datos[terminado]" id="producto" required value = "{$alumno.terminado}" style="width:65px ; display:block; "maxlength="3">
-			</center>
-		</td>
-			<td>
-				<a href="redacta.php?info={$grupo}&accion=redactarI&receptor={$alumno.nocontrol}&grupo={$grupo}&periodo={$alumno.cveperiodo}">
-					<img src="../Images/sobre.png">
-				</a>
-			</td>
-			<td>
-				<button type="submit" class="btn btn-danger" value="{$alumno.cveeval}" name="datos[cveeval]" style="display:none" >
-					<span class="glyphicon glyphicon-remove" aria-hidden= "true">
-						
-					</span>
-				</button>
-			</td>
-		
-	</form>
-</tr>
-	{/foreach}
-</table>
+{$ruta} 
+{if isset($msj)}
+	<label style="color:red;">{$msj}</label>
 {/if}
+{if isset($info)}
+	<center>
+		<div class="form-group" style ="background-color:#f0f0f0">
+			<label>
+				Sala: {$info.cvesala}<br>
+				Ubicación: {$info.ubicacion}<br>
+				Horario: {$info.horario}<br>
+				Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
+			</label>
+		</div>
+	</center>
+{/if}
+{if isset($datos)}
+	<table class='table table - striped' width='500'>
+		<tr>
+			<th>Alumno</th>
+			<th>Comprensión</th> 
+			<th>Motivación</th>
+			<th>Reporte</th> 
+			<th>Tema</th>
+			<th>Participación</th> 
+			<th>Terminado</th>
+			<th>Opciones </th>
+		</tr>
+		{foreach $datos as $alumno}
+			<tr> 
+				 <form class='form - inline' action='grupo.php' method='post' enctype='multipart / form - data' accept-charset='utf-8'>
 
+					 <input type="hidden" name="datos[grupo]" value="{$grupo}" > 
+					 <td width='500'> {$alumno.nombre} </td>
+					 
+					 <td width='500'>  
+					 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.comprension}% ;height: 100%; background-color: #4caf50;"> 
+					 			<div id="label"style="text-align: center; line-height: 30px; color: white;"> 
+					 				{$alumno.comprension}% 
+					 			</div>
+					 		</div>
+					 	</div>
+					 </br>
+					 <center>
+				 		<input class="form-control" id= "exampleInputPassword3" name="datos[comprension]" id="producto" required value = "{$alumno.comprension}" style="width:65px ; display:block; "maxlength="3">
+				 	</center>
+					 </td>
+
+					 <td width='500'>
+					 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.motivacion}% ;height: 100%; background-color: #4caf50;">
+					 			<div id="label"style="text-align: center; line-height: 30px; color: white;">
+					 				{$alumno.motivacion}% 
+					 			</div>
+					 		</div>
+					 	</div>
+					 </br>
+				 	<center>
+				 		<input class="form-control" id= "exampleInputPassword3" name="datos[motivacion]" id="producto" required value = "{$alumno.motivacion}" style="width:65px ; display:block; "maxlength="3">
+				 	</center>
+					</td>
+
+					<td width='500'>
+						<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
+							<div id="mybar" style="position: absolute; width: {$alumno.reporte}% ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
+								{$alumno.reporte}% 
+								</div>
+							</div>
+						</div>
+						</br>
+						<center>
+							<input class="form-control" id= "exampleInputPassword3" name="datos[reporte]" id="producto" required value = "{$alumno.reporte}" style="width:65px ; display:block; "maxlength="3">
+						</center>
+					</td>
+
+					<td width='500'>
+						<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;"> 	<div id="mybar" style="position: absolute; width: {$alumno.tema}% ;height: 100%; background-color: #4caf50;">		<div id="label"style="text-align: center; line-height: 30px; color: white;">
+									{$alumno.tema}%
+								</div>
+							</div>
+						</div>
+					</br>
+					<center>
+						<input class="form-control" id= "exampleInputPassword3" name="datos[tema]" id="producto" required value = "{$alumno.tema}" style="width:65px ; display:block; "maxlength="3">
+					</center>
+					</td>
+
+					<td width='500'>
+						<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
+							<div id="mybar" style="position: absolute; width: {$alumno.participacion}% ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
+									{$alumno.participacion}%
+								</div>
+							</div>
+						</div>
+						</br>
+						<center>
+							<input class="form-control" id= "exampleInputPassword3" name="datos[participacion]" id="producto" required value = "{$alumno.participacion}" style="width:65px ; display:block; "maxlength="3">
+						</center>
+					</td>
+
+					<td width='500'>
+						<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
+							<div id="mybar" style="position: absolute; width: {$alumno.terminado}% ;height: 100%; background-color: #4caf50;">
+								<div id="label"style="text-align: center; line-height: 30px; color: white;">
+									{$alumno.terminado}%
+								</div>
+							</div>
+						</div>
+						</br>
+						<center>
+							<input class="form-control" id= "exampleInputPassword3" name="datos[terminado]" id="producto" required value = "{$alumno.terminado}" style="width:65px ; display:block; "maxlength="3">
+						</center>
+					</td>
+						<td>
+							<a href="redacta.php?accion=redactarI&info={$grupo}&receptor={$alumno.nocontrol}&grupo={$grupo}&periodo={$alumno.cveperiodo}">
+								<img src="../Images/sobre.png">
+							</a>
+						</td>
+						<td>
+							<button type="submit" class="btn btn-danger" value="{$alumno.cveeval}" name="datos[cveeval]" style="display:none" >
+								<span class="glyphicon glyphicon-remove" aria-hidden= "true">
+									
+								</span>
+							</button>
+						</td>
+					
+				</form>
+			</tr>
+		{/foreach}
+	</table>
+{/if}
 {include file="footer.html"}
