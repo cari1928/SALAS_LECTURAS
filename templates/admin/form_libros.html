@@ -3,7 +3,9 @@
 <div class="container-fluid">
     <div class="main row">
         <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-            {if isset($msg)} <div class="form-group"> {$msg} </div> {/if}
+            {if isset($msg)} 
+              <div class="form-group"> {$msg} </div> 
+            {/if}
             {if isset($libros)} 
                 <form action="libros.php?accion=update" method="post">
             {else} 
