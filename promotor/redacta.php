@@ -92,7 +92,7 @@ switch ($accion) {
 
                 // echo "grupo: ";
                 // print_r($datos);
-                $web->smarty->assign('grupo', $sql);
+                $web->smarty->assign('grupo', $datos[0]['cve']);
                 $web->smarty->display('redacta.html');
                 die();
             }
@@ -142,11 +142,16 @@ switch ($accion) {
         }
 
         $datos = $web->DB->GetAll("select * from lectura inner join usuarios on lectura.cvepromotor=usuarios.cveusuario where lectura.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'");
-        die("select * from lectura inner join usuarios on lectura.cvepromotor=usuarios.cveusuario where lectura.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'");
+
+        // die("select * from lectura inner join usuarios on lectura.cvepromotor=usuarios.cveusuario where lectura.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'");
+        // die(print_r($_POST));
+
         if (isset($datos[0])) {
             if (isset($_POST)) {
-                $sql   = "insert into msj (introduccion,descripcion,tipo,emisor,fecha,expira,receptor) values ('" . $_POST['introduccion'] . "','" . $_POST['descripcion'] . "','I','" . $_SESSION['cveUser'] . "','" . date('Y-m-j') . "','" . $_POST['expira'] . "','" . $para . "')";
+                $sql = "insert into msj (introduccion,descripcion,tipo,emisor,fecha,expira,receptor) values ('" . $_POST['introduccion'] . "','" . $_POST['descripcion'] . "','I','" . $_SESSION['cveUser'] . "','" . date('Y-m-j') . "','" . $_POST['expira'] . "','" . $receptor . "')";
+                // die($sql);
                 $datos = $web->DB->GetAll($sql);
+
             } else {
                 $web->smarty->assign('msj', "No se pudo mandar el mensaje");
                 $web->smarty->display('redacta.html');
@@ -154,7 +159,6 @@ switch ($accion) {
         } else {
             $web->smarty->assign('msj', "No existe el destinatario o no tienes permiso para mandar este mensaje");
         }
-
         break;
 
     case 'ver':
@@ -172,6 +176,7 @@ switch ($accion) {
             $sql   = "select cvemsj, introduccion,tipomsj.descripcion as tipo,e.nombre,fecha, expira, abecedario.letra as letra from msj inner join usuarios e on e.cveusuario=msj.emisor inner join tipomsj on tipomsj.cvetipomsj=msj.tipo inner join abecedario on msj.cveletra=abecedario.cve where msj.tipo='G' and abecedario.letra='" . $grupo . "' and msj.cveperiodo=" . $periodo . "and emisor='" . $_SESSION['cveUser'] . "' and expira>='" . date('Y-m-j') . "'";
             $datos = $web->DB->GetAll($sql);
             $web->smarty->assign('datos', $datos);
+
             $sql    = "select cvemsj, introduccion,tipomsj.descripcion as tipo,e.nombre as nombree, r.nombre as nombrer,fecha, expira from msj inner join usuarios e on e.cveusuario=msj.emisor inner join tipomsj on tipomsj.cvetipomsj=msj.tipo inner join usuarios r on msj.receptor=r.cveusuario where emisor='" . $_SESSION['cveUser'] . "' and expira>='" . date('Y-m-j') . "' and tipomsj.cvetipomsj= 'I'";
             $datosI = $web->DB->GetAll($sql);
             $web->smarty->assign('datosI', $datosI);

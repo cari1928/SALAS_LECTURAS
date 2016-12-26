@@ -11,11 +11,10 @@ if (isset($_POST['datos']['contrasena'])) {
     $contrasena = $_POST['datos']['contrasena'];
 
     if (!$web->login($cveUsuario, $contrasena)) {
-        // die('hola');
         $msg = 'La contraseña y/o usuario son incorrectos';
         $web->smarty->assign('mensaje', ' <label style= "color:red">' . $msg . '</label>');
         $web->smarty->display('formulario_login.html');
-        // die();
+        die();
     }
 }
 

@@ -1,28 +1,18 @@
 {include file='header.html'}
 {$ruta}   
 <center>
-       <form class="form-inline" action='updatealumnos.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
-  <br/>
-  <br/>          
+ <form class="form-inline" action='updatealumnos.php' method='post' enctype=' multipart/form-data' accept-charset='utf-8'>
   <div class="form-group">
     <label>Nombre Completo: </label>
-    <br/>
     <input class="form-control" id="exampleInputEmail3" placeholder="Nombre y Apellidos" name="datos[nombre]" id="producto" value ='{$nombre}' required>
   </div>
-  <br/>
-  <br/>
   <label>Especialidad: </label>
-    <br/>
-      {$combo}
-    <br/>
-    <br/>
+    {$combo}
   <div id='js' class="form-group">
     <label id="l1">Modificar contraseña</label>
     <input id="r1" type="radio"  class="btn btn-default" value='true' name="datos[pass]" onclick="mostrar()">
-    <br/>
     <label id ="l2" style="display:none">Mantener contraseña original</label>
     <input id="r2" type="radio"  class="btn btn-default" value='false' name="datos[pass]" onclick="mostrar()" checked style="display:none">
-
   </div>
   <br/>
   <br/>

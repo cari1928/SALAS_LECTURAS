@@ -43,7 +43,15 @@ $query = "insert into usuarios (cveusuario,nombre,pass,cveespecialidad,rol,corre
 $web->query($query);
 header('Location: alumnos.php');
 
-//----------------------------------------------------------------------------------------
+/**
+ * [mensajes description]
+ * @param  [type] $msgnoControl [description]
+ * @param  [type] $msgrfc       [description]
+ * @param  [type] $msgpass      [description]
+ * @param  [type] $msgusuario   [description]
+ * @param  [type] $web          [description]
+ * @return [type]               [description]
+ */
 function mensajes($msgnoControl, $msgrfc, $msgpass, $msgusuario, $web)
 {
     $web->smarty->assign('cmb_especialidad', $web->combo("SELECT * FROM especialidad order by nombre"));

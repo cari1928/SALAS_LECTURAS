@@ -42,13 +42,15 @@ if (isset($_GET['info1']) && isset($_GET['info2']) && isset($_GET['info3'])) {
                     where letra= '" . $grupo . "')
             and cvepromotor='" . $_SESSION['cveUser'] . "'
             and cveperiodo=" . $web->periodo() . "
-            order by nombre,comprension,motivacion,reporte, tema,participacion,terminado";
+            order by nombre, comprension, motivacion, reporte, tema, participacion,terminado";
     $datos = $web->DB->GetAll($sql);
 
     // echo "<pre>";
     // echo $sql;
     // print_r($datos);
 
+    $web->smarty->assign('para', $_GET['info1']);
+    $web->smarty->assign('cveperiodo', $web->periodo($web));
     $web->smarty->assign('datos', $datos);
     $web->smarty->assign('grupo', $grupo);
     $web->smarty->display("grupo.html");
@@ -77,12 +79,6 @@ if (isset($_GET['info1']) && isset($_GET['info2']) && isset($_GET['info3'])) {
             terminado='" . $_POST['datos']['Terminado'] . "'
         where cveeval='" . $_POST['datos']['cveeval'] . "'";
         $web->query($sql);
-
-        // $tabla = $web->evaluacion(array(
-        //     'grupo'   => $_POST['datos']['grupo'],
-        //     'cvesala' => $_POST['datos']['cvesala'],
-        //     'horario' => $_POST['datos']['horario'],
-        // ));
 
         $web->smarty->assign('bandera', 'true');
         $sql = "

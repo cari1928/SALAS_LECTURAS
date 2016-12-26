@@ -10,7 +10,7 @@ $cveperiodo = $web->periodo();
 $web->smarty->assign('cveperiodo', $cveperiodo);
 
 $sql = "
-select distinct letra, nombre, sala.horario, fechainicio, fechafinal from lectura
+select distinct letra, sala.cvesala, nombre, sala.horario, fechainicio, fechafinal from lectura
           inner join abecedario on lectura.cveletra = abecedario.cve
           inner join periodo on lectura.cveperiodo = periodo.cveperiodo
           inner join sala on sala.cvesala = lectura.cvesala

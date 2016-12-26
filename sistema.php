@@ -29,17 +29,16 @@ class Sistema extends Conexion
     public $rol   = "";
     public $smarty;
 
-    public function combo($query, $selected = null)
+    public function combo($query, $selected = null, $ruta = "")
     {
         $datosList       = $this->DB->GetAll($query);
         $nombrescolumnas = array_keys($datosList[0]);
 
         $this->smarty->assign('selected', $selected);
         $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
-
         $this->smarty->assign('nombrescolumnas', $nombrescolumnas);
         $this->smarty->assign('datos', $datosList);
-        return $this->smarty->fetch('select.component.html');
+        return $this->smarty->fetch($ruta . 'select.component.html');
     }
 
     public function query($query)

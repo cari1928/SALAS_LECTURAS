@@ -1,29 +1,32 @@
 {include file="header.html"}
-{$ruta} {if isset($msj)}<label style="color:red;">{$msj}</label>{/if}
-{if isset($tablegrupos)}
-{if $tablegrupos eq "No hay grupos registrados"}
-{$tablegrupos}
-{else}
-<table cellspacing=0 cellpadding=2 class="table table-striped">
-	<tr>
-	<th>GRUPO</th>
-	<th>SALA</th>
-	<th>HORARIO</th>
-	<th>FECHA INICIAL</th>
-	<th>FECHA FINAL</th>
-	</tr>
-	{foreach $tablegrupos as $grupo}
-		<tr>
-			<td>
-				<a href="grupo.php?info1={$grupo.letra}&periodo={$cveperiodo}">{$grupo.letra}</a>
-			</td>
-			<td>{$grupo.nombre}</td>
-			<td>{$grupo.horario}</td>
-			<td>{$grupo.fechainicio}</td>
-			<td>{$grupo.fechafinal}</td>
-		</tr>
-	{/foreach}
-</table>
+{$ruta} 
+{if isset($msj)}
+	<label style="color:red;">{$msj}</label>
 {/if}
+{if isset($tablegrupos)}
+	{if $tablegrupos eq "No hay grupos registrados"}
+		{$tablegrupos}
+	{else}
+		<table cellspacing=0 cellpadding=2 class="table table-striped">
+			<tr>
+			<th>GRUPO</th>
+			<th>SALA</th>
+			<th>HORARIO</th>
+			<th>FECHA INICIAL</th>
+			<th>FECHA FINAL</th>
+			</tr>
+			{foreach $tablegrupos as $grupo}
+				<tr>
+					<td>
+						<a href="grupo.php?info1={$grupo.letra}&info2={$grupo.cvesala}&info3={$grupo.horario}">{$grupo.letra}</a>
+					</td>
+					<td>{$grupo.nombre}</td>
+					<td>{$grupo.horario}</td>
+					<td>{$grupo.fechainicio}</td>
+					<td>{$grupo.fechafinal}</td>
+				</tr>
+			{/foreach}
+		</table>
+	{/if}
 {/if}
 {include file="footer.html"}
