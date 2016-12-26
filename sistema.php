@@ -41,16 +41,23 @@ class Sistema extends Conexion
         return $this->smarty->fetch($ruta . 'select.component.html');
     }
 
-    public function query($query)
+    public function query($query, $parameters = null)
     {
         $this->query = $query;
-        $this->rs    = &$this->DB->Execute($this->query);
-        if ($this->DB->ErrorMsg()) {
-            return false;
+
+        if ($parameters == null) {
+            $this->rs = &$this->DB->Execute($this->query);
         } else {
-            return true;
+            $this->rs = &$this->DB->Execute($this->query, $parameters);
         }
 
+        if ($this->DB->ErrorMsg()) {
+            echo $this->DB->ErrorMsg();
+            return false;
+        } else {
+            echo $this->DB->ErrorMsg();
+            return true;
+        }
     }
 
     public function __construct()
