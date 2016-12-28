@@ -3,41 +3,40 @@
 <div class="container-fluid">
     <div class="main row">
         <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-            {if isset($msg)} 
-              <div class="form-group"> {$msg} </div> 
-            {/if}
-            {if isset($libros)} 
-                <form action="libros.php?accion=update" method="post">
-            {else} 
-                <form action="libros.php?accion=insert" method="post">
-            {/if}
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        {if isset($libros)} Actualizar libro
-                        {else} Nuevo libro {/if}
-                    </h3>
+            {if isset($msg)}
+              	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+              	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              	  <strong>¡Aviso!</strong> {$msg}
+              	</div>
+             {/if}
+            <form action="libros.php?accion={if isset($libros)}update{else}insert{/if}" method="post">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            {if isset($libros)} Actualizar libro
+                            {else} Nuevo libro {/if}
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                      {if isset($libros)}
+                        <input type="hidden" name="cvelibro" value="{$libros.cvelibro}">
+                      {/if}
+                      <div class="form-group">
+                          <label> Autor </label>
+                          <input class="form-control" name="autor" placeholder="Nombre del Autor" maxlength="75" required
+                          {if isset($libros)} value="{$libros.autor}" {/if}>
+                      </div>
+                      <div class="form-group">
+                          <label> Título </label> 
+                          <input class="form-control" name="titulo" placeholder="Título del libro" maxlength="100" required
+                          {if isset($libros)} value="{$libros.titulo}" {/if}>
+                      </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                  {if isset($libros)}
-                    <input type="hidden" name="cvelibro" value="{$libros.cvelibro}">
-                  {/if}
-                  <div class="form-group">
-                      <label> Autor </label>
-                      <input class="form-control" name="autor" placeholder="Nombre del Autor" maxlength="75" required
-                      {if isset($libros)} value="{$libros.autor}" {/if}>
-                  </div>
-                  <div class="form-group">
-                      <label> Título </label> 
-                      <input class="form-control" name="titulo" placeholder="Título del libro" maxlength="100" required
-                      {if isset($libros)} value="{$libros.titulo}" {/if}>
-                  </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">
-                {if isset($libros)} Actualizar 
-                {else} Guardar {/if}
-            </button>
+                <button type="submit" class="btn btn-primary">
+                    {if isset($libros)} Actualizar 
+                    {else} Guardar {/if}
+                </button>
           </form>
         </nav>
     </div>

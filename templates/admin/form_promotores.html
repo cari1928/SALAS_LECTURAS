@@ -1,0 +1,62 @@
+{include file='header.html'}
+{$ruta} 
+<div class="container-fluid">
+  <div class="main row">
+    <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
+      {if isset($msg)}
+      	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      	  <strong>¡Aviso!</strong> {$msg}
+      	</div>
+      {/if}
+      <form action="promotor.php?accion={if isset($promotores)}update{else}insert{/if}" method="post">  
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              {if isset($promotores)} Actualizar Promotor
+              {else} Nuevo Promotor {/if}
+            </h3>
+          </div>
+          <div class="panel-body">
+            {if isset($promotores)}
+              <input type="hidden" name="cveusuario" value="{$promotores.cveusuario}">
+            {/if}
+            <div class="form-group">
+              <label>Nombre Completo:</label>
+              <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]"  required
+              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+            </div>
+            <div class="form-group">
+              <label>Especialidad:</label>
+              {$combito}
+            </div>
+            <div class="form-group">
+              <label>RFC: </label>
+              <input class="form-control" placeholder="RFC" name="datos[usuario]" maxlength="13" required
+              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+            </div>
+            <div class="form-group">
+              <label>Correo: </label>
+              <input type="email" class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required
+              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+            </div>
+            <div class="form-group">
+              <label>Contraseña:</label>
+              <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]" required
+              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+            </div>
+            <div class="form-group">
+              <label>Confirmar contraseña:</label>
+              <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Confirmar contraseña" name="datos[confcontrasena]" id="producto" required>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          {if isset($promotores)} Actualizar 
+          {else} Guardar {/if}
+        </button>
+    </form>
+    </nav>
+  </div>
+</div>  
+{include file='footer.html'}

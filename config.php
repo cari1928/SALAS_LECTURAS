@@ -1,6 +1,7 @@
 <?php
 define('ZONA_HORARIA', 'Mexico/general');
-define('PATHAPP', '/var/www/html/SALAS_LECTURAS/');
+// define('PATHAPP', '/var/www/html/SALAS_LECTURAS/');
+define('PATHAPP', '/home/ubuntu/workspace/');
 define('LIB', 'lib/');
 define('TEMPLATES', 'templates/');
 define('TEMPLATES_C', 'templates_c/');

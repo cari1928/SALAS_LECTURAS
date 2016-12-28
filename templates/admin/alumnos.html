@@ -2,19 +2,24 @@
 {$ruta}   
 <table class='table table-striped'>
 	<tr><td colspan='4' align='right'>
-			<a href='alumnos.php?accion=form_insert&tabla=usuarios'>
+			<a href='alumnos.php?accion=form_insert'>
 				<img src='../Images/add.png' /> 
 			</a>
 	</td></tr>
 </table>
-{if isset($msj)}
-	{$msj}
-{else}
+{if isset($msg)}
+	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <strong>¡Aviso!</strong> {$msg}
+	</div>
+{/if}
+{if isset($alumnos)}
 	<table class='table table-striped'>
 		<tr>		
-			<th>CLAVE USUARIO</th>
+			<th>NO. CONTROL</th>
 			<th>NOMBRE</th>
 			<th>ESPECIALIDAD</th>
+			<th>CORREO</th>
 			<th>ELIMINAR</th>
 			<th>ACTUALIZAR</th>
 			<th>MOSTRAR</th>
@@ -24,6 +29,7 @@
 				<td>{$alumno.cveusuario}</td>
 				<td>{$alumno.Usuario}</td>
 				<td>{$alumno.Especialidad}</td>
+				<td>{$alumno.correo}</td>
 				<td>
 					<a href="alumnos.php?accion=delete&info1={$alumno.cveusuario}"> 
 						<img src="../Images/cancelar.png">
