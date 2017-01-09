@@ -1,45 +1,38 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 19:48:38
+/* Smarty version 3.1.30-dev/53, created on 2016-12-31 04:13:34
   from "/home/ubuntu/workspace/templates/admin/form_alumnos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862c596204f47_08087251',
+  'unifunc' => 'content_5867306e8be218_61064471',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'f5eadaa16a8912e4746d09f10a0159871a7e4bcc' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/form_alumnos.html',
-      1 => 1482867852,
+      1 => 1483157603,
       2 => 'file',
     ),
   ),
   'includes' => 
   array (
     'file:header.html' => 1,
+    'file:../number_style.html' => 1,
     'file:footer.html' => 1,
   ),
 ),false)) {
-function content_5862c596204f47_08087251 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '1321331605862c5961b7301_69907682';
+function content_5867306e8be218_61064471 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '19382155155867306e86d8f9_81845384';
 $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
 ?>
 
 <?php echo $_smarty_tpl->tpl_vars['ruta']->value;?>
     
-<style>
-  input[type=number]::-webkit-outer-spin-button,
-  input[type=number]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-  }
-  
-  input[type=number] {
-      -moz-appearance:textfield;
-  }
-</style>
+<?php $_smarty_tpl->_subTemplateRender("file:../number_style.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
+?>
+
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
@@ -55,13 +48,14 @@ $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_s
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-              <?php if (isset($_smarty_tpl->tpl_vars['alumno']->value)) {?> Actualizar Alumno
+              <?php if (isset($_smarty_tpl->tpl_vars['alumno']->value)) {?> Actualizar Alumno - Número de Control: <?php echo $_smarty_tpl->tpl_vars['alumno']->value['cveusuario'];?>
+
               <?php } else { ?> Nuevo Alumno <?php }?>
             </h3>
           </div>
           <div class="panel-body">
             <?php if (isset($_smarty_tpl->tpl_vars['alumno']->value)) {?>
-              <input type="hidden" name="cveusuario" value="<?php echo $_smarty_tpl->tpl_vars['alumno']->value['cveusuario'];?>
+              <input type="hidden" name="datos[usuario]" value="<?php echo $_smarty_tpl->tpl_vars['alumno']->value['cveusuario'];?>
 ">
             <?php }?>
             <div class="form-group">
@@ -75,15 +69,15 @@ $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_s
               <?php echo $_smarty_tpl->tpl_vars['cmb_especialidad']->value;?>
 
             </div>
-            <div class="form-group">
-              <label>Número de Control:</label>
-              <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number"
-              <?php if (isset($_smarty_tpl->tpl_vars['alumno']->value)) {?> value="<?php echo $_smarty_tpl->tpl_vars['alumno']->value['cveusuario'];?>
-" <?php }?>>
-            </div>
+            <?php if (!isset($_smarty_tpl->tpl_vars['alumno']->value)) {?>
+              <div class="form-group">
+                <label>Número de Control:</label>
+                <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number">
+              </div>
+            <?php }?>
             <div class="form-group">
               <label>Correo:</label>
-              <input type='email' class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required
+              <input type='email' class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75"
               <?php if (isset($_smarty_tpl->tpl_vars['alumno']->value)) {?> value="<?php echo $_smarty_tpl->tpl_vars['alumno']->value['correo'];?>
 " <?php }?>>
             </div>
@@ -136,7 +130,7 @@ $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_s
 </div>
 <?php echo '<script'; ?>
 >
-  var bandera=0;
+  var bandera = 0;
     function mostrar()
     {
       var test = document.getElementsByName('datos[pass]');

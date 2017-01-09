@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 16:43:24
+/* Smarty version 3.1.30-dev/53, created on 2016-12-31 01:19:05
   from "/home/ubuntu/workspace/templates/admin/form_periodos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_58629a2c3949d9_51286912',
+  'unifunc' => 'content_5867078925de94_41631541',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'abb8f66b9684d42ebf3402120ab44fe7826bd03d' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/form_periodos.html',
-      1 => 1482852538,
+      1 => 1482861937,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_58629a2c3949d9_51286912 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5867078925de94_41631541 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,35 +91,31 @@ function content_58629a2c3949d9_51286912 (Smarty_Internal_Template $_smarty_tpl)
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div><label><a href="index.php">index</a></label> > <label><a href="periodos.php">periodos</a></label> > <label>actualizar</label></div>   
+<div><label><a href="index.php">index</a></label> > <label><a href="periodos.php">periodos</a></label> > <label>nuevo</label></div>   
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-             
-        <form action="periodos.php?accion=update" method="post">  
-            <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-             Actualizar Periodo
-                      </h3>
-        </div>
-        <div class="panel-body">
-                      <input type="hidden" name="cveperiodo" value="7">
-                    <div class="form-group">
-            <label>Fecha Inicio:</label>
-            <input type="date" class="form-control" name="datos[fechaInicio]" required
-               value="2016-10-18" >
+            <form action="periodos.php?accion=insert" method="post">  
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+               Nuevo Periodo             </h3>
           </div>
-          <div class="form-group">
-            <label>Fecha Final:</label>
-            <input type="date" class="form-control" name="datos[fechaFinal]" required
-               value="2017-01-19" >
+          <div class="panel-body">
+                        <div class="form-group">
+              <label>Fecha Inicio:</label>
+              <input type="date" class="form-control" name="datos[fechaInicio]" required
+                >
+            </div>
+            <div class="form-group">
+              <label>Fecha Final:</label>
+              <input type="date" class="form-control" name="datos[fechaFinal]" required
+                >
+            </div>
           </div>
         </div>
-      </div>
-      <button type="submit" class="btn btn-primary">
-         Actualizar 
-              </button>
+        <button type="submit" class="btn btn-primary">
+           Guardar         </button>
     </form>
     </nav>
   </div>

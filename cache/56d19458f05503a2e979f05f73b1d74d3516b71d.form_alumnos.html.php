@@ -1,24 +1,30 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 20:17:20
+/* Smarty version 3.1.30-dev/53, created on 2017-01-06 18:18:14
   from "/home/ubuntu/workspace/templates/admin/form_alumnos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862cc50713c41_82601681',
+  'unifunc' => 'content_586fdf66b05541_11093496',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'f5eadaa16a8912e4746d09f10a0159871a7e4bcc' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/form_alumnos.html',
-      1 => 1482867852,
+      1 => 1483157603,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
+      2 => 'file',
+    ),
+    '5ae68067ad6f5e7470f35eba439833e534f10385' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/number_style.html',
+      1 => 1483157581,
       2 => 'file',
     ),
     '6e909a28eecf3875ef5429e4bc28852eeb6567eb' => 
@@ -30,7 +36,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862cc50713c41_82601681 (Smarty_Internal_Template $_smarty_tpl) {
+function content_586fdf66b05541_11093496 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +57,10 @@ function content_5862cc50713c41_82601681 (Smarty_Internal_Template $_smarty_tpl)
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
   <title>Salas Lectura</title>
 </head>
@@ -91,7 +101,7 @@ function content_5862cc50713c41_82601681 (Smarty_Internal_Template $_smarty_tpl)
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div><label><a href="index.php">index</a></label> > <label><a href="alumnos.php">alumnos</a></label> > <label>actualizar</label></div>    
+<div><label><a href="index.php">index</a></label> > <label><a href="alumnos.php">alumnos</a></label> > <label>nuevo</label></div>    
 <style>
   input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
@@ -106,25 +116,23 @@ function content_5862cc50713c41_82601681 (Smarty_Internal_Template $_smarty_tpl)
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-            <form action="alumnos.php?accion=update" method="post">
+            <form action="alumnos.php?accion=insert" method="post">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-               Actualizar Alumno
-                          </h3>
+               Nuevo Alumno             </h3>
           </div>
           <div class="panel-body">
-                          <input type="hidden" name="cveusuario" value="14031556">
                         <div class="form-group">
               <label>Nombre Completo: </label>
               <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]" required 
-               value="Moreno Garcia Mar�a Fernanda" >
+              >
             </div>
             <div class="form-group">
               <label>Especialidad: </label>
                     <select class="form-control" name="datos[cveespecialidad]">
               <option value="IA" >Ingeniería Ambiental</option>
-              <option value="IB"  selected >Ingeniería Bioquímica</option>
+              <option value="IB" >Ingeniería Bioquímica</option>
               <option value="IE" >Ingeniería Electrónica</option>
               <option value="ISC" >Ingeniería En Sistemas Computacionales</option>
               <option value="IGE" >Ingeniería Gestión Empresarial</option>
@@ -136,53 +144,38 @@ function content_5862cc50713c41_82601681 (Smarty_Internal_Template $_smarty_tpl)
               <option value="LAE" >Licenciatura En Administración</option>
             </select>
             </div>
-            <div class="form-group">
-              <label>Número de Control:</label>
-              <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number"
-               value="14031556" >
-            </div>
-            <div class="form-group">
+                          <div class="form-group">
+                <label>Número de Control:</label>
+                <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number">
+              </div>
+                        <div class="form-group">
               <label>Correo:</label>
-              <input type='email' class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required
-               value="14041556@itcelaya.edu.mx" >
+              <input type='email' class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75"
+              >
             </div>
             
             <!-- Si es update se muestra el radio button -->
-                          <div id='js' class="form-group">
-                <label id="l1">Modificar contraseña</label>
-                <input id="r1" type="radio" class="btn btn-default" value='true' name="datos[pass]" onclick="mostrar()">
-                <label id ="l2" style="display:none">Mantener contraseña original</label>
-                <input id="r2" type="radio"  class="btn btn-default" value='false' name="datos[pass]" onclick="mostrar()" checked style="display:none">
-              </div>
-              <div id='oculto' class="form-group" style="display:none">
-                <div class="form-group">
+                          <div class="form-group">
                   <label>Contraseña:</label>
                   <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]">
                 </div>
                 <div class="form-group">
-                  <label>Nueva contraseña:</label>
-                  <input type="password" class="form-control" placeholder="Nueva contraseña" name="datos[contrasenaN]">
+                  <label>Confirmar contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Confirmar contraseña" name="datos[confcontrasena]">
                 </div>
-                <div class="form-group">
-                  <label>Confirmar Nueva contraseña:</label>
-                  <input type="password" class="form-control" placeholder="Confirmar nueva contraseña" name="datos[confcontrasenaN]">
-                </div>
-              </div>
-            <!--Si es insert se muestran los input directamente-->
                         
           </div>
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary">
-             Actualizar 
-                      </button>
+             Guardar           </button>
         </div>
       </form>
     </nav>
   </div>
 </div>
 <script>
-  var bandera=0;
+  var bandera = 0;
     function mostrar()
     {
       var test = document.getElementsByName('datos[pass]');

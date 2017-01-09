@@ -1,19 +1,24 @@
 {include file="header.html"}
 {$ruta} 
-{if isset($msj)}
-	<label style="color:red;">{$msj}</label>
-{/if}
+{include file='../number_style.html'}
 {if isset($info)}
 	<center>
 		<div class="form-group" style ="background-color:#f0f0f0">
 			<label>
-				Sala: {$info.cvesala}<br>
+				Sala: {$info.nombre}<br>
 				Ubicación: {$info.ubicacion}<br>
-				Horario: {$info.horario}<br>
 				Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
+				Grupo: {$info.letra}
 			</label>
 		</div>
 	</center>
+{/if}
+{if isset($msg)}
+	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span></button>
+	  <strong>¡Aviso!</strong> {$msg}
+	</div>
 {/if}
 {if isset($datos)}
 	<table class='table table - striped' width='500'>
@@ -29,11 +34,9 @@
 		</tr>
 		{foreach $datos as $alumno}
 			<tr> 
-				 <form class='form - inline' action='grupo.php' method='post' enctype='multipart / form - data' accept-charset='utf-8'>
-
-					 <input type="hidden" name="datos[grupo]" value="{$grupo}" > 
+				 <form class='form - inline' action='grupo.php?info1={$info.letra}' method='post' >
+					 <input type="hidden" name="datos[nocontrol]" value="{{$alumno.nocontrol}}" > 
 					 <td width='500'> {$alumno.nombre} </td>
-					 
 					 <td width='500'>  
 					 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.comprension}% ;height: 100%; background-color: #4caf50;"> 
 					 			<div id="label"style="text-align: center; line-height: 30px; color: white;"> 
@@ -43,7 +46,7 @@
 					 	</div>
 					 </br>
 					 <center>
-				 		<input class="form-control" id= "exampleInputPassword3" name="datos[comprension]" id="producto" required value = "{$alumno.comprension}" style="width:65px ; display:block; "maxlength="3">
+				 		<input type="number" class="form-control" name="datos[comprension]" required value = "{$alumno.comprension}" style="width:65px ; display:block; "maxlength="3">
 				 	</center>
 					 </td>
 
@@ -56,7 +59,7 @@
 					 	</div>
 					 </br>
 				 	<center>
-				 		<input class="form-control" id= "exampleInputPassword3" name="datos[motivacion]" id="producto" required value = "{$alumno.motivacion}" style="width:65px ; display:block; "maxlength="3">
+				 		<input type="number" class="form-control" name="datos[motivacion]" required value = "{$alumno.motivacion}" style="width:65px ; display:block; "maxlength="3">
 				 	</center>
 					</td>
 
@@ -69,7 +72,7 @@
 						</div>
 						</br>
 						<center>
-							<input class="form-control" id= "exampleInputPassword3" name="datos[reporte]" id="producto" required value = "{$alumno.reporte}" style="width:65px ; display:block; "maxlength="3">
+							<input type="number" class="form-control" name="datos[reporte]" required value = "{$alumno.reporte}" style="width:65px ; display:block; "maxlength="3">
 						</center>
 					</td>
 
@@ -81,7 +84,7 @@
 						</div>
 					</br>
 					<center>
-						<input class="form-control" id= "exampleInputPassword3" name="datos[tema]" id="producto" required value = "{$alumno.tema}" style="width:65px ; display:block; "maxlength="3">
+						<input type="number" class="form-control" name="datos[tema]" required value = "{$alumno.tema}" style="width:65px ; display:block; "maxlength="3">
 					</center>
 					</td>
 
@@ -94,7 +97,7 @@
 						</div>
 						</br>
 						<center>
-							<input class="form-control" id= "exampleInputPassword3" name="datos[participacion]" id="producto" required value = "{$alumno.participacion}" style="width:65px ; display:block; "maxlength="3">
+							<input type="number" class="form-control" name="datos[participacion]" required value = "{$alumno.participacion}" style="width:65px ; display:block; "maxlength="3">
 						</center>
 					</td>
 
@@ -108,22 +111,41 @@
 						</div>
 						</br>
 						<center>
-							<input class="form-control" name="datos[terminado]" id="producto" required value = "{$alumno.terminado}" style="width:65px ; display:block; "maxlength="3">
+							<input type="number" class="form-control" name="datos[terminado]" required value = "{$alumno.terminado}" style="width:65px ; display:block; "maxlength="3">
 						</center>
 					</td>
 						<td>
 							<a href="redacta.php?accion=redactarI&info={$grupo}&receptor={$alumno.nocontrol}&grupo={$grupo}&periodo={$alumno.cveperiodo}">
 								<img src="../Images/sobre.png">
 							</a>
-						</td>
-						<td>
-							<button type="submit" class="btn btn-danger" value="{$alumno.cveeval}" name="datos[cveeval]" style="display:none" >
-								<span class="glyphicon glyphicon-remove" aria-hidden= "true">
-									
-								</span>
-							</button>
+							<a href="grupo.php?accion=libros&info={$alumno.cvelectura}">
+								<img src="../Images/mostrarL.png">
+							</a>
 						</td>
 				</form>
+			</tr>
+		{/foreach}
+	</table>
+{/if}
+{if isset($libros)}
+	<div class="page-header">
+    <h2>Lista de Libros</h2>
+  </div>
+  <table class='table table-striped'>
+    <tr>
+    	<th><center>CLAVE</center></th>
+			<th><center>TITULO</center></th>
+			<th><center>AUTOR</center></th>
+      <th><center>EDITORIAL</center></th>
+      <th><center>PRECIO</center></th>
+		</tr>
+		{foreach $libros as $libro}
+			<tr>
+				<td><center>{$libro.cvelibro}</center></td>
+				<td><center>{$libro.titulo}</center></td>
+        <td><center>{$libro.autor}</center></td>
+        <td><center>{$libro.editorial}</center></td>
+        <td><center>{$libro.precio}</center></td>
 			</tr>
 		{/foreach}
 	</table>

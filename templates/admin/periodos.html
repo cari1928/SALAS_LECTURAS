@@ -25,27 +25,20 @@
 	{foreach $periodos as $periodo}
 		<tr>
 			{if isset($bandera)}
-				<td>
-					<a href="gruposHistorial.php?info1={$periodo.cveperiodo}&info2={$periodo.fechainicio}">
-						{$periodo.cveperiodo}
-					</a>
-				</td>
+				<td><a href="gruposHistorial.php?info1={$periodo.cveperiodo}&info2={$periodo.fechainicio}">
+					{$periodo.cveperiodo}
+				</a></td>
 			{else}
 				<td>{$periodo.cveperiodo}</td>
 			{/if}
-
 			<td>{$periodo.fechainicio}</td>
 			<td>{$periodo.fechafinal}</td>
-			<td>
-				<a href="periodos.php?accion=eliminar&info1={$periodo.cveperiodo}"> 
-					<img src="../Images/cancelar.png">
-				</a>
-			</td>
-			<td>
-				<a href="periodos.php?accion=form_update&info2={$periodo.cveperiodo}">
-					<img src="../Images/edit.png">
-				</a>
-			</td>
+			<td><a href="periodos.php?accion=eliminar&info1={$periodo.cveperiodo}"> 
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="periodos.php?accion=form_update&info2={$periodo.cveperiodo}">
+				<img src="../Images/edit.png">
+			</a></td>
 		</tr>
 	{/foreach}
 	</table>

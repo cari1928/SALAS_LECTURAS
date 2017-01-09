@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 20:07:17
+/* Smarty version 3.1.30-dev/53, created on 2016-12-30 19:20:13
   from "/home/ubuntu/workspace/templates/admin/form_promotores.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862c9f5107721_80610920',
+  'unifunc' => 'content_5866b36d82b004_83504650',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'ae5657e9878229d8453f3c2da5a7bb0d8c5de3c9' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/form_promotores.html',
-      1 => 1482869226,
+      1 => 1483079328,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862c9f5107721_80610920 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5866b36d82b004_83504650 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,29 +91,31 @@ function content_5862c9f5107721_80610920 (Smarty_Internal_Template $_smarty_tpl)
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<div><label><a href="index.php">index</a></label> > <label><a href="promotor.php">promotor</a></label> > <label>nuevo</label></div> 
+<div><label><a href="index.php">index</a></label> > <label><a href="promotor.php">promotor</a></label> > <label>Actualizar</label></div> 
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-            <form action="promotor.php?accion=insert" method="post">  
+            <form action="promotor.php?accion=update" method="post">  
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-               Nuevo Promotor             </h3>
+               Actualizar Promotor - RFC: NAPE840321PU1
+                          </h3>
           </div>
           <div class="panel-body">
+                          <input type="hidden" name="cveusuario" value="NAPE840321PU1">
                         <div class="form-group">
               <label>Nombre Completo:</label>
               <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]"  required
-              >
+               value="Edí Jair Navarro Patiño" >
             </div>
             <div class="form-group">
               <label>Especialidad:</label>
                     <select class="form-control" name="datos[cveespecialidad]">
-              <option value="ISC" >Ingeniería En Sistemas Computacionales</option>
               <option value="IA" >Ingeniería Ambiental</option>
               <option value="IB" >Ingeniería Bioquímica</option>
               <option value="IE" >Ingeniería Electrónica</option>
+              <option value="ISC"  selected >Ingeniería En Sistemas Computacionales</option>
               <option value="IGE" >Ingeniería Gestión Empresarial</option>
               <option value="IIN" >Ingeniería Industrial</option>
               <option value="II" >Ingeniería Informática</option>
@@ -123,33 +125,61 @@ function content_5862c9f5107721_80610920 (Smarty_Internal_Template $_smarty_tpl)
               <option value="LAE" >Licenciatura En Administración</option>
             </select>
             </div>
-            <div class="form-group">
-              <label>RFC: </label>
-              <input class="form-control" placeholder="RFC" name="datos[usuario]" maxlength="13" required
-              >
-            </div>
-            <div class="form-group">
+                        <div class="form-group">
               <label>Correo: </label>
               <input type="email" class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required
-              >
+               value="jair.navarro@itcelaya.edu.mx" >
             </div>
-            <div class="form-group">
-              <label>Contraseña:</label>
-              <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]" required
-              >
-            </div>
-            <div class="form-group">
-              <label>Confirmar contraseña:</label>
-              <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Confirmar contraseña" name="datos[confcontrasena]" id="producto" required>
-            </div>
-          </div>
+                                      <div id='js' class="form-group">
+                <label id="l1">Modificar contraseña</label>
+                <input id="r1" type="radio" class="btn btn-default" value='true' name="datos[pass]" onclick="mostrar()">
+                <label id ="l2" style="display:none">Mantener contraseña original</label>
+                <input id="r2" type="radio"  class="btn btn-default" value='false' name="datos[pass]" onclick="mostrar()" checked style="display:none">
+              </div>
+              <div id='oculto' class="form-group" style="display:none">
+                <div class="form-group">
+                  <label>Contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]">
+                </div>
+                <div class="form-group">
+                  <label>Nueva contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Nueva contraseña" name="datos[contrasenaN]">
+                </div>
+                <div class="form-group">
+                  <label>Confirmar Nueva contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Confirmar nueva contraseña" name="datos[confcontrasenaN]">
+                </div>
+              </div>
+                        </div>
         </div>
         <button type="submit" class="btn btn-primary">
-           Guardar         </button>
+           Actualizar 
+                  </button>
     </form>
     </nav>
   </div>
 </div>  
+<script>
+  var bandera = 0;
+    function mostrar()
+    {
+      var test = document.getElementsByName('datos[pass]');
+       if(test[0].checked == true) {
+          document.getElementById('oculto').style.display="block";
+          document.getElementById('r2').style.display="inline";
+          document.getElementById('l2').style.display="inline";
+          document.getElementById('r1').style.display="none";
+          document.getElementById('l1').style.display="none";
+        }
+        if(test[1].checked == true) {
+          document.getElementById('oculto').style.display="none";
+          document.getElementById('r2').style.display="none";
+          document.getElementById('l2').style.display="none";
+          document.getElementById('r1').style.display="inline";
+          document.getElementById('l1').style.display="inline";
+        }
+    }
+</script>
 </body>
 </html><?php }
 }

@@ -1,24 +1,24 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 20:07:25
+/* Smarty version 3.1.30-dev/53, created on 2017-01-09 08:47:35
   from "/home/ubuntu/workspace/templates/admin/promotor.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862c9fde89760_46523507',
+  'unifunc' => 'content_58734e27a9c481_48255699',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '914aee8fb76577dfe96838af7c32e42c2f9297b0' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/promotor.html',
-      1 => 1482858131,
+      1 => 1482946272,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
       2 => 'file',
     ),
     '6e909a28eecf3875ef5429e4bc28852eeb6567eb' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862c9fde89760_46523507 (Smarty_Internal_Template $_smarty_tpl) {
+function content_58734e27a9c481_48255699 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +51,10 @@ function content_5862c9fde89760_46523507 (Smarty_Internal_Template $_smarty_tpl)
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
   <title>Salas Lectura</title>
 </head>
@@ -110,92 +114,47 @@ function content_5862c9fde89760_46523507 (Smarty_Internal_Template $_smarty_tpl)
 			<th>MOSTRAR</th>
 		</tr>
 			<tr>
-			<td>1111111111111</td>
-			<td>Cristina Pacheco S·nchez</td>
-			<td>cpachecosanchez@itcelaya.edu.mx</td>
-			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
-				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
-				<img src="../Images/edit.png">
-			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
-				<img src="../Images/mostrar.png">
-			</a></td>
-		</tr>
-			<tr>
-			<td>1231111111111</td>
-			<td>Burguer</td>
-			<td>123@fk.com</td>
-			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
-				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
-				<img src="../Images/edit.png">
-			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
-				<img src="../Images/mostrar.png">
-			</a></td>
-		</tr>
-			<tr>
-			<td>5555555555555</td>
-			<td>Burguer</td>
-			<td>13030373@itcelaya.edu.mx</td>
-			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
-				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
-				<img src="../Images/edit.png">
-			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
-				<img src="../Images/mostrar.png">
-			</a></td>
-		</tr>
-			<tr>
 			<td>HEH5671201K16</td>
-			<td>Sandra Hern·ndez Hern·ndez</td>
+			<td>Hern√°ndez Hern√°ndez Sandra</td>
 			<td>dpmaar@itcelaya.edu.mx</td>
 			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
+			<td><a href="promotor.php?accion=delete&info1=HEH5671201K16">
 				<img src="../Images/cancelar.png">
 			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
+			<td><a href="promotor.php?accion=form_update&info1=HEH5671201K16">
 				<img src="../Images/edit.png">
 			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
+			<td><a href="promotor.php?accion=mostrar&info1=HEH5671201K16">
 				<img src="../Images/mostrar.png">
 			</a></td>
 		</tr>
 			<tr>
 			<td>NAPE840321PU1</td>
-			<td>Ed˙ Jair Navarro PatiÒo</td>
+			<td>Navarro Pati√±o Ed√≠ Jair</td>
 			<td>jair.navarro@itcelaya.edu.mx</td>
 			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
+			<td><a href="promotor.php?accion=delete&info1=NAPE840321PU1">
 				<img src="../Images/cancelar.png">
 			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
+			<td><a href="promotor.php?accion=form_update&info1=NAPE840321PU1">
 				<img src="../Images/edit.png">
 			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
+			<td><a href="promotor.php?accion=mostrar&info1=NAPE840321PU1">
 				<img src="../Images/mostrar.png">
 			</a></td>
 		</tr>
 			<tr>
 			<td>ROGV600204NY5</td>
-			<td>Victor RodrÌguez GarcÌa</td>
+			<td>Rodr√≠guez Garc√≠a Victor </td>
 			<td>victor.rodriguez@itcelaya.edu.mx</td>
 			<td>Ingenier√≠a En Sistemas Computacionales</td>
-			<td><a href="promotor.php?accion=delete&info1=">
+			<td><a href="promotor.php?accion=delete&info1=ROGV600204NY5">
 				<img src="../Images/cancelar.png">
 			</a></td>
-			<td><a href="promotor.php?accion=form_update&info2=">
+			<td><a href="promotor.php?accion=form_update&info1=ROGV600204NY5">
 				<img src="../Images/edit.png">
 			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info2=">
+			<td><a href="promotor.php?accion=mostrar&info1=ROGV600204NY5">
 				<img src="../Images/mostrar.png">
 			</a></td>
 		</tr>

@@ -1,24 +1,24 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 17:31:46
+/* Smarty version 3.1.30-dev/53, created on 2017-01-09 05:04:40
   from "/home/ubuntu/workspace/templates/admin/form_salas.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862a582d50109_99873633',
+  'unifunc' => 'content_587319e811e5b9_21734145',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '11bcc92834e64ce7bb932b2881a680792df1a133' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/form_salas.html',
-      1 => 1482852538,
+      1 => 1483561207,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
       2 => 'file',
     ),
     '6e909a28eecf3875ef5429e4bc28852eeb6567eb' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862a582d50109_99873633 (Smarty_Internal_Template $_smarty_tpl) {
+function content_587319e811e5b9_21734145 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +51,10 @@ function content_5862a582d50109_99873633 (Smarty_Internal_Template $_smarty_tpl)
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
   <title>Salas Lectura</title>
 </head>
@@ -106,11 +110,6 @@ function content_5862a582d50109_99873633 (Smarty_Internal_Template $_smarty_tpl)
                     <div class="form-group">
             <label>Clave:</label>
             <input class="form-control" placeholder="Clave de la Sala" name="datos[cvesala]" maxlength="3" required
-            >
-          </div>
-          <div class="form-group">
-            <label>Nombre:</label>
-            <input class="form-control" placeholder="Nombre de la Sala" name="datos[nombre]" maxlength="75" required
             >
           </div>
           <div class="form-group">

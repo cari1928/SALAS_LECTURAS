@@ -29,16 +29,20 @@ class Sistema extends Conexion
     public $rol   = "";
     public $smarty;
 
-    public function combo($query, $selected = null, $ruta = "")
+    public function combo($query, $selected = null, $ruta = "", $parameters=null)
     {
+      if($parameters != null) {
+        $datosList       = $this->DB->GetAll($query, $parameters);
+      } else {
         $datosList       = $this->DB->GetAll($query);
-        $nombrescolumnas = array_keys($datosList[0]);
+      }
+      $nombrescolumnas = array_keys($datosList[0]);
 
-        $this->smarty->assign('selected', $selected);
-        $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
-        $this->smarty->assign('nombrescolumnas', $nombrescolumnas);
-        $this->smarty->assign('datos', $datosList);
-        return $this->smarty->fetch($ruta . 'select.component.html');
+      $this->smarty->assign('selected', $selected);
+      $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+      $this->smarty->assign('nombrescolumnas', $nombrescolumnas);
+      $this->smarty->assign('datos', $datosList);
+      return $this->smarty->fetch($ruta . 'select.component.html');
     }
 
     public function query($query, $parameters = null)
@@ -55,7 +59,7 @@ class Sistema extends Conexion
             echo $this->DB->ErrorMsg();
             return false;
         } else {
-            echo $this->DB->ErrorMsg();
+            // echo $this->DB->ErrorMsg();
             return true;
         }
     }
@@ -346,58 +350,43 @@ class Sistema extends Conexion
 
 /**
  * Obtiene la información que será desplegada en el Nav Bar del promotor o del alumno
- * @param  [String] $rfc [ID del promotor o el alumno]
- * @return [String]      [Lista de grupos que tiene el usuario o mensaje de error]
+ * @param  String $rfc [ID del promotor o el alumno]
+ * @return String      [Lista de grupos que tiene el usuario o mensaje de error]
  */
     public function grupos($rfc)
     {
         $rol = $_SESSION['roles'];
-
         $periodo = $this->periodo();
-
         if ($periodo == "") {
             return "No existentes";
         }
 
         if ($rol == 'P') {
             //es un promotor
-            $sql = "select distinct cvesala, letra, horario from lectura
-                        inner join abecedario on abecedario.cve=lectura.cveletra
-                    where cvepromotor='" . $rfc . "' and cveperiodo=" . $periodo . "
-                    order by letra";
-
+            $sql = "select distinct letra, nombre, ubicacion from laboral 
+              inner join sala on laboral.cvesala = sala.cvesala 
+              inner join abecedario on laboral.cveletra = abecedario.cve 
+              where cvepromotor=? and laboral.cveperiodo=? order by letra";
         } else {
             //es un alumno
-            $sql = "select nombre, letra from lectura
-                        inner join abecedario on abecedario.cve = lectura.cveletra
-                        inner join usuarios on lectura.cvepromotor = usuarios.cveusuario
-                    where nocontrol='" . $rfc . "'
-                    order by letra";
+            $sql = "select distinct letra, nombre, ubicacion from laboral 
+              inner join abecedario on laboral.cveletra = abecedario.cve
+              inner join lectura on lectura.cveletra = abecedario.cve 
+              inner join sala on laboral.cvesala = sala.cvesala
+              where nocontrol=? and laboral.cveperiodo=? order by letra";
         }
 
-        // echo $sql;
-        $this->query($sql);
-        $cantidadregistros = $this->rs->_numOfRows;
-        if ($cantidadregistros == 0) {
+        $datos_rs = $this->DB->GetAll($sql, array($_SESSION['cveUser'], $periodo));
+        if (sizeof($datos_rs) == 0) {
             return "No existentes";
 
         } else {
-            $cadena   = "";
-            $datos_rs = $this->DB->GetAll($sql);
-
-            $cadena .= '<li><a href= "vergrupos.php">Ver todos</a></li> ';
-            for ($i = 0; $i < $cantidadregistros; $i++) {
-                $cadena .= '<li><a href= "grupo.php?info1=' . $datos_rs[$i][1] . '&info2=' . $datos_rs[$i][0];
-
-                $extra = "";
-                if (isset($datos_rs[$i][2])) {
-                    $cadena .= "&info3=" . $datos_rs[$i][2];
-                    $extra = ' - ' . $datos_rs[$i][2];
-                }
-
-                $cadena .= '">' . $datos_rs[$i][1] . ' - ' . $datos_rs[$i][0] . $extra . '</a></li>';
-            }
-            return $cadena;
+          $cadena = '<li><a href= "grupos.php">Ver todos</a></li>';
+          for ($i = 0; $i < sizeof($datos_rs); $i++) {
+              $cadena .= '<li><a href= "grupo.php?info1=' . $datos_rs[$i][0];
+              $cadena .= '">' . $datos_rs[$i][0].' - '.$datos_rs[$i][1].' - '.$datos_rs[$i][2].'</a></li>';
+          }
+          return $cadena;
         }
     }
 

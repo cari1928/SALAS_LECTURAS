@@ -1,32 +1,32 @@
 {include file="header.html"}
 {$ruta} 
-{if isset($msj)}
-	<label style="color:red;">{$msj}</label>
+{if isset($msg)}
+	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span></button>
+	  <strong>¡Aviso!</strong> {$msg}
+	</div>
 {/if}
 {if isset($tablegrupos)}
-	{if $tablegrupos eq "No hay grupos registrados"}
-		{$tablegrupos}
-	{else}
 		<table cellspacing=0 cellpadding=2 class="table table-striped">
 			<tr>
-			<th>GRUPO</th>
-			<th>SALA</th>
-			<th>HORARIO</th>
-			<th>FECHA INICIAL</th>
-			<th>FECHA FINAL</th>
+				<th><center>GRUPO</center></th>
+				<th><center>SALA</center></th>
+				<th><center>UBICACIÓN</center></th>
+				<th><center>HORARIO</center></th>
+				<th><center>ACTUALIZAR</center></th>
 			</tr>
 			{foreach $tablegrupos as $grupo}
 				<tr>
-					<td>
-						<a href="grupo.php?info1={$grupo.letra}&info2={$grupo.cvesala}&info3={$grupo.horario}">{$grupo.letra}</a>
+					<td><center>
+						<a href="grupo.php?info1={$grupo.letra}">{$grupo.letra}</a></center>
 					</td>
-					<td>{$grupo.nombre}</td>
-					<td>{$grupo.horario}</td>
-					<td>{$grupo.fechainicio}</td>
-					<td>{$grupo.fechafinal}</td>
+					<td><center>{$grupo.nombre}</center></td>
+					<td><center>{$grupo.ubicacion}</center></td>
+					<td><center><a href="#"><img src="../Images/periodos.png"></a></center></td>
+					<td><center><a href="grupos.php?accion=form_update&info={$grupo.letra}"><img src="../Images/edit.png"></a></center></td>
 				</tr>
 			{/foreach}
 		</table>
-	{/if}
 {/if}
 {include file="footer.html"}

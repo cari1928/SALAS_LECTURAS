@@ -16,87 +16,154 @@ if (isset($_GET['accion'])) {
             break;
 
         case 'form_update':
-            $sql   = "SELECT * FROM sala WHERE cvesala=?";
-            $salas = $web->DB->GetAll($sql, array($_GET['info2']));
+            if (!isset($_GET['info2'])) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No se está recibiendo la información necesaria para continuar con la operación');
+                break;
+            }
+
+            $sql   = "select * from sala where cvesala=?";
+            $salas = $web->DB->GetAll($sql, $_GET['info2']);
+            if (sizeof($salas) == 0) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No existe la sala');
+                break;
+            }
 
             $web->iniClases('admin', "index salas actualizar");
-
             $web->smarty->assign('salas', $salas[0]);
             $web->smarty->display('form_salas.html');
             die();
             break;
 
         case 'insert':
-            $sql        = "INSERT INTO sala (cvesala, nombre, ubicacion) values(?, ?, ?)";
-            $parameters = array(
-                $_POST['datos']['cvesala'],
-                $_POST['datos']['nombre'],
-                $_POST['datos']['ubicacion']);
-
-            if (!$web->query($sql, $parameters)) {
-                header('Location: salas.php?msg=1');
-                die();
+            //verifica la existencia de los campos
+            if (!isset($_POST['datos']['cvesala']) ||
+                !isset($_POST['datos']['ubicacion'])) {
+                message("index periodos nuevo", "No alteres la estructura de la interfaz", $web);
             }
+
+            //verifica que los campos contengan algo
+            if ($_POST['datos']['cvesala'] == "" ||
+                $_POST['datos']['ubicacion'] == "") {
+                message("index periodos nuevo", "Llena todos los campos", $web);
+            }
+
+            $cveperiodo = $web->periodo();
+            $sql        = "INSERT INTO sala (cvesala, ubicacion, cveperiodo) values(?, ?, ?)";
+            $tmp        = array(
+                $_POST['datos']['cvesala'],
+                $_POST['datos']['ubicacion'],
+                $cveperiodo);
+
+            if (!$web->query($sql, $tmp)) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No se pudo completar la operación');
+                break;
+            }
+
             header('Location: salas.php');
             break;
 
         case 'update':
-            $sql        = "update sala set nombre=?, ubicacion=? where cvesala=?";
+            //verifica la existencia de los campos
+            if (!isset($_POST['datos']['cvesala']) ||
+                !isset($_POST['datos']['ubicacion'])) {
+                message("index periodos nuevo", "No alteres la estructura de la interfaz", $web, $_GET['accion']);
+            }
+
+            //verifica que los campos contengan algo
+            if ($_POST['datos']['cvesala'] == "" ||
+                $_POST['datos']['ubicacion'] == "") {
+                message("index periodos nuevo", "Llena todos los campos", $web, $_GET['accion']);
+            }
+
+            $sql        = "update sala set ubicacion=? where cvesala=?";
             $parameters = array(
-                $_POST['datos']['nombre'],
                 $_POST['datos']['ubicacion'],
                 $_POST['cvesala']);
 
             if (!$web->query($sql, $parameters)) {
-                header('Location: salas.php?msg=2');
-                die();
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No se pudo completar la operación');
+                break;
             }
+
             header('Location: salas.php');
             break;
 
         case 'delete':
-            if (isset($_GET['info1'])) {
-                $sql        = "delete from sala where cvesala=?";
-                $parameters = array($_GET['info1']);
-
-                if (!$web->query($sql, $parameters)) {
-                    header('Location: salas.php?msg=3');
-                    die();
-                }
+            if (!isset($_GET['info1'])) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó la sala');
+                break;
             }
-            break;
-    }
-}
 
-if (isset($_GET['msg'])) {
-    $web->smarty->assign('alert', 'danger');
+            $sql  = "select * from sala where cvesala=?";
+            $sala = $web->DB->GetAll($sql, $_GET['info1']);
+            if (sizeof($sala) == 0) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No existe la sala');
+                break;
+            }
 
-    switch ($_GET['msg']) {
+            $sql = "delete from sala where cvesala=?";
+            if (!$web->query($sql, $_GET['info1'])) {
+                $web->smarty->assign('alert', 'danger');
+                $web->smarty->assign('msg', 'No se pudo completar la operación');
+                break;
+            }
 
-        case 1:
-            $web->smarty->assign('msg', "No es posible agregar la sala, verificar si ya existe");
-            break;
-
-        case 2:
-            $web->smarty->assign('msg', "No es posible modificar la sala");
-            break;
-
-        case 3:
-            $web->smarty->assign('msg', "No es posible eliminar la sala, está relacionada con algún grupo");
+            header('Location: salas.php');
             break;
     }
 }
 
 $web->iniClases('admin', "index salas");
 
-$sql     = 'select cvesala, nombre, ubicacion from sala order by cvesala';
+$sql     = 'select cvesala, ubicacion from sala order by cvesala';
 $salones = $web->DB->GetAll($sql);
 
 if (!isset($salones[0])) {
     $web->smarty->assign('alert', 'warning');
-    $web->smarty->assign('msg', "No hay salones registrados");
+    $web->smarty->assign('msg', " No hay salones registrados");
 } else {
     $web->smarty->assign('salones', $salones);
 }
 
+// echo "<pre>";
+// $obj .= "{\"data\": [[\"<a href='#'>Tiger Nixon</a>\", \"System Architect\", \"Edinburgh\", \"5421\", \"2011/04/25\", \"$320,800\", \"<input type='submit'>\"] ] }";
+// echo $obj;
+// echo "</pre>";
+
+// $file = fopen("arrays.txt", "w");
+// fwrite($file, $obj);
+
+// $web->smarty->assign('obj', $obj);
+
 $web->smarty->display("salas.html");
+
+/**
+ * Método para mostrar el template form_alumnos cuando ocurre algún error
+ * @param  String $iniClases    Ruta a mostrar en links
+ * @param  String $msg          Mensaje a desplegar
+ * @param  $web                 Para poder aplicar las funciones de $web
+ * @param  String $cveperiodo   Usado en caso de que se trate de un formulario de actualización
+ */
+function message($iniClases, $msg, $web, $cvesala = null)
+{
+    $web->iniClases('admin', $iniClases);
+
+    $web->smarty->assign('alert', 'danger');
+    $web->smarty->assign('msg', $msg);
+
+    if ($cveperiodo != null) {
+        $sql   = "select * from sala where cvesala=?";
+        $salas = $web->DB->GetAll($sql, $cvesala);
+
+        $web->smarty->assign('salas', $salas[0]);
+    }
+
+    $web->smarty->display('form_salas.html');
+    die();
+}

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 16:09:02
+/* Smarty version 3.1.30-dev/53, created on 2017-01-03 18:24:44
   from "/home/ubuntu/workspace/templates/admin/header.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862921e9a1c35_92670175',
+  'unifunc' => 'content_586bec6cab5496_32180466',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
       2 => 'file',
     ),
   ),
@@ -20,8 +20,8 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_5862921e9a1c35_92670175 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '16469220115862921e998967_32746281';
+function content_586bec6cab5496_32180466 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '1953012811586bec6caa2c75_63471301';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +50,14 @@ $_smarty_tpl->compiled->nocache_hash = '16469220115862921e998967_32746281';
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <?php echo '<script'; ?>
+ type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"><?php echo '</script'; ?>
+>
+  <?php echo '<script'; ?>
+ type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"><?php echo '</script'; ?>
+>
 
   <title>Salas Lectura</title>
 </head>

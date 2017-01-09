@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 17:21:10
+/* Smarty version 3.1.30-dev/53, created on 2017-01-03 18:05:09
   from "/home/ubuntu/workspace/templates/admin/periodos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862a306781434_07332173',
+  'unifunc' => 'content_586be7d5b23584_16387137',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '020700f5320e5e8bab0862a8b81e7e44f45b56a3' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/periodos.html',
-      1 => 1482852538,
+      1 => 1483072425,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862a306781434_07332173 (Smarty_Internal_Template $_smarty_tpl) {
+function content_586be7d5b23584_16387137 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,10 +99,6 @@ function content_5862a306781434_07332173 (Smarty_Internal_Template $_smarty_tpl)
 		</a>
 	</td></tr>
 </table>
-	<div class="alert alert-danger alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> Existe información relacionada con el elemento seleccionado, por lo que no es posible eliminar dicho periodo
-	</div>
 	<table class='table table-striped'>
 		<tr>		
 			<th>CLAVE PERIODO</th>
@@ -113,35 +109,36 @@ function content_5862a306781434_07332173 (Smarty_Internal_Template $_smarty_tpl)
 		</tr>
 			<tr>
 							<td>7</td>
-			
-			<td>2016-10-18</td>
+						<td>2016-10-18</td>
 			<td>2017-01-19</td>
-			<td>
-				<a href="periodos.php?accion=eliminar&info1=7"> 
-					<img src="../Images/cancelar.png">
-				</a>
-			</td>
-			<td>
-				<a href="periodos.php?accion=form_update&info2=7">
-					<img src="../Images/edit.png">
-				</a>
-			</td>
+			<td><a href="periodos.php?accion=eliminar&info1=7"> 
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="periodos.php?accion=form_update&info2=7">
+				<img src="../Images/edit.png">
+			</a></td>
 		</tr>
 			<tr>
 							<td>8</td>
-			
-			<td>2016-12-26</td>
+						<td>2016-12-26</td>
 			<td>2017-12-15</td>
-			<td>
-				<a href="periodos.php?accion=eliminar&info1=8"> 
-					<img src="../Images/cancelar.png">
-				</a>
-			</td>
-			<td>
-				<a href="periodos.php?accion=form_update&info2=8">
-					<img src="../Images/edit.png">
-				</a>
-			</td>
+			<td><a href="periodos.php?accion=eliminar&info1=8"> 
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="periodos.php?accion=form_update&info2=8">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+							<td>13</td>
+						<td>2016-12-17</td>
+			<td>2016-12-31</td>
+			<td><a href="periodos.php?accion=eliminar&info1=13"> 
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="periodos.php?accion=form_update&info2=13">
+				<img src="../Images/edit.png">
+			</a></td>
 		</tr>
 		</table>
 </body>

@@ -1,24 +1,24 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-27 19:06:28
+/* Smarty version 3.1.30-dev/53, created on 2017-01-09 05:04:42
   from "/home/ubuntu/workspace/templates/admin/salas.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5862bbb4bcf5a2_69685409',
+  'unifunc' => 'content_587319ea1eb309_42445994',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '18dcc6895306a849d79cb4931b1621bf766157ef' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/salas.html',
-      1 => 1482857558,
+      1 => 1483561164,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
       2 => 'file',
     ),
     '6e909a28eecf3875ef5429e4bc28852eeb6567eb' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5862bbb4bcf5a2_69685409 (Smarty_Internal_Template $_smarty_tpl) {
+function content_587319ea1eb309_42445994 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +51,10 @@ function content_5862bbb4bcf5a2_69685409 (Smarty_Internal_Template $_smarty_tpl)
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
   <title>Salas Lectura</title>
 </head>
@@ -92,17 +96,122 @@ function content_5862bbb4bcf5a2_69685409 (Smarty_Internal_Template $_smarty_tpl)
   </div><!-- /.container-fluid -->
 </nav>
 <div><label><a href="index.php">index</a></label> > <label>salas</label></div>   
-<table class='table table-striped'>
+<table class='table'>
 	<tr><td colspan='4' align='right'>
 		<a href='salas.php?accion=form_insert&tabla=sala'>
 			<img src='../Images/add.png'/>
 		</a>
 	</td></tr>
 </table>
-	<div class="alert alert-warning alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong>No hay salones registrados
-	</div>
+	<table id="example" class='table table-striped display' cellspacing="0" width="100%">
+		<!--<thead>-->
+  <!--          <tr>-->
+  <!--              <th>Name</th>-->
+  <!--              <th>Position</th>-->
+  <!--              <th>Office</th>-->
+  <!--              <th>Extn.</th>-->
+  <!--              <th>Start date</th>-->
+  <!--              <th>Salary</th>-->
+  <!--              <th>Salary</th>-->
+  <!--          </tr>-->
+  <!--      </thead>-->
+  <!--      <tfoot>-->
+  <!--          <tr>-->
+  <!--              <th>Name</th>-->
+  <!--              <th>Position</th>-->
+  <!--              <th>Office</th>-->
+  <!--              <th>Extn.</th>-->
+  <!--              <th>Start date</th>-->
+  <!--              <th>Salary</th>-->
+  <!--              <th>Salary</th>-->
+  <!--          </tr>-->
+  <!--      </tfoot>-->
+  
+  <tr>		
+			<th>CLAVE SALA</th>
+			<th>UBICACION</th>
+			<th>ELIMINAR</th>
+			<th>ACTUALIZAR</th>
+		</tr>
+			<tr>
+			<td>P00</td>
+			<td>PRUEBA</td>
+			<td><a href="salas.php?accion=delete&info1=P00">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=P00">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>P01</td>
+			<td>BIBLIOTECA CAMPUS 2</td>
+			<td><a href="salas.php?accion=delete&info1=P01">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=P01">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>P02</td>
+			<td>BIBLIOTECA CAMPUS 2</td>
+			<td><a href="salas.php?accion=delete&info1=P02">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=P02">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>S01</td>
+			<td>Biblioteca</td>
+			<td><a href="salas.php?accion=delete&info1=S01">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=S01">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>S02</td>
+			<td>Biblioteca</td>
+			<td><a href="salas.php?accion=delete&info1=S02">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=S02">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>S03</td>
+			<td>Biblioteca</td>
+			<td><a href="salas.php?accion=delete&info1=S03">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=S03">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+			<tr>
+			<td>S04</td>
+			<td>Biblioteca</td>
+			<td><a href="salas.php?accion=delete&info1=S04">
+				<img src="../Images/cancelar.png">
+			</a></td>
+			<td><a href="salas.php?accion=form_update&info2=S04">
+				<img src="../Images/edit.png">
+			</a></td>
+		</tr>
+		</table>
+<!---->
 </body>
-</html><?php }
+</html>
+<script type="text/javascript">
+// 	$(document).ready(function() {
+//     $('#example').DataTable( {
+//         "ajax": "arrays.txt"
+//     } );
+// } );
+</script><?php }
 }

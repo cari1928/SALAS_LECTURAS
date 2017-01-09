@@ -13,7 +13,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-              {if isset($promotores)} Actualizar Promotor
+              {if isset($promotores)} Actualizar Promotor - RFC: {$promotores.cveusuario}
               {else} Nuevo Promotor {/if}
             </h3>
           </div>
@@ -24,31 +24,55 @@
             <div class="form-group">
               <label>Nombre Completo:</label>
               <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]"  required
-              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+              {if isset($promotores)} value="{$promotores.nombre}" {/if}>
             </div>
             <div class="form-group">
               <label>Especialidad:</label>
               {$combito}
             </div>
+            {if !isset($promotores)}
             <div class="form-group">
               <label>RFC: </label>
-              <input class="form-control" placeholder="RFC" name="datos[usuario]" maxlength="13" required
-              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+              <input class="form-control" placeholder="RFC" name="datos[usuario]" maxlength="13" required>
             </div>
+            {/if}
             <div class="form-group">
               <label>Correo: </label>
               <input type="email" class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required
-              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+              {if isset($promotores)} value="{$promotores.correo}" {/if}>
             </div>
+            {if !isset($promotores)}
             <div class="form-group">
               <label>Contraseña:</label>
-              <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]" required
-              {if isset($promotores)} value="{$promotores.fechainicio}" {/if}>
+              <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]" required>
             </div>
             <div class="form-group">
               <label>Confirmar contraseña:</label>
               <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Confirmar contraseña" name="datos[confcontrasena]" id="producto" required>
             </div>
+            {/if}
+            {if isset($promotores)}
+              <div id='js' class="form-group">
+                <label id="l1">Modificar contraseña</label>
+                <input id="r1" type="radio" class="btn btn-default" value='true' name="datos[pass]" onclick="mostrar()">
+                <label id ="l2" style="display:none">Mantener contraseña original</label>
+                <input id="r2" type="radio"  class="btn btn-default" value='false' name="datos[pass]" onclick="mostrar()" checked style="display:none">
+              </div>
+              <div id='oculto' class="form-group" style="display:none">
+                <div class="form-group">
+                  <label>Contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]">
+                </div>
+                <div class="form-group">
+                  <label>Nueva contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Nueva contraseña" name="datos[contrasenaN]">
+                </div>
+                <div class="form-group">
+                  <label>Confirmar Nueva contraseña:</label>
+                  <input type="password" class="form-control" placeholder="Confirmar nueva contraseña" name="datos[confcontrasenaN]">
+                </div>
+              </div>
+              {/if}
           </div>
         </div>
         <button type="submit" class="btn btn-primary">
@@ -59,4 +83,25 @@
     </nav>
   </div>
 </div>  
+<script>
+  var bandera = 0;
+    function mostrar()
+    {
+      var test = document.getElementsByName('datos[pass]');
+       if(test[0].checked == true) {
+          document.getElementById('oculto').style.display="block";
+          document.getElementById('r2').style.display="inline";
+          document.getElementById('l2').style.display="inline";
+          document.getElementById('r1').style.display="none";
+          document.getElementById('l1').style.display="none";
+        }
+        if(test[1].checked == true) {
+          document.getElementById('oculto').style.display="none";
+          document.getElementById('r2').style.display="none";
+          document.getElementById('l2').style.display="none";
+          document.getElementById('r1').style.display="inline";
+          document.getElementById('l1').style.display="inline";
+        }
+    }
+</script>
 {include file='footer.html'}

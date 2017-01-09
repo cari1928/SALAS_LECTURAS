@@ -2,14 +2,15 @@
 {$ruta}   
 <table class='table table-striped'>
 	<tr><td colspan='4' align='right'>
-			<a href='alumnos.php?accion=form_insert'>
-				<img src='../Images/add.png' /> 
-			</a>
+		<a href='alumnos.php?accion=form_insert'>
+			<img src='../Images/add.png' /> 
+		</a>
 	</td></tr>
 </table>
 {if isset($msg)}
 	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span></button>
 	  <strong>¡Aviso!</strong> {$msg}
 	</div>
 {/if}
@@ -30,21 +31,15 @@
 				<td>{$alumno.Usuario}</td>
 				<td>{$alumno.Especialidad}</td>
 				<td>{$alumno.correo}</td>
-				<td>
-					<a href="alumnos.php?accion=delete&info1={$alumno.cveusuario}"> 
-						<img src="../Images/cancelar.png">
-					</a>
-				</td>
-				<td>
-					<a href="alumnos.php?accion=form_update&info2={$alumno.cveusuario}"> 
-						<img src="../Images/edit.png">
-					</a>
-				</td>
-				<td>
-					<a href="showalumnos.php?info1={$alumno.cveusuario}"> 
-						<img src="../Images/mostrarL.png">
-					</a>
-				</td>
+				<td><a href="alumnos.php?accion=delete&info1={$alumno.cveusuario}"> 
+					<img src="../Images/cancelar.png">
+				</a></td>
+				<td><a href="alumnos.php?accion=form_update&info2={$alumno.cveusuario}"> 
+					<img src="../Images/edit.png">
+				</a></td>
+				<td><a href="showalumnos.php?info1={$alumno.cveusuario}"> 
+					<img src="../Images/mostrarL.png">
+				</a></td>
 			</tr>
 		{/foreach}
 	</table>

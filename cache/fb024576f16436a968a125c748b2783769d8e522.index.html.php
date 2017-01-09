@@ -1,24 +1,24 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2016-12-28 17:03:54
+/* Smarty version 3.1.30-dev/53, created on 2017-01-09 08:47:20
   from "/home/ubuntu/workspace/templates/admin/index.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5863f07a7d05b0_79100604',
+  'unifunc' => 'content_58734e18967cc6_67418133',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '8656ba5f54811b5624cd9c8ab844b7aaf36ba347' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/index.html',
-      1 => 1482852538,
+      1 => 1483504851,
       2 => 'file',
     ),
     '7c2e35bfb8e3c1543301fa6f15779ac80eaaef9b' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/header.html',
-      1 => 1482852538,
+      1 => 1483467882,
       2 => 'file',
     ),
     '6e909a28eecf3875ef5429e4bc28852eeb6567eb' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_5863f07a7d05b0_79100604 (Smarty_Internal_Template $_smarty_tpl) {
+function content_58734e18967cc6_67418133 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,6 +51,10 @@ function content_5863f07a7d05b0_79100604 (Smarty_Internal_Template $_smarty_tpl)
 
   <meta charset="UTF-8">
   <link rel="stylesheet" type="text/css" href="../css/main.css">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 
   <title>Salas Lectura</title>
 </head>
@@ -92,52 +96,31 @@ function content_5863f07a7d05b0_79100604 (Smarty_Internal_Template $_smarty_tpl)
   </div><!-- /.container-fluid -->
 </nav>
 <div><label>index</label></div>
-<div>
-  <table>
-    <tr>
-      <th>
-        <a href="periodos.php">
-          Periodos
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <a href="salas.php">
-          Salas
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <a href="promotor.php">
-          Promotores
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <a href="alumnos.php">
-          Alumnos
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <a href="historial.php">
-          Historial
-        </a>
-      </th>
-    </tr>
-    <tr>
-      <th>
-        <a href="libros.php">
-          Libros
-        </a>
-      </th>
-    </tr>
-  </table>
-</div>
+<link rel="stylesheet" type="text/css" href="../css/menu.css">
+
+<nav id="colorNav">
+	<ul>
+		<li id="icon" class="green">
+			<a  href="periodos.php" ><center><img src="../Images/periodos.png">Periodos</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="salas.php" ><center><img src="../Images/salas.png">Salas</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="promotor.php" ><center><img src="../Images/promotor.png">Promotores</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="alumnos.php" ><center><img src="../Images/alumnos.png">Alumnos</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="historial.php" ><center><img src="../Images/historial.png">Historial</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="libros.php" ><center><img src="../Images/libros.png">Libros</center></a>
+		</li>
+	</ul>
+</nav>
+
 </body>
 </html>
 <?php }

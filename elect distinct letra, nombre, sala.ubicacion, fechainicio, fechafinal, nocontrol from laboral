@@ -1,0 +1,23 @@
+ letra |  nombre  |      ubicacion      | fechainicio | fechafinal 
+-------+----------+---------------------+-------------+------------
+ A     |          | Biblioteca          | 2016-12-26  | 2017-12-15
+ C     |          | Biblioteca          | 2016-12-26  | 2017-12-15
+ H     | SALA - H | Biblioteca          | 2016-12-26  | 2017-12-15
+ N     | SALA - N | Biblioteca          | 2016-12-26  | 2017-12-15
+ T     | SALA - T | PRUEBA              | 2016-12-26  | 2017-12-15
+ U     | SALA - U | PRUEBA              | 2016-12-26  | 2017-12-15
+ S     | SALA - S | PRUEBA              | 2016-12-26  | 2017-12-15
+ R     | SALA - R | BIBLIOTECA CAMPUS 2 | 2016-12-26  | 2017-12-15
+ F     | SALA - F | Biblioteca          | 2016-12-26  | 2017-12-15
+ Q     | SALA - Q | PRUEBA              | 2016-12-26  | 2017-12-15
+ B     |          | Biblioteca          | 2016-12-26  | 2017-12-15
+ D     | SALA - D | PRUEBA              | 2016-12-26  | 2017-12-15
+ G     | SALA - G | Biblioteca          | 2016-12-26  | 2017-12-15
+ P     | SALA - P | PRUEBA              | 2016-12-26  | 2017-12-15
+ E     | SALA - E | BIBLIOTECA CAMPUS 2 | 2016-12-26  | 2017-12-15
+ O     | SALA - O | Biblioteca          | 2016-12-26  | 2017-12-15
+ L     | SALA - L | Biblioteca          | 2016-12-26  | 2017-12-15
+ M     | SALA - M | Biblioteca          | 2016-12-26  | 2017-12-15
+ I     | SALA - I | Biblioteca          | 2016-12-26  | 2017-12-15
+(19 rows)
+
