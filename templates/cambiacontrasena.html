@@ -1,11 +1,12 @@
 {include file='header.html'}
+{$ruta}
 <center>
     <h3>¡Bienvenido! <br><br/></h3>
        <form class="form-inline" action='cambiacontrasena.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
    <div class="form-group">
     <label>Usuario:</label>
     <br/>
-    <input  class="form-control" id="exampleInputEmail3" name="datos[cveUsuario]" id="producto" readonly ="readonly" value="{$user}">
+    <input  class="form-control" name="datos[cveUsuario]" readonly value="{$user}">
   </div>
     <br/>
     <br/>

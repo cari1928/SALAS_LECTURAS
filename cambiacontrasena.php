@@ -1,13 +1,16 @@
 <?php  
 include("sistema.php");
 
-if (isset($_GET['user'])) 
-{
+print_r($_GET);
+// die();
+
+if (isset($_GET['user'])) {
 	$web->smarty->assign('user',$_GET['user']);	
 	$web->smarty->display('cambiacontrasena.html');
-}
-elseif(isset($_POST['datos']))
-{
+	die();
+} 
+
+if(isset($_POST['datos'])) {
 	$sql="update usuarios set pass=md5('".$_POST['datos']['contrasena']."') where cveusuario = '".$_POST['datos']['cveUsuario']."'";
 	$web->query($sql);
 
@@ -45,9 +48,8 @@ elseif(isset($_POST['datos']))
 	                $_SESSION['roles'] = $rol;
 	                header('Location: admin');
 	            }
-}
-else
-{
-	header('location : index.php');
-}
+
+} 
+
+header('Location: index.php');
 ?>

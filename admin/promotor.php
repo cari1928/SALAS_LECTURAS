@@ -12,7 +12,7 @@ if (isset($_GET['accion'])) {
         case 'form_insert':
             $web->iniClases('admin', "index promotor nuevo");
 
-            $sql     = "select cveespecialidad, nombre from especialidad order by nombre";
+            $sql     = "select cveespecialidad, nombre from especialidad where cveespecialidad <> 'O' order by nombre";
             $combito = $web->combo($sql, null, '../');
 
             $web->smarty->assign('combito', $combito);
@@ -29,7 +29,11 @@ if (isset($_GET['accion'])) {
 
             $web->iniClases('admin', "index promotor Actualizar");
 
-            $sql   = 'select * from usuarios where cveusuario=?';
+            $sql   = 'select u.cveusuario, u.nombre , e.nombre, eu.cveespecialidad, eu.otro, u.correo 
+                      from usuarios u
+                      inner join especialidad_usuario eu on eu.cveusuario=u.cveusuario
+                      inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
+                      where u.cveusuario=?';
             $datos = $web->DB->GetAll($sql, $_GET['info1']);
             if (!isset($datos[0])) {
                 $web->smarty->assign('alert', 'danger');
@@ -39,7 +43,7 @@ if (isset($_GET['accion'])) {
             
             $web->smarty->assign('alert', 'danger');
 
-            $sql     = "select cveespecialidad, nombre from especialidad order by nombre";
+            $sql     = "select cveespecialidad, nombre from especialidad where cveespecialidad <> 'O' order by nombre";
             $combito = $web->combo($sql, $datos[0]['cveespecialidad'], '../');
             
             $web->smarty->assign('combito', $combito);
@@ -112,6 +116,8 @@ if (isset($_GET['accion'])) {
             break;
 
         case 'update':
+          // echo "<pre>";
+          // die(print_r($_POST));
             $cveusuario = $_POST['cveusuario'];
             if (!isset($_POST['datos']['nombre']) ||
                 !isset($_POST['datos']['cveespecialidad']) ||
@@ -168,10 +174,9 @@ if (isset($_GET['accion'])) {
                     errores('La contraseña nueva debe coincidir con la confirmación', 'index promotor nuevo', $cveusuario, $web);
                 }
 
-                $sql = "update usuarios set nombre=?, cveespecialidad=?, correo= ?, pass=? where cveusuario=?";
+                $sql = "update usuarios set nombre=?, correo= ?, pass=? where cveusuario=?";
                 $tmp = array(
                   $_POST['datos']['nombre'], 
-                  $_POST['datos']['cveespecialidad'], 
                   $_POST['datos']['correo'], 
                   md5($_POST['datos']['contrasenaN']), 
                   $cveusuario);
@@ -181,13 +186,25 @@ if (isset($_GET['accion'])) {
                   break; 
                 }
             } else {
-                $sql = "update usuarios set nombre=?, cveespecialidad=?, correo= ? where cveusuario=?";
-                $tmp = array($_POST['datos']['nombre'], $_POST['datos']['cveespecialidad'], $_POST['datos']['correo'], $cveusuario);
+                $sql = "update usuarios set nombre=?, correo= ? where cveusuario=?";
+                $tmp = array($_POST['datos']['nombre'], $_POST['datos']['correo'], $cveusuario);
                 if(!$web->query($sql, $tmp)) {
                   $web->smarty->assign('alert', 'danger');
                   $web->smarty->assign('msg', 'No se pudo completar la operación');
                   break;
                 }
+                
+                
+                if(isset($_POST['datos']['especialidad'])){
+                  if($_POST['datos']['especialidad'] == 'true'){
+                    $sql = "update especialidad set cveespecialidad=?, otro = null where cveusuario=? ";
+                    $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
+                  }
+                  else{
+                    $sql = "update especialidad set cveespecialidad='O', otro=? where cveusuario=? ";
+                    $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
+                  }
+                 }
             }
             header('Location: promotor.php');
             break;
@@ -231,8 +248,9 @@ if (isset($_GET['info1'])) {
 }
 
 $sql = "select u.cveusuario ,u.nombre, u.correo, e.nombre AS \"Especialidad\" from usuarios u
-            inner join especialidad e on e.cveespecialidad=u.cveespecialidad
-            where rol='P' order by u.cveusuario";
+              inner join especialidad_usuario eu on eu.cveusuario=u.cveusuario
+              inner join especialidad e on e.cveespecialidad = eu.cveespecialidad
+              where u.cveusuario in (select cveusuario from usuario_rol where cverol=2) order by u.cveusuario";
 $promotores = $web->DB->GetAll($sql);
 
 $web->smarty->assign('promotores', $promotores);
@@ -243,7 +261,7 @@ function errores($msg, $ruta, $cveusuario = null, $web)
     $web->smarty->assign('alert', 'danger');
     $web->smarty->assign('msg', $msg);
     $web->iniClases('admin', $ruta);
-    $combito = $web->combo("select cveespecialidad, nombre from especialidad", null, '../');
+    $combito = $web->combo("select cveespecialidad, nombre from especialidad where cveespecialidad <> 'O'", null, '../');
     $web->smarty->assign('combito', $combito);
     if ($cveusuario != null) {
         $sql   = 'select*from usuarios where cveusuario=?';

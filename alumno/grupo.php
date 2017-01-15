@@ -96,7 +96,8 @@ if(isset($_GET['accion'])) {
       
       $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo) values (?, ?, ?)";
       $web->query($sql, array($cvelibro, $cvelectura, $cveperiodo));
-      header('Location: grupo.php?info1='.$lectura[0]['letra']);
+      // header('Location: grupo.php?info1='.$lectura[0]['letra']);
+      header('Location: grupo.php?accion=form_libro&info1='.$cvelectura);
       break;
     
   }

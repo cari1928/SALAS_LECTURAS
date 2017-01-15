@@ -283,11 +283,14 @@ class Sistema extends Conexion
      */
     public function iniClases($ubicacion, $ruta)
     {
-        $nombre = $this->tipoCuenta();
-        $this->smarty->assign('nombrecuenta', $nombre);
-        $this->smarty->assign('usuario', $_SESSION['nombre']);
-        $this->smarty->setTemplateDir('../templates/' . $ubicacion . '/');
-
+        if($ubicacion != null) {
+          $nombre = $this->tipoCuenta();
+          $this->smarty->assign('nombrecuenta', $nombre);
+          $this->smarty->assign('usuario', $_SESSION['nombre']);
+        
+          $this->smarty->setTemplateDir('../templates/' . $ubicacion . '/');
+        } 
+        
         $ruta = explode(" ", $ruta);
         $cad  = "<div>";
 
@@ -528,81 +531,72 @@ class Sistema extends Conexion
     {
         $msj        = '';
         $contrasena = md5($contrasena);
-        $sql        = "select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'";
+        
+        $sql        = "select * from usuarios where pass=? and cveusuario=?";
+        $datos_rs = $this->DB->GetAll($sql, array($contrasena, $email));
 
-        $datos_rs = $this->DB->GetAll($sql);
-
-        if (!(isset($datos_rs[0]['cveusuario']))) {
-            $datos_rs = $this->DB->GetAll("select * from usuarios where clave='" . $contrasena . "' and cveusuario='" . $email . "'");
-            if (isset($datos_rs[0]['cveusuario'])) {
-                header('Location:cambiacontrasena.php?user=' . $email);
-            } else {
-                return false;
-            }
-
+        if (!isset($datos_rs[0])) {
+          return false;
+          
         } else {
-            $sql      = "select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'";
-            $datos_rs = $this->DB->GetAll($sql);
-
-            if (isset($datos_rs[0])) {
-                $datos_rs = $this->DB->GetAll("select * from usuarios where pass='" . $contrasena . "' and cveusuario='" . $email . "'");
-                $rol      = $datos_rs[0]["rol"];
-                $nombre   = $datos_rs[0]["nombre"];
-                $sql      = "update usuarios set clave = null where cveusuario='" . $email . "'";
-                $this->query($sql);
-
-                if ($rol == "U") {
-                    // Crear las variables de sesión
-                    $_SESSION['nombre']   = $nombre;
-                    $_SESSION['cveUser']  = $email;
-                    $_SESSION['logueado'] = true;
-                    $_SESSION['roles']    = $rol;
-                    header('Location: alumno');
-                }
-                if ($rol == "P") {
-                    // Crear las variables de sesión
-                    $_SESSION['nombre']   = $nombre;
-                    $_SESSION['cveUser']  = $email;
-                    $_SESSION['logueado'] = true;
-                    $_SESSION['roles']    = $rol;
-                    header('Location:promotor');
-                }
-                if ($rol == "A") {
-                    // Crear las variables de sesión
-                    $_SESSION['nombre']   = $nombre;
-                    $_SESSION['cveUser']  = $email;
-                    $_SESSION['logueado'] = true;
-                    $_SESSION['roles']    = $rol;
-                    header('Location:admin');
-                }
-
+          
+          $sql    ="select * from usuario_rol where cveusuario=?";
+          $roles  = $this->DB->GetAll($sql, $email);
+          
+          $nombre = $datos_rs[0]["nombre"];
+          $sql      = "update usuarios set clave=null where cveusuario=?";
+          $this->query($sql, $email);
+          
+          $_SESSION['nombre']   = $nombre;
+          $_SESSION['cveUser']  = $email;
+          
+          if(sizeof($roles)==1) {
+            $_SESSION['logueado'] = true;
+            
+            if ($roles[0]['cverol'] == 3) { 
+                $_SESSION['roles']    = 'U';
+                header('Location: alumno');
             }
+            if ($roles[0]['cverol'] == 2) { 
+                $_SESSION['roles']    = 'P';
+                header('Location: promotor');
+            }
+            if ($roles[0]['cverol'] == 1) { 
+                $_SESSION['roles']    = 'A';
+                header('Location: admin');
+            }
+            
+          } else {
+            //Aqui va si tiene mas de 1 rol :3
+            $this->iniClases(null, 'index login roles');
+            $this->smarty->assign('roles', $roles);
+            $this->smarty->display('roles.html');
+            exit;
+          }
         }
-
         return true;
     }
 
-    public function logout()
-    {
-        unset($_SESSION);
-        session_destroy();
-    }
+  /**/
+  public function logout() {
+    unset($_SESSION);
+    session_destroy();
+  }
 
-    public function recuperaId($email)
-    {
-        if ($this->validarEmail($email)) {
-
-            $this->query("select id from usuario where email='$email'");
-            while (!$this->rs->EOF) {
-                $id = $this->rs->fields['id'];
-                $this->rs->MoveNext();
-            }
-            return $id;
-
-        } else {
-            $this->error('erroralingresarelmail');
+  public function recuperaId($email) {
+    
+    if ($this->validarEmail($email)) {
+        $this->query("select id from usuario where email=?", $email);
+        while (!$this->rs->EOF) {
+            $id = $this->rs->fields['id'];
+            $this->rs->MoveNext();
         }
+        return $id;
+
+    } else {
+        $this->error('erroralingresarelmail');
     }
+  }
 
     public function generaContrasena()
     {

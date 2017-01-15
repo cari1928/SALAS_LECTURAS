@@ -1,7 +1,8 @@
 <?php
 include ('sistema.php');
+
 $contraseña='';
-$web=new sistema;
+$web = new sistema;
 
 if (!isset($_POST['datos'])) {
 	mensajes("","","","","","",$web);
@@ -95,6 +96,7 @@ if($tipo == "U") {
 //------------------------------------------------------------------------------------------------
 	function mensajes($msgnoControl,$msgrfc,$msgpass,$msgtipo,$msgusuario,$correo,$web)
 	{
+		$web->iniClases(null, "index registrar");
 		$web->smarty->assign('especialidad',$web->combo("SELECT * FROM especialidad order by nombre"));
 		$web->smarty->assign('correo',' <label style= "color:red">'.$correo.'</label>');
 		$web->smarty->assign('noControl',' <label style= "color:red">'.$msgnoControl.'</label>');

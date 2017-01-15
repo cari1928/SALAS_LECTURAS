@@ -6,7 +6,7 @@ if ($_SESSION['roles'] != 'P') {
     $web->checklogin();
 }
 
-$web->iniClases('promotor', "index vergrupos grupo");
+$web->iniClases('promotor', "index grupos grupo");
 $grupos = $web->grupos($_SESSION['cveUser']);
 $web->smarty->assign('grupos', $grupos);
 
