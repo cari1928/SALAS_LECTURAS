@@ -21,9 +21,10 @@
 			<th>NOMBRE</th>
 			<th>ESPECIALIDAD</th>
 			<th>CORREO</th>
-			<th>ELIMINAR</th>
-			<th>ACTUALIZAR</th>
-			<th>MOSTRAR</th>
+			<th><center>ESTADO - CRÉDITO</center></th>
+			<th><center>ELIMINAR</center></th>
+			<th><center>ACTUALIZAR</center></th>
+			<th><center>MOSTRAR</center></th>
 		</tr>
 		{foreach $alumnos as $alumno}
 			<tr>
@@ -31,17 +32,38 @@
 				<td>{$alumno.Usuario}</td>
 				<td>{$alumno.Especialidad}</td>
 				<td>{$alumno.correo}</td>
-				<td><a href="alumnos.php?accion=delete&info1={$alumno.cveusuario}"> 
+				<td><center><a href="#">FALTA PROGRAMAR!!</a></center></td>
+				<td><center><a href="#" class="delete_student"> 
 					<img src="../Images/cancelar.png">
-				</a></td>
-				<td><a href="alumnos.php?accion=form_update&info2={$alumno.cveusuario}"> 
+				</a></center></td>
+				<td><center><a href="alumnos.php?accion=form_update&info2={$alumno.cveusuario}"> 
 					<img src="../Images/edit.png">
-				</a></td>
-				<td><a href="showalumnos.php?info1={$alumno.cveusuario}"> 
-					<img src="../Images/mostrarL.png">
-				</a></td>
+				</a></center></td>
+				<td><center><a href="alumnos.php?accion=show&info1={$alumno.cveusuario}"> 
+					<img src="../Images/grupo.png">
+				</a></center></td>
 			</tr>
 		{/foreach}
 	</table>
 {/if}
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    //link para eliminar libros de alumnos
+    $("a.delete_student").click(function confirmar(){
+  		//un confirm
+  		alertify.confirm("<p>Se eliminarán todos los datos del alumno incluyendo grupos, libros, etc.<br> De clic en Aceptar si está seguro", function (e) {
+  			if (e) {
+  				alertify.success("Has pulsado '" + alertify.labels.ok + "'");
+  				
+  				url = "alumnos.php?accion=delete&info1={$alumno.cveusuario}";
+          window.open(url, '_self');
+          return false;
+  			} else { 
+  			  alertify.error("Has pulsado '" + alertify.labels.cancel + "'");
+  			}
+  		}); 
+    });
+  });
+</script>
 {include file='footer.html'}

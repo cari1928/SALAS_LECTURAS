@@ -1,70 +1,56 @@
 {include file='header.html'}
 {$ruta}
-<center>
-    {$encabezado}
-       <form class="form-inline" action='registrar.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
-  <br/>
-  <div class="form-group">
-    <label>Alumno: </label><input type="radio" name="datos[tipo]" value="U">
-    <label>Promotor: </label><input type="radio" name="datos[tipo]" value="P"> 
-  </div>
-  <br/> 
-  {$tipo}    
-  <br/>      
-  <div class="form-group">
-    <label>Nombre Completo: </label>
-    <br/>
-    <input class="form-control" id="exampleInputEmail3" placeholder="Nombre y Apellidos" name="datos[nombre]" id="producto" required>
-  </div>
-  <br/>
-  <br/>
-  <label>Especialidad: </label>
-    <br/>
-      {$especialidad}
-    <br/>
-    <br/>
-    <div class="form-group">
-    <label>Usuario: </label>
-    <br/>
-    <input class="form-control" id="exampleInputPassword3" placeholder="noControl/RFC" name="datos[usuario]" id="producto" maxlength="13" required>
-  </div>
-  <br/>
-  {$noControl} {$rfc}
-  <br/>
-  <br/>
-  <div class="form-group">
-  <label>Correo: </label>
-    <br/>
-    <input class="form-control" placeholder="Correo" name="datos[correo]" id="producto" maxlength="75" required>
-    <label>@itcelaya.edu.mx </label>
-    <br/>  
-    {$correo}
-  </div>
-  <br/>
-  <br/>
-  <div class="form-group">
-    <label>Contraseña:</label>
-    <br/>
-    <input type="password" class="form-control" id="exampleInputEmail3" placeholder="Contraseña" name="datos[contrasena]" id="producto" required>
-  </div>
-  <div class="form-group">
-    <label>Confirmar contraseña:</label>
-    <br/>
-    <input type="password" class="form-control" id="exampleInputPassword3" placeholder="Confirmar contraseña" name="datos[confcontrasena]" id="producto" required>
-  </div>
-  <br/>
-  {$contrasena}
-  <br/>
-  <br/>
-  <button type="submit" class="btn btn-default" value='Registrar' name="guardar">Registrar</button> </br>
-  {$usuario}
-  <br/>
-  <br/>
-  <br/>
-  <br/>
-
-</form>
-</center>
-    </body>
-</html>
+<div class="container-fluid">
+  <div class="main row">
+    <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3"> 
+      {if isset($msg)} 
+        <div class="alert alert-{$alert} alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <strong>¡Aviso!</strong> {$msg}
+        </div>
+      {/if}
+      <form action='registrar.php' method='post'>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title"><center>{$encabezado}</center></h3>
+          </div>
+          <div class="panel-body">
+            <center><div class="form-group">
+              <label>Alumno:</label>
+              <input type="radio" name="datos[tipo]" value="U">
+              <label>Promotor:</label>
+              <input type="radio" name="datos[tipo]" value="P"> 
+            </div></center>
+            <div class="form-group">
+              <label>Nombre Completo:</label>
+              <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]" required>
+            </div>
+            <div class="form-group">
+              <label>Especialidad:</label>
+              {$especialidad}
+            </div>
+            <div class="form-group">
+              <label>Usuario:</label>
+              <input class="form-control" placeholder="Número de Control / RFC" name="datos[usuario]" maxlength="13" required>
+            </div>
+            <div class="form-group">
+              <label>Correo:</label>
+              <input class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75" required>
+            </div>
+            <div class="form-group">
+              <label>Contraseña:</label>
+              <input type="password" class="form-control" placeholder="Contraseña" name="datos[contrasena]" required>
+            </div>
+            <div class="form-group">
+              <label>Confirmar contraseña:</label>
+              <input type="password" class="form-control" placeholder="Confirmar contraseña" name="datos[confcontrasena]" required>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" value='Registrar' name="guardar">Registrar</button>
+      </form>
+      <br><br><br>
+    </nav>
+  </div>  
+</div>
 {include file='footer.html'}

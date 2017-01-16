@@ -33,7 +33,7 @@
 			{/if}
 			<td>{$periodo.fechainicio}</td>
 			<td>{$periodo.fechafinal}</td>
-			<td><a href="periodos.php?accion=eliminar&info1={$periodo.cveperiodo}"> 
+			<td><a href="#" class="delete_lapse"> 
 				<img src="../Images/cancelar.png">
 			</a></td>
 			<td><a href="periodos.php?accion=form_update&info2={$periodo.cveperiodo}">
@@ -43,4 +43,24 @@
 	{/foreach}
 	</table>
 {/if}
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("a.delete_lapse").click(function confirmar(){
+  		//un confirm
+  		alertify.confirm("<p>Se eliminarán todos los datos relacionados con el periodo (Grupos, profesores, alumnos, historial, etc.), de clic en Aceptar si está seguro", function (e) {
+  			if (e) {
+  				alertify.success("Has pulsado '" + alertify.labels.ok + "'");
+  				
+  				url = "periodos.php?accion=eliminar&info1={$periodo.cveperiodo}";
+          window.open(url, '_self');
+          return false;
+  			} else { 
+  			  alertify.error("Has pulsado '" + alertify.labels.cancel + "'");
+  			}
+  		}); 
+    });
+  });
+</script>
+
 {include file="footer.html"}

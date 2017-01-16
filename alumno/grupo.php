@@ -1,6 +1,6 @@
 <?php
 
-include "../sistema.php";
+include '../sistema.php';
 
 if ($_SESSION['roles'] != 'U') {
     $web->checklogin();
@@ -32,6 +32,7 @@ if(isset($_GET['accion'])) {
       }
       
       $web->iniClases('usuario', "index grupos libro");
+      
       //para no mostrar los libros que ya fueron registrados para ese alumno en ese periodo
       $sql   = "select cvelibro, titulo from libro 
       where cvelibro not in 
@@ -39,16 +40,16 @@ if(isset($_GET['accion'])) {
         inner join lectura on lectura.cvelectura = lista_libros.cvelectura
         inner join abecedario on abecedario.cve = lectura.cveletra
         inner join laboral on laboral.cveletra = abecedario.cve
-        where nocontrol=? and laboral.cveperiodo=?)
+        where nocontrol=? and laboral.cveperiodo=? and lectura.cvelectura=?)
       order by titulo";
-      $combo = $web->combo($sql, null, '../', array($lectura[0]['nocontrol'], $cveperiodo));
+      $combo = $web->combo($sql, null, '../', array($lectura[0]['nocontrol'], $cveperiodo, $_GET['info1']));
       
       $sql = "select titulo, autor, editorial from lista_libros 
         inner join lectura on lista_libros.cvelectura = lectura.cvelectura
         inner join libro on libro.cvelibro = lista_libros.cvelibro
-        where nocontrol=?
+        where nocontrol=? and lectura.cvelectura=?
         order by titulo";
-      $libros = $web->DB->GetAll($sql, $lectura[0]['nocontrol']);
+      $libros = $web->DB->GetAll($sql, array($lectura[0]['nocontrol'], $_GET['info1']));
       
       if(!isset($libros[0])) {
         $web->smarty->assign('alert', 'warning');
@@ -105,7 +106,7 @@ if(isset($_GET['accion'])) {
 }
 
 if (!isset($_GET['info1'])) {
-  die('Información incompleta');
+  die('Información incompleta'); //por alguna razón no funciona sin esto
   message('danger', 'Información incompleta', $web);
 }
 $grupo = $_GET['info1'];

@@ -9,11 +9,7 @@
           <strong>¡Aviso!</strong> {$msg}
         </div>
       {/if}
-      {if isset($salas)} 
-        <form action="salas.php?accion=update" method="post">  
-      {else} 
-        <form action="salas.php?accion=insert" method="post">
-      {/if}
+      <form action="salas.php?accion={if isset($salas)}update{else}insert{/if}" method="post">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">

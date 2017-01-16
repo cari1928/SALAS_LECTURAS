@@ -89,28 +89,7 @@ if (isset($_GET['accion'])) {
             break;
 
         case 'eliminar':
-            if (!isset($_GET['info1'])) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó el periodo');
-                break;
-            }
-
-            $sql     = "select * from periodo where cveperiodo=?";
-            $periodo = $web->DB->GetAll($sql, $_GET['info1']);
-            if (sizeof($periodo) == 0) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No existe el periodo');
-                break;
-            }
-
-            $sql = "delete from periodo where cveperiodo=?";
-            if (!$web->query($sql, $_GET['info1'])) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No se pudo completar la operación');
-                break;
-            }
-
-            header('Location: periodos.php');
+            
             break;
     }
 }
@@ -156,4 +135,36 @@ function message($iniClases, $msg, $web, $cveperiodo = null)
 
     $web->smarty->display('form_periodos.html');
     die();
+}
+
+function delete_lapse($web) {
+  if (!isset($_GET['info1'])) {
+    $web->smarty->assign('alert', 'danger');
+    $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó el periodo');
+    return false;
+  }
+
+  //verifica que el periodo exista
+  $sql     = "select * from periodo where cveperiodo=?";
+  $periodo = $web->DB->GetAll($sql, $_GET['info1']);
+  if (sizeof($periodo) == 0) {
+    $web->smarty->assign('alert', 'danger');
+    $web->smarty->assign('msg', 'No existe el periodo');
+    return false;
+  }
+
+  //obtener los grupos de ese periodo
+  $sql = "select distinct cveletra from laboral where cveperiodo=? order by cveletra";
+  $grupos = $web->DB->GetAll($sql, $_GET['info1']);
+  
+  
+
+  $sql = "delete from periodo where cveperiodo=?";
+  if (!$web->query($sql, $_GET['info1'])) {
+    $web->smarty->assign('alert', 'danger');
+    $web->smarty->assign('msg', 'No se pudo completar la operación');
+    break;
+  }
+
+  header('Location: periodos.php');
 }

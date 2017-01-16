@@ -1,110 +1,96 @@
 <?php
-include ('sistema.php');
+include 'sistema.php';
 
-$contraseña='';
-$web = new sistema;
+$contraseña = '';
+$web        = new sistema;
 
-if (!isset($_POST['datos'])) {
-	mensajes("","","","","","",$web);
-	die();
+if(isset($_POST['datos'])) {
+	
+	if (!isset($_POST['datos']['nombre']) ||
+      !isset($_POST['datos']['usuario']) ||
+      !isset($_POST['datos']['contrasena']) ||
+      !isset($_POST['datos']['cveespecialidad']) ||
+      !isset($_POST['datos']['correo']) ||
+      !isset($_POST['datos']['confcontrasena'])) {
+      message("No alteres la estructura de la interfaz", $web);
+  }
+  
+  if ($_POST['datos']['nombre'] == "" ||
+      $_POST['datos']['usuario'] == "" ||
+      $_POST['datos']['cveespecialidad'] == "" ||
+      $_POST['datos']['correo'] == "" ||
+      $_POST['datos']['contrasena'] == "" ||
+      $_POST['datos']['confcontrasena'] == "") {
+      message("Llena todos los campos", $web);
+  }
+	
+	$nombre         = $_POST['datos']['nombre'];
+	$cveUsuario     = $_POST['datos']['usuario'];
+	$contrasena     = $_POST['datos']['contrasena'];
+	$confcontrasena = $_POST['datos']['confcontrasena'];
+	$especialidad   = $_POST['datos']['cveespecialidad'];
+	$correo         = $_POST['datos']['correo'];
+	$tipo           = $_POST['datos']['tipo'];
+	
+	if ($contrasena != $confcontrasena) {
+	  mensajes("Las contraseñas no coinciden", $web);
+	}
+	
+	$tamano  = strlen($cveUsuario);
+	if ($tipo == "U") {
+	  if ($tamano != 8 || !is_numeric($cveUsuario)) {
+	    mensajes("El número de control debe tener 8 caracteres numéricos", $web);
+	  }
+	
+	} else {
+	  if ($tamano != 13) {
+	    mensajes("El RFC debe tener 13 caracteres", $web);
+	  }
+	}
+	
+	$sql      = "select cveusuario from usuarios where cveusuario=?";
+  $datos_rs = $web->DB->GetAll($sql, $cveUsuario);
+  if ($datos_rs != null) {
+      message("El usuario ya existe", $web);
+  }
+
+  if (!$web->valida($correo)) {
+    mensajes("Ingrese un correo válido", $web);
+  }
+  
+  $sql     = "select * from usuarios where correo=?";
+  $correos = $web->DB->GetAll($sql, $correo);
+  if (sizeof($correos) == 1) {
+      message("El correo ya existe", $web);
+  }
+	
+	$query = "insert into usuarios (cveusuario, nombre, pass, correo) values (?, ?, ?, ?, ?, ?)";
+  $parameters = array($cveUsuario, $nombre, md5($contrasena), $especialidad, $tipo, $coorreo);
+  $web->query($query, $parameters);
+  die();
+  header('Location: index.php');
 }
 
-$nombre=$_POST['datos']['nombre'];
-$cveUsuario=$_POST['datos']['usuario'];
-$contrasena=$_POST['datos']['contrasena'];
-$confcontrasena=$_POST['datos']['confcontrasena'];
-$especialidad=$_POST['datos']['cveespecialidad'];
+$web->iniClases(null, "index registrar");
+$sql = "SELECT * FROM especialidad where cveespecialidad != 'O' order by nombre";
+$web->smarty->assign('especialidad', $web->combo($sql));
+$web->smarty->assign('encabezado', '<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
+$web->smarty->display('registrar.html');
 
-if (!isset($_POST['datos']['tipo'])) {
-	mensajes("","","","Se debe seleccionar el tipo de usuario.","","",$web);
-	die();
+/**
+ * Para ahorrar código y desplegar contenido con smarty
+ * @param  Class $web Para poder usar la herramienta smarty y poder hacer assign | display
+ * @return Muestra la plantilla
+ */
+function message($msg, $web)
+{
+  $web->iniClases(null, "index registrar");
+  $sql = "SELECT * FROM especialidad where cveespecialidad != 'O' order by nombre";
+  
+  $web->smarty->assign('especialidad', $web->combo($sql));
+  $web->smarty->assign('alert', 'danger');
+  $web->smarty->assign('msg', $msg);
+  $web->smarty->assign('encabezado', '<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
+  $web->smarty->display('registrar.html');
+  die();
 }
-
-if ($contrasena != $confcontrasena) {
-	mensajes("","","Las contraseñas no coinciden","","","",$web);
-	die();
-}
-
-$coorreo=$_POST['datos']['correo']."@itcelaya.edu.mx";
-$tipo=$_POST['datos']['tipo'];
-$tamano=strlen($cveUsuario);
-
-if($tipo == "U") {
-
-	if($tamano != 8) {
-		mensajes("Se deben ingresar 8 caracteres para el No de control","","","","","",$web);
-		die();
-	}
-
-	if(!($web->validarEmail($cveUsuario))) {
-		mensajes("","","","","Usuario invalido","",$web);
-		die();
-	}
-
-	$sql = "select cveUsuario from usuarios where cveUsuario='$cveUsuario'";
-	$datos_rs=$web->DB->GetAll($sql);
-
-	if($datos_rs != NULL) {
-		mensajes("","Este usuario ya existe","","","","",$web);
-		die();
-	}
-
-	$sql = "select cveEspecialidad from Especialidad where Nombre='$especialidad' order by nombre";
-	$datos_rs = $web->DB->GetAll($sql);
-
-	if($web->valida($coorreo) == false) {
-		mensajes("","","","","","El correo no es valido",$web);
-		die();
-	}
-
-	$sql = "select correo from usuarios where correo='".$coorreo."'";
-	$datos_rs=$web->DB->GetAll($sql);
-
-	if($datos_rs != NULL) {
-		mensajes("","","","","","Este correo ya existe",$web);
-		die();
-	}
-
-	$query = "insert into Usuarios (cveusuario,nombre,pass,cveespecialidad,rol,correo) values ('$cveUsuario','$nombre',md5('$contrasena'),'$especialidad','$tipo','".$coorreo."')";
-	$web->query($query);
-	// $web->smarty->display('index.html');
-	header('Location: index.php');
-
-} else {
-
-	if($tamano != 13) {
-		mensajes("","Se deben ingresar 13 caracteres para el RFC","","","","",$web);
-		die();
-	}
-
-	$sql = "select cveUsuario from Usuarios where cveUsuario='$cveUsuario'";
-	$datos_rs=$web->DB->GetAll($sql);
-
-	if($datos_rs != NULL) {
-		mensajes("","Este usuario ya existe","","","","",$web);
-		die();
-	}
-
-	$query = "insert into usuarios (cveusuario,nombre,pass,cveespecialidad,rol,correo)
-	 					values ('$cveUsuario','$nombre',md5('$contrasena'),'$especialidad','$tipo', '$coorreo')";
-	$web->query($query);
-	// $web->smarty->display('index.html');
-	header('Location: index.php');
-
-}
-
-//------------------------------------------------------------------------------------------------
-	function mensajes($msgnoControl,$msgrfc,$msgpass,$msgtipo,$msgusuario,$correo,$web)
-	{
-		$web->iniClases(null, "index registrar");
-		$web->smarty->assign('especialidad',$web->combo("SELECT * FROM especialidad order by nombre"));
-		$web->smarty->assign('correo',' <label style= "color:red">'.$correo.'</label>');
-		$web->smarty->assign('noControl',' <label style= "color:red">'.$msgnoControl.'</label>');
-		$web->smarty->assign('rfc','<label style= "color:red">'.$msgrfc.'</label>');
-		$web->smarty->assign('contrasena','<label style= "color:red">'.$msgpass.'</label>');
-		$web->smarty->assign('tipo','<label style= "color:red">'.$msgtipo.'</label>');
-		$web->smarty->assign('usuario','<label style= "color:red">'.$msgusuario.'</label>');
-		$web->smarty->assign('encabezado','<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
-		$web->smarty->display('registrar.html');
-	}
-?>

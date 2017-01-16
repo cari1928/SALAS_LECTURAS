@@ -17,35 +17,39 @@
 	</div>
 {/if}
 {if isset($libros)}
+	<div class="page-header">
+    <h2>Lista de Libros</h2>
+  </div>
 	<table class='table table-striped'>
 		<tr>		
-			<th width="300">CLAVE</th>
-			<th width="300">AUTOR</th>
-			<th width="300">TÍTULO</th>
-			<th width="300">EDITORIAL</th>
-			<th width="300">PRECIO</th>
-			<th width="300">ELIMINAR</th>
-			<th width="300">ACTUALIZAR</th>
+			<th width="100"><center>CLAVE</center></th>
+			<th width="300"><center>AUTOR</center></th>
+			<th width="800"><center>TÍTULO</center></th>
+			<th width="300"><center>EDITORIAL</center></th>
+			<th width="300"><center>PRECIO</center></th>
+			<th width="300"><center>ELIMINAR</center></th>
+		  <th width="300"><center>ACTUALIZAR</center></th>
 		</tr>
 	{foreach $libros as $libro}
 		<tr>
 			{if isset($bandera)}
-				<td><a href="gruposHistorial.php?info1={$libro.cvelibro}&info2={$libro.fechainicio}">
-						{$libro.cvelibro}
-				</a></td>
+				<td><center>
+					<a href="gruposHistorial.php?info1={$libro.cvelibro}&info2={$libro.fechainicio}">
+					{$libro.cvelibro}
+					</a></center></td>
 			{else}
-				<td>{$libro.cvelibro}</td>
+				<td><center>{$libro.cvelibro}</center></td>
 			{/if}
-			<td>{$libro.autor}</td>
-			<td>{$libro.titulo}</td>
-			<td>{$libro.editorial}</td>
-			<td>{$libro.precio}</td>
-			<td><a href="libros.php?accion=delete&info1={$libro.cvelibro}"> 
+			<td><center>{$libro.autor}</center></td>
+			<td><center>{$libro.titulo}</center></td>
+			<td><center>{$libro.editorial}</center></td>
+			<td><center>{$libro.precio}</center></td>
+			<td><center><a href="libros.php?accion=delete&info1={$libro.cvelibro}"> 
 				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="libros.php?accion=form_update&info2={$libro.cvelibro}"> 
+			</a></center></td>
+			<td><center><a href="libros.php?accion=form_update&info2={$libro.cvelibro}"> 
 					<img src="../Images/edit.png">
-			</a></td>
+			</a></center></td>
 		</tr>
 	{/foreach}
 </table>

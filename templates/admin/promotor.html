@@ -29,7 +29,7 @@
 			<td>{$promotor.cveusuario}</td>
 			<td>{$promotor.nombre}</td>
 			<td>{$promotor.correo}</td>
-			<td>{$promotor.Especialidad}</td>
+			<td>{if $promotor.cveespecialidad eq 'O'}{$promotor.Otro}{else}{$promotor.Especialidad}{/if}</td>
 			<td><a href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
 				<img src="../Images/cancelar.png">
 			</a></td>
