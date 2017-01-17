@@ -15,30 +15,7 @@
 {/if}
 {if isset($salones)}
 	<table id="example" class='table table-striped display' cellspacing="0" width="100%">
-		<!--<thead>-->
-  <!--          <tr>-->
-  <!--              <th>Name</th>-->
-  <!--              <th>Position</th>-->
-  <!--              <th>Office</th>-->
-  <!--              <th>Extn.</th>-->
-  <!--              <th>Start date</th>-->
-  <!--              <th>Salary</th>-->
-  <!--              <th>Salary</th>-->
-  <!--          </tr>-->
-  <!--      </thead>-->
-  <!--      <tfoot>-->
-  <!--          <tr>-->
-  <!--              <th>Name</th>-->
-  <!--              <th>Position</th>-->
-  <!--              <th>Office</th>-->
-  <!--              <th>Extn.</th>-->
-  <!--              <th>Start date</th>-->
-  <!--              <th>Salary</th>-->
-  <!--              <th>Salary</th>-->
-  <!--          </tr>-->
-  <!--      </tfoot>-->
-  
-  <tr>		
+		<tr>		
 			<th>CLAVE SALA</th>
 			<th>UBICACION</th>
 			<th>ELIMINAR</th>
@@ -48,7 +25,7 @@
 		<tr>
 			<td>{$salon.cvesala}</td>
 			<td>{$salon.ubicacion}</td>
-			<td><a href="salas.php?accion=delete&info1={$salon.cvesala}">
+			<td><a class="delete" href="salas.php?accion=delete&info1={$salon.cvesala}">
 				<img src="../Images/cancelar.png">
 			</a></td>
 			<td><a href="salas.php?accion=form_update&info2={$salon.cvesala}">
@@ -58,12 +35,5 @@
 	{/foreach}
 	</table>
 {/if}
-<!--{$obj}-->
+
 {include file="footer.html"}
-<script type="text/javascript">
-// 	$(document).ready(function() {
-//     $('#example').DataTable( {
-//         "ajax": "arrays.txt"
-//     } );
-// } );
-</script>

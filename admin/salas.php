@@ -93,29 +93,8 @@ if (isset($_GET['accion'])) {
             break;
 
         case 'delete':
-            if (!isset($_GET['info1'])) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó la sala');
-                break;
-            }
-
-            $sql  = "select * from sala where cvesala=?";
-            $sala = $web->DB->GetAll($sql, $_GET['info1']);
-            if (sizeof($sala) == 0) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No existe la sala');
-                break;
-            }
-
-            $sql = "delete from sala where cvesala=?";
-            if (!$web->query($sql, $_GET['info1'])) {
-                $web->smarty->assign('alert', 'danger');
-                $web->smarty->assign('msg', 'No se pudo completar la operación');
-                break;
-            }
-
-            header('Location: salas.php');
-            break;
+          delete_room($web);
+          break;
     }
 }
 
@@ -131,16 +110,6 @@ if (!isset($salones[0])) {
     $web->smarty->assign('salones', $salones);
 }
 
-// echo "<pre>";
-// $obj .= "{\"data\": [[\"<a href='#'>Tiger Nixon</a>\", \"System Architect\", \"Edinburgh\", \"5421\", \"2011/04/25\", \"$320,800\", \"<input type='submit'>\"] ] }";
-// echo $obj;
-// echo "</pre>";
-
-// $file = fopen("arrays.txt", "w");
-// fwrite($file, $obj);
-
-// $web->smarty->assign('obj', $obj);
-
 $web->smarty->display("salas.html");
 
 /**
@@ -152,18 +121,86 @@ $web->smarty->display("salas.html");
  */
 function message($iniClases, $msg, $web, $cvesala = null)
 {
-    $web->iniClases('admin', $iniClases);
+  $web->iniClases('admin', $iniClases);
 
-    $web->smarty->assign('alert', 'danger');
-    $web->smarty->assign('msg', $msg);
+  $web->smarty->assign('alert', 'danger');
+  $web->smarty->assign('msg', $msg);
 
-    if ($cveperiodo != null) {
-        $sql   = "select * from sala where cvesala=?";
-        $salas = $web->DB->GetAll($sql, $cvesala);
+  if ($cvesala != null) {
+      $sql   = "select * from sala where cvesala=?";
+      $salas = $web->DB->GetAll($sql, $cvesala);
 
-        $web->smarty->assign('salas', $salas[0]);
+      $web->smarty->assign('salas', $salas[0]);
+  }
+
+  $web->smarty->display('form_salas.html');
+  die();
+}
+
+/**
+ * Elimina de las tablas: evaluacion, lista_libros, lectura, msj, laboral y sala
+ * @param  Class    $web Objeto para hacer uso de smarty
+ * @return boolean  false Indica que se va a mostrar un mensaje de error
+ */
+function delete_room($web)
+{
+  //se valida la contraseña
+  switch($web->valida_pass($_SESSION['cveUser'])) {
+    case 1: 
+      $web->simple_message('danger', 'No se especificó la contraseña de seguridad');
+      return false;
+
+    case 2: 
+      $web->simple_message('danger', ' La contraseña de seguridad ingresada no es válida');
+      return false;
+  }
+
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó la sala', $web);
+    return false;
+  }
+
+  $sql  = "select * from sala where cvesala=?";
+  $sala = $web->DB->GetAll($sql, $_GET['info1']);
+  if (sizeof($sala) == 0) {
+    $web->simple_message('danger', 'No existe la sala', $web);
+    return false;
+  }
+
+  //obtener cveletra
+  $sql    = "select distinct cveletra from laboral where cvesala=?";
+  $grupos = $web->DB->GetAll($sql, $_GET['info1']);
+
+  //obtener la cvelectura de cada sala
+  for ($i = 0; $i < sizeof($grupos); $i++) {
+    $sql      = "select distinct cvelectura from lectura where cveletra=?";
+    $lecturas = $web->DB->GetAll($sql, $grupos[$i]['cveletra']);
+
+    for ($j = 0; $j < sizeof($lecturas); $j++) {
+      //eliminar de evaluacion y lista_libros
+      $sql = "delete from evaluacion where cvelectura=?";
+      $web->query($sql, $lecturas[$j]['cvelectura']);
+      $sql = "delete from lista_libros where cvelectura=?";
+      $web->query($sql, $lecturas[$j]['cvelectura']);
     }
 
-    $web->smarty->display('form_salas.html');
-    die();
+    //eliminar de lectura y msj
+    $sql = "delete from lectura where cveletra=?"; //cveletra más rapido que cvelectura
+    $web->query($sql, $grupos[$i]['cveletra']);
+    $sql = "delete from msj where cveletra=?";
+    $web->query($sql, $grupos[$i]['cveletra']);
+  }
+
+  //eliminar de laboral y sala
+  $sql = "delete from laboral where cvesala=?";
+  $web->query($sql, $_GET['info1']);
+  $sql = "delete from sala where cvesala=?";
+  if (!$web->query($sql, $_GET['info1'])) {
+    $web->simple_message('danger', 'No se pudo completar la operación', $web);
+    return false;
+  }
+
+  header('Location: salas.php');
 }
+
+

@@ -762,6 +762,41 @@ class Sistema extends Conexion
         }
 
     }
+    
+    /**
+     * Principalmente usado en la sección de administrador
+     * Valida la contraseña cuando se va a eliminar algún elemento
+     * @param  String $cveusuario Clave del usuario administrador
+     * @return int    1 y 2 = mensaje de error, 3 = exito en la operación
+     */
+    public function valida_pass($cveusuario) {
+      //verifica que se mande la contraseña
+      if (!isset($_GET['infoc'])) {
+        return 1;
+      }
+    
+      //se valida la contraseña
+      $pass     = md5($_GET['infoc']);
+      $sql      = "select * from usuarios where cveusuario=? and pass=?";
+      $datos_rs = $this->DB->GetAll($sql, array($cveusuario, $pass));
+      if (!isset($datos_rs[0])) {
+        return 2;
+      }
+      return 3;
+    }
+    
+    /**
+     * Versión simple de la función message, asigna los elementos necesarios para mostrar mensajes 
+     * de error
+     * @param  String $alert warning | danger principalmente
+     * @param  String $msg   Mensaje de error a mostrar
+     * @param  Class  $web   Objeto para poder hacer uso de smarty
+     */
+    public function simple_message($alert, $msg) {
+      $this->smarty->assign('alert', 'danger');
+      $this->smarty->assign('msg', $msg);
+    }
+
 
 }
 //----------------------------------------------------------------------------------------

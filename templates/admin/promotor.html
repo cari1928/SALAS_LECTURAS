@@ -1,6 +1,6 @@
 {include file='header.html'}
 {$ruta}   
-<table class='table table-striped'>
+<table class='table table'>
 	<tr><td colspan='4' align='right'>
 		<a href='promotor.php?accion=form_insert'>
 			<img src='../Images/add.png'/> 
@@ -30,7 +30,7 @@
 			<td>{$promotor.nombre}</td>
 			<td>{$promotor.correo}</td>
 			<td>{if $promotor.cveespecialidad eq 'O'}{$promotor.Otro}{else}{$promotor.Especialidad}{/if}</td>
-			<td><a href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
+			<td><a class="delete" href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
 				<img src="../Images/cancelar.png">
 			</a></td>
 			<td><a href="promotor.php?accion=form_update&info1={$promotor.cveusuario}">
@@ -43,4 +43,5 @@
 	{/foreach}
 	</table>
 {/if}
+
 {include file='footer.html'}

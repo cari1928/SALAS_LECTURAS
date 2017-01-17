@@ -23,7 +23,13 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'insert':
-      insertar_libro_alumno($web);
+      if(isset($_POST['promotor'])){
+        insertar_libro_alumno($web,'promotor');
+      }
+      else{
+        insertar_libro_alumno($web);  
+      }
+      
       break;
 
     case 'delete':
@@ -39,68 +45,16 @@ if (isset($_GET['accion'])) {
       break;
       
     case 'libros':
-      
-      global $cveperiodo; //si funciona? 
-      //Checa que este especificado el grupo
-      if(!isset($_GET['info1'])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'Hace falta información para continuar, no se especificó el grupo', $web);
-        return false;
-      }
-      //Checa que este especificado el alumno
-      if(!isset($_GET['info2'])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'Hace falta información para continuar, no se especificó el alumno', $web);
-        return false;
-      }
-      //Checa que el grupo exista
-      $sql="SELECT * FROM laboral
-                     where cveletra in (SELECT cve FROM abecedario WHERE letra = ?)
-                           and cveperiodo = ?";
-      $grupo=$web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-      if(!isset($grupo[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El grupo no existe', $web);
-        return false;
-      }
-      
-      //Checar que el promotor sea el propietario del grupo
-      if($grupo[0]['cvepromotor'] != $_GET['info3']){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El promotor seleccionado no es propietario del grupo', $web);
-        return false;
-      }
-      //Checa que el alumno exista
-      $sql="SELECT * FROM usuarios where cveusuario = ?";
-      $aux_alumno = $web->DB->GetAll($sql, $_GET['info2']);
-      if(!isset($aux_alumno[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El alumno no existe', $web);
-        return false;
-      }
-      
-      //Checar que el alumno pertenesca al grupo
-      $sql="SELECT * FROM lectura
-                     WHERE nocontrol = ? and
-                           cveletra in (SELECT cve FROM abecedario 
-                                                   where cve in (SELECT cveletra from laboral
-                                                                                 WHERE cveperiodo = ?)
-                                                         and letra = ?)";
-      $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1']));
-      if(!isset($alumno[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El alumno no pertenese al grupo', $web);
-        return false;
-      }
-      
-      $web->iniClases('admin', "index promotor Libros");
-      mostrar_libros($web, $alumno);
+      mostrar_libros_promotor($web);   
+      $web->smarty->assign('libros_promo', 'libros');
       break;
+  
   }
 }
 
 // $web->smarty->assign();
 $web->smarty->display('grupo.html');
+
 
 /**
  * Para ahorrar código y poder mandar mensajes de error o avisos
@@ -203,6 +157,70 @@ function mostrar_alumnos($web)
   $web->smarty->assign('alumnos', 'alumnos');
 }
 
+
+/**
+ * Muestra:
+ * Los libros de cada alumno con sus respectivas opciones
+ * Tabla de libros ya enlazados con el alumno
+ * @param  Class  $web    Objeto para hacer uso de smarty
+ */
+function mostrar_libros_promotor($web){
+      global $cveperiodo; //si funciona? 
+      
+      //Checa que este especificado el grupo
+      if(!isset($_GET['info1'])){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'Hace falta información para continuar, no se especificó el grupo', $web);
+        return false;
+      }
+      //Checa que este especificado el alumno
+      if(!isset($_GET['info2'])){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'Hace falta información para continuar, no se especificó el alumno', $web);
+        return false;
+      }
+      //Checa que el grupo exista
+      $sql="SELECT * FROM laboral
+       where cveletra in (SELECT cve FROM abecedario WHERE letra = ?)
+             and cveperiodo = ?";
+      $grupo=$web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+      if(!isset($grupo[0])){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'El grupo no existe', $web);
+        return false;
+      }
+      //Checar que el promotor sea el propietario del grupo
+      if($grupo[0]['cvepromotor'] != $_GET['info3']){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'El promotor seleccionado no es propietario del grupo', $web);
+        return false;
+      }
+      //Checa que el alumno exista
+      $sql="SELECT * FROM usuarios where cveusuario = ?";
+      $aux_alumno = $web->DB->GetAll($sql, $_GET['info2']);
+      if(!isset($aux_alumno[0])){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'El alumno no existe', $web);
+        return false;
+      }
+      //Checar que el alumno pertenezca al grupo
+      $sql="SELECT * FROM lectura
+       WHERE nocontrol = ? and
+             cveletra in (SELECT cve FROM abecedario 
+                         where cve in (SELECT cveletra from laboral
+                                       WHERE cveperiodo = ?)
+                          and letra = ?)";
+      $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1']));
+      if(!isset($alumno[0])){
+        $web->iniClases('admin', "index promotor");
+        message('danger', 'El alumno no pertenese al grupo', $web);
+        return false;
+      }
+      
+      $web->iniClases('admin', "index promotor libros");
+      mostrar_libros($web, $alumno);
+}
+
 /**
  * Muestra:
  * Combo con libros para enlazarlos con el alumno
@@ -213,7 +231,7 @@ function mostrar_alumnos($web)
 function mostrar_libros($web, $alumno)
 {
   global $cveperiodo;
-//datos del combo
+  //datos del combo
   $sql = "select cvelibro, titulo from libro
   where cvelibro not in
   (select cvelibro from lista_libros
@@ -238,6 +256,7 @@ function mostrar_libros($web, $alumno)
   if (!isset($libros[0])) {
     $web->smarty->assign('alert', 'warning');
     $web->smarty->assign('msg', 'No hay libros registrados');
+    $web->smarty->assign('cvelectura', $alumno[0]['cvelectura']); //La agregue por que no mandava la cvelectura si no se encontrava algun libro registrado
   } else {
     $web->smarty->assign('libros', $libros);
     $web->smarty->assign('cvelectura', $libros[0]['cvelectura']);
@@ -250,7 +269,7 @@ function mostrar_libros($web, $alumno)
  * @param  Class   $web Objeto para hacer uso de smarty
  * @return boolean False -> Mostrar mensaje de error
  */
-function insertar_libro_alumno($web)
+function insertar_libro_alumno($web,$tipo='alumno')
 {
   global $cveperiodo;
 
@@ -259,7 +278,7 @@ function insertar_libro_alumno($web)
     message('danger', 'No alteres la estructura de la interfaz', $web);
     return false;
   }
-
+  
   //verifica que el libro exista
   $sql   = "select * from libro where cvelibro=?";
   $libro = $web->DB->GetAll($sql, $_POST['datos']['cvelibro']);
@@ -267,18 +286,18 @@ function insertar_libro_alumno($web)
     message('danger', 'El libro seleccionado no existe', $web);
     return false;
   }
-
-  //verifica que la cvelectura exista
-  $sql = "select distinct letra, nocontrol from lista_libros
-  inner join lectura on lectura.cvelectura = lista_libros.cvelectura
+  
+  //verifica que la cvelectura exista 
+  $sql = "select distinct letra, nocontrol, laboral.cvepromotor from lectura 
   inner join abecedario on lectura.cveletra = abecedario.cve
+  inner join laboral on laboral.cveletra = abecedario.cve
   where lectura.cvelectura=?";
   $lectura = $web->DB->GetAll($sql, $_POST['datos']['cvelectura']);
   if (!isset($lectura[0])) {
     message('danger', 'ERROR, no se puede continuar con la operación', $web);
     return false;
   }
-
+  
   $cvelibro   = $_POST['datos']['cvelibro'];
   $cvelectura = $_POST['datos']['cvelectura'];
 
@@ -296,7 +315,13 @@ function insertar_libro_alumno($web)
   values(?, ?, ?, ?)";
   $web->query($sql, array($cvelibro, $cvelectura, $cveperiodo, '1'));
 
-  header('Location: grupo.php?accion=alumnos&info1=' . $lectura[0]['letra'] . '&info2=' . $lectura[0]['nocontrol']);
+  if($tipo == 'promotor'){
+    header('Location: grupo.php?accion=libros&info1=' . $lectura[0]['letra'] . '&info2=' .$lectura[0]['nocontrol'] . '&info3=' .$lectura[0]['cvepromotor']);  
+  }
+  else {
+    header('Location: grupo.php?accion=alumnos&info1=' . $lectura[0]['letra'] . '&info2=' .$lectura[0]['nocontrol']);  
+  }
+  
 }
 
 /**
@@ -375,8 +400,7 @@ function ver_reporte($web) {
   return false;
 }
 
-function mostrar_alumnos_promotor($web)
-{
+function mostrar_alumnos_promotor($web){
   global $cveperiodo;
 
   //verifica que se haya mandado el promoto

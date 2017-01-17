@@ -1,6 +1,9 @@
 {include file='header.html'}
 {$ruta}
-<table class='table table-striped'>
+{if isset($msg)}
+	{include file='../mensajes.html'}
+{/if}
+<table class='table'>
 	<tr>
 		<td colspan='4' align='right'>
 			<a href='libros.php?accion=form_insert&tabla=periodo'>
@@ -9,49 +12,70 @@
 		</td>
 	</tr> 
 </table>
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  		<span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> {$msg}
-	</div>
+{if isset($datos)}
+	<table id="example" class="display" cellspacing="0" width="100%">
+		<thead>
+      <tr>
+        <th>CLAVE</th>
+        <th>AUTOR</th>
+        <th>TITULO</th>
+        <th>EDITORIAL</th>
+        <th>PRECIO</th>
+        <th>ELIMINAR</th>
+        <th>ACTUALIZAR</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>CLAVE</th>
+        <th>AUTOR</th>
+        <th>TITULO</th>
+        <th>EDITORIAL</th>
+        <th>PRECIO</th>
+        <th>ELIMINAR</th>
+        <th>ACTUALIZAR</th>
+      </tr>
+    </tfoot>
+  </table>
+	
+	<script type="text/javascript">
+	  $(document).ready(function() {
+	    
+	  	var table = $('#example').DataTable( {
+	      "ajax": "libros.txt",
+	      "columnDefs": [ {
+	          "targets": -2,
+	          "data": null,
+	          "defaultContent": "<center><a href='#' class='delete'><img src='../Images/cancelar.png'></a></center>"
+	      } ]
+	    } );
+	    
+	    $('#example tbody').on( 'click', 'a.delete', function () {
+	      event.preventDefault();
+	      
+	      var data = table.row( $(this).parents('tr') ).data();
+				var url = data[5];
+				
+		    swal({
+		      title: "¿Seguro? Se borrará toda la información relacionada", 
+		      text: "Si está seguro ingrese la contraseña de seguridad", 
+		      type: "input",
+		      inputType: "password",
+		      showCancelButton: true,
+		      confirmButtonText: "Aceptar",
+		      cancelButtonText: "Cancelar"
+		    }, function(typedPassword) {
+		    	// console.log(typedPassword);
+		    	if(typedPassword != "") {
+		    		url += "&infoc=" + typedPassword;
+		      	window.open(url, '_self');	
+		      	return false;
+		    	}
+		    });
+	    } );
+	  } );
+	</script>
+
 {/if}
-{if isset($libros)}
-	<div class="page-header">
-    <h2>Lista de Libros</h2>
-  </div>
-	<table class='table table-striped'>
-		<tr>		
-			<th width="100"><center>CLAVE</center></th>
-			<th width="300"><center>AUTOR</center></th>
-			<th width="800"><center>TÍTULO</center></th>
-			<th width="300"><center>EDITORIAL</center></th>
-			<th width="300"><center>PRECIO</center></th>
-			<th width="300"><center>ELIMINAR</center></th>
-		  <th width="300"><center>ACTUALIZAR</center></th>
-		</tr>
-	{foreach $libros as $libro}
-		<tr>
-			{if isset($bandera)}
-				<td><center>
-					<a href="gruposHistorial.php?info1={$libro.cvelibro}&info2={$libro.fechainicio}">
-					{$libro.cvelibro}
-					</a></center></td>
-			{else}
-				<td><center>{$libro.cvelibro}</center></td>
-			{/if}
-			<td><center>{$libro.autor}</center></td>
-			<td><center>{$libro.titulo}</center></td>
-			<td><center>{$libro.editorial}</center></td>
-			<td><center>{$libro.precio}</center></td>
-			<td><center><a href="libros.php?accion=delete&info1={$libro.cvelibro}"> 
-				<img src="../Images/cancelar.png">
-			</a></center></td>
-			<td><center><a href="libros.php?accion=form_update&info2={$libro.cvelibro}"> 
-					<img src="../Images/edit.png">
-			</a></center></td>
-		</tr>
-	{/foreach}
-</table>
-{/if}
+
 {include file='footer.html'}
