@@ -91,10 +91,24 @@ if (isset($_GET['accion'])) {
     case 'eliminar':
       delete_lapse($web);
       break;
+      
+    case 'historial':
+      $web->iniClases('admin', "index historial-periodos");
+      $web->smarty->assign('bandera', 'historial');
   }
+} else {
+  $web->iniClases('admin', "index periodos");   
 }
 
-$web->iniClases('admin', "index periodos");
+//para otro tipo de errores
+if(isset($_GET['e'])) {
+
+  switch ($_GET['e']) {
+    case 1:
+      $web->simple_message('danger', 'No fue posible generar el reporte, hacen falta datos');
+      break;
+  }
+}
 
 $sql      = 'select cveperiodo, fechainicio, fechafinal from periodo order by cveperiodo';
 $periodos = $web->DB->GetAll($sql);

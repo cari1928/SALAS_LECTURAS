@@ -113,7 +113,7 @@ $datos_rs = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo, $gru
 $web->smarty->assign('info', $datos_rs[0]);
 
 //Datos de la tabla = Alumnos
-$sql   = "select distinct usuarios.nombre, comprension, motivacion, reporte, tema, participacion, terminado, nocontrol, cveeval, cveperiodo, lectura.cvelectura from lectura
+$sql   = "select distinct usuarios.nombre, comprension, motivacion, reporte, tema, participacion, terminado, nocontrol, cveeval, cveperiodo, lectura.cvelectura, asistencia from lectura
 	inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
 	inner join abecedario on lectura.cveletra = abecedario.cve 
 	inner join usuarios on lectura.nocontrol = usuarios.cveusuario

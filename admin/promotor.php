@@ -5,6 +5,9 @@ if ($_SESSION['roles'] != 'A') {
   $web->checklogin();
 }
 
+//por si viene de historial
+$flag = false;
+
 if (isset($_GET['accion'])) {
 
   switch ($_GET['accion']) {
@@ -222,7 +225,6 @@ if (isset($_GET['accion'])) {
           }
         }
       }
-
       header('Location: promotor.php');
       break;
 
@@ -231,72 +233,30 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'mostrar':
-      if (!isset($_GET['info1'])) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó el promotor');
-        break;
-      }
-
-      $sql      = "select * from usuarios where cveusuario=?";
-      $promotor = $web->DB->GetAll($sql, $_GET['info1']);
-      if (!isset($promotor[0])) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No existe el promotor');
-        break;
-      }
-
-      $cveperiodo = $web->periodo();
-      if ($cveperiodo == '') {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No se ha iniciado un periodo nuevo');
-        break;
-      }
-      $sql = "select distinct letra, nombre, ubicacion from laboral
-      inner join abecedario on laboral.cveletra = abecedario.cve
-      inner join sala on laboral.cvesala = sala.cvesala
-      where cvepromotor=? and laboral.cveperiodo=? order by letra";
-      $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-
-      if (!isset($tablegrupos[0])) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No ha creado algún grupo');
-
-      }
-      $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, horas.hora_final
-      from laboral
-      inner join dia on dia.cvedia=laboral.cvedia
-      inner join abecedario on laboral.cveletra = abecedario.cve
-      inner join horas on horas.cvehoras=laboral.cvehoras
-      where cvepromotor=? and laboral.cveperiodo=? order by letra, dia.cvedia, horas.hora_inicial";
-      $horas = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+      show_professor_groups($web);
+      break;
       
-      for($i=0; $i<sizeof($tablegrupos); $i++){
-        $tablegrupos[$i]['horario']="";
-        for($j=0; $j<sizeof($horas); $j++){
-          if($tablegrupos[$i]['letra'] == $horas[$j]['letra']){
-            $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";    
-          }  
-        }
-      }
-      
-      $web->smarty->assign('promotor', $_GET['info1']);
-      $web->smarty->assign('tablegrupos', $tablegrupos);
-      $web->smarty->assign('table', 'promotores');
-      $web->iniClases('admin', "index promotor grupos");
-      $web->smarty->display('grupos.html');
-      die();
+    case 'historial':
+      $flag = show_history($web);
       break;
   }
 }
 
-$web->iniClases('admin', "index promotor");
+//si no viene de historial
+if(!$flag) { 
+  $web->iniClases('admin', "index promotor");
 
-$sql = "select u.cveusuario ,u.nombre, u.correo, otro AS \"Otro\", e.nombre AS \"Especialidad\", eu.cveespecialidad from usuarios u
-    inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
-    inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
-    where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
-    order by u.cveusuario";
-$promotores = $web->DB->GetAll($sql);
+  $sql = "select u.cveusuario ,u.nombre, u.correo, otro AS \"Otro\", e.nombre AS
+  \"Especialidad\", eu.cveespecialidad  from usuarios u
+  inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
+  inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
+  where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
+  order by u.cveusuario";
+  $promotores = $web->DB->GetAll($sql);
+} else {
+  $promotores = $flag; //por si viene de historial
+}
+
 $web->smarty->assign('promotores', $promotores);
 $web->smarty->display("promotor.html");
 
@@ -407,4 +367,103 @@ function delete_professor($web)
   }
   
   header('Location: promotor.php');
+}
+
+/**
+ * Muestra los grupos del profesor
+ * @param  Class    $web Objeto para hacer uso de smarty
+ * @return boolean  false = Mostrar mensaje de error
+ */
+function show_professor_groups($web) {
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó el promotor');
+    return false;
+  }
+  
+  $sql      = "select * from usuarios where cveusuario=?";
+  $promotor = $web->DB->GetAll($sql, $_GET['info1']);
+  if (!isset($promotor[0])) {
+    $web->simple_message('danger', 'No existe el promotor');
+    return false;
+  }
+  
+  $cveperiodo = $web->periodo();
+  if ($cveperiodo == '') {
+    $web->simple_message('danger', 'No se ha iniciado un periodo nuevo');
+    return false;
+  }
+  
+  $sql = "select distinct letra, nombre, ubicacion, titulo from laboral
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join sala on laboral.cvesala = sala.cvesala
+  left join libro on laboral.cvelibro_grupal = libro.cvelibro
+  where cvepromotor=? and laboral.cveperiodo=? order by letra";
+  $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  
+  if (!isset($tablegrupos[0])) {
+    $web->simple_message('danger', 'No ha creado algún grupo');
+    return false;
+  }
+  
+  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, horas.hora_final 
+  from laboral
+  inner join dia on dia.cvedia=laboral.cvedia
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join horas on horas.cvehoras=laboral.cvehoras
+  where cvepromotor=? and laboral.cveperiodo=? order by letra, dia.cvedia, horas.hora_inicial";
+  $horas = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  
+  for($i=0; $i<sizeof($tablegrupos); $i++){
+    $tablegrupos[$i]['horario']="";
+    
+    for($j=0; $j<sizeof($horas); $j++){
+      
+      if($tablegrupos[$i]['letra'] == $horas[$j]['letra']){
+        $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";    
+      }  
+    }
+  }
+  
+  $web->iniClases('admin', "index promotor grupos");
+  
+  //viene de historial
+  if(isset($_GET['info2'])) {
+    $web->iniClases('admin', "index historial grupos");
+    $web->smarty->assign('bandera', 'historial');  
+  }
+  
+  $web->smarty->assign('promotor', $_GET['info1']);
+  $web->smarty->assign('tablegrupos', $tablegrupos);
+  $web->smarty->assign('table', 'promotores');
+  
+  $web->smarty->display('grupos.html');
+  die();
+}
+
+/**
+ * Muestra los profesores de un periodo específico
+ * @param  Class    $web Objeto para hacer uso de smarty
+ * @return boolean  false = Mostrar mensaje de error
+ */
+function show_history($web) {
+  $web->iniClases('admin', "index historial promotor");
+      
+  $sql = "select distinct u.cveusuario ,u.nombre, u.correo, otro AS \"Otro\", e.nombre AS
+  \"Especialidad\", eu.cveespecialidad  from usuarios u
+  inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
+  inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
+  inner join laboral on laboral.cvepromotor = u.cveusuario
+  where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
+  and cveperiodo=?
+  order by u.cveusuario";
+  $promotores = $web->DB->GetAll($sql, $_GET['info1']);
+  
+  if(!isset($promotores[0])) {
+    header('Location: historial.php?e=1&info1='.$_GET['info1']);
+    return false;
+  }
+  
+  $web->smarty->assign('bandera', 'historial');
+  $web->smarty->assign('cveperiodo', $_GET['info1']);
+  return $promotores;
 }

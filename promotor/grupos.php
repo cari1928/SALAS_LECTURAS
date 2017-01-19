@@ -64,13 +64,31 @@ $sql = "select distinct letra, nombre, ubicacion from laboral
   order by letra";
 $tablegrupos = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
 
-if (isset($tablegrupos[0])) {
-    $web->smarty->assign('tablegrupos', $tablegrupos);
-} else {
+if (!isset($tablegrupos[0])) {
     $web->smarty->assign('alert', 'danger');
     $web->smarty->assign('msg', 'No ha registrado algún grupo');
 }
 
+$sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, horas.hora_final 
+  from laboral
+  inner join dia on dia.cvedia=laboral.cvedia
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join horas on horas.cvehoras=laboral.cvehoras
+  where cvepromotor=? and laboral.cveperiodo=? order by letra, dia.cvedia, horas.hora_inicial";
+$horas = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
+
+for($i=0; $i<sizeof($tablegrupos); $i++){
+  $tablegrupos[$i]['horario']="";
+  
+  for($j=0; $j<sizeof($horas); $j++){
+    
+    if($tablegrupos[$i]['letra'] == $horas[$j]['letra']){
+      $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";    
+    }  
+  }
+}
+
+$web->smarty->assign('tablegrupos', $tablegrupos);
 $web->smarty->display('vergrupos.html');
 
 /**/

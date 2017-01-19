@@ -1,29 +1,22 @@
 {include file="header.html"}
 {$ruta}
+
 {if isset($info)}
-	<center>
-		<div class="form-group" style ="background-color:#f0f0f0">
-			<label>
-				Grupo: {$info.letra}<br>
-				Sala: {$info.nombre_grupo}<br>
-				Ubicación: {$info.ubicacion}<br>
-				Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
-				Promotor: {$info.nombre_promotor}
-				{if isset($cmb_libro)}
-				  <br>Número de Control: {$info2.cveusuario}<br>
-  				Alumno: {$info2.nombre}
-				{/if}
-			</label>
-		</div>
-	</center>
+	<center><div class="form-group" style ="background-color:#f0f0f0"><label>
+		Grupo: {$info.letra}<br>
+		Sala: {$info.nombre_grupo}<br>
+		Ubicación: {$info.ubicacion}<br>
+		Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
+		Promotor: {$info.nombre_promotor}
+		{if isset($cmb_libro)}
+		  <br>Número de Control: {$info2.cveusuario}<br>
+			Alumno: {$info2.nombre}
+		{/if}
+	</label></div></center>
 {/if}
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  		<span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> {$msg}
-	</div>
-{/if}
+
+{if isset($msg)} {include file='../mensajes.html'} {/if}
+
 {if !isset($libros_promo)}
   {if isset($datos)}
     <div class="page-header">
@@ -162,7 +155,7 @@
 			<td><center>{$libro.editorial}</center></td>
 			<td><center>{$libro.precio}</center></td>
 			<td>
-			  <center><a href="grupo.php?accion=delete&info1={$libro.cvelibro}&info2={$cvelectura}" class="delete">
+			  <center><a href="grupo.php?accion=delete{if isset($libros_promo)}_promotor{/if}&info1={$libro.cvelibro}&info2={$cvelectura}" class="delete">
 				<img src="../Images/cancelar.png">
 			</a></center>
 			</td>

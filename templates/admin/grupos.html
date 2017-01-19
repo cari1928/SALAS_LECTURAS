@@ -1,27 +1,27 @@
 {include file="header.html"}
 {$ruta} 
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  		<span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> {$msg}
-	</div>
-{/if}
+
+{if isset($msg)}{include file='../mensajes.html'}{/if}
+
 {if isset($tablegrupos)}
-	<table cellspacing=0 cellpadding=2 class="table table-striped">
-		<tr>
+	<table class="table table-hover">
+		<tr class='info'>
 			<th><center>GRUPO</center></th>
 			<th><center>SALA</center></th>
+			{if $table eq 'grupos'}<th><center>PROMOTOR</center></th>{/if}
 			<th><center>UBICACIÓN</center></th>
-			<th><center>HORARIO</center></th>
+			<th width="150"><center>LIBRO GRUPAL</center></th>
+			<th width="400"><center>HORARIO</center></th>
 		</tr>
 		{foreach $tablegrupos as $grupo}
 			<tr>
-				<td><center><a href="grupo.php?accion={$table}&info1={$grupo.letra}&info2={if $table eq 'promotores'}{$promotor}{else}{$grupo.nocontrol}{/if}">
+				<td><center><a href="grupo.php?accion={$table}&info1={$grupo.letra}&info2={if $table eq 'grupos'}{$grupo.cvepromotor}{/if}{if $table eq 'promotores'}{$promotor}{else}{$grupo.nocontrol}{/if}">
 				  {$grupo.letra}
 			  </a></center></td>
 				<td><center>{$grupo.nombre}</center></td>
+				{if $table eq 'grupos'}<td><center>{$grupo.nombre_promotor}</center></td>{/if}
 				<td><center>{$grupo.ubicacion}</center></td>
+				<td><center>{$grupo.titulo}</center></td>
 				<td><center>{$grupo.horario}</center></td>
 			</tr>
 		{/foreach}

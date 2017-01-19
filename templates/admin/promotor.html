@@ -1,44 +1,63 @@
 {include file='header.html'}
-{$ruta}   
-<table class='table table'>
-	<tr><td colspan='4' align='right'>
-		<a href='promotor.php?accion=form_insert'>
-			<img src='../Images/add.png'/> 
-		</a>
-	</td></tr>
+{$ruta}  
+
+<table class='table'>
+	{if !isset($bandera)}
+		<tr><td colspan='4' align='right'>
+			<a href='promotor.php?accion=form_insert'><img src='../Images/add.png'/> </a>
+		</td></tr>
+	{else}
+		<tr><td colspan='4' align='right'><a href='reporte_pdf.php?accion=periodos&info1=1'>
+				<img src='../Images/pdf.png' title='Reporte Promotores-Periodos'/>
+		</a></td></tr>
+	{/if}
 </table>
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> {$msg}
-	</div>
-{/if}
+
+{if isset($msg)} {include file='../mensajes.html'} {/if}
+
 {if isset($promotores)}
-	<table class='table table-striped'>
-		<tr>		
-			<th>RFC</th>
-			<th>PROMOTOR</th>
-			<th>EMAIL</th>
-			<th>ESPECIALIDAD</th>
-			<th>ELIMINAR</th>
-			<th>ACTUALIZAR</th>
-			<th>MOSTRAR</th>
+	<table class='table table-hover'>
+		<tr class='info'>		
+			<th><center>RFC</center></th>
+			<th><center>PROMOTOR</center></th>
+			<th><center>EMAIL</center></th>
+			<th><center>ESPECIALIDAD</center></th>
+			{if !isset($bandera)}
+				<th><center>ELIMINAR</center></th>
+				<th><center>ACTUALIZAR</center></th>
+			{/if}
+			<th><center>GRUPOS</center></th>
+			{if isset($bandera)}<th><center>REPORTE</center></th>{/if}
 		</tr>
 	{foreach $promotores as $promotor}
 		<tr>
-			<td>{$promotor.cveusuario}</td>
-			<td>{$promotor.nombre}</td>
-			<td>{$promotor.correo}</td>
-			<td>{if $promotor.cveespecialidad eq 'O'}{$promotor.Otro}{else}{$promotor.Especialidad}{/if}</td>
-			<td><a class="delete" href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
-				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="promotor.php?accion=form_update&info1={$promotor.cveusuario}">
-				<img src="../Images/edit.png">
-			</a></td>
-			<td><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}">
+			<td><center>{$promotor.cveusuario}</center></td>
+			<td><center>{$promotor.nombre}</center></td>
+			<td><center>{$promotor.correo}</center></td>
+			<td><center>
+				{if $promotor.cveespecialidad eq 'O'}
+					{$promotor.Otro}
+				{else}
+					{$promotor.Especialidad}
+				{/if}
+			</center></td>
+			{if !isset($bandera)}
+				<td><center>
+					<a class="delete" href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
+						<img src="../Images/cancelar.png">
+					</a></center></td>
+				<td><center><a href="promotor.php?accion=form_update&info1={$promotor.cveusuario}">
+					<img src="../Images/edit.png">
+				</a></center></td>
+			{/if}
+			<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($bandera)}&info2{/if}">
 				<img src="../Images/mostrar.png">
-			</a></td>
+			</a></center></td>
+			{if isset($bandera)}
+				<td colspan='4' align='right'><center>
+					<a href='reporte_pdf.php?accion=promotor&info1=1'><img src='../Images/pdf.png' title='Reporte Promotor-Periodo'/></a>
+				<center></td>
+			{/if}
 		</tr>
 	{/foreach}
 	</table>

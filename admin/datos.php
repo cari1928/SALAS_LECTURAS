@@ -1,172 +1,153 @@
 <?php 
 include ('../sistema.php');
 
-if ($_SESSION['roles'] =='A')
-{
-	$web->iniClases('admin', "index datos");
-
-	$rol=$_SESSION['roles'];
-		if($rol=="A")
-			{
-				$rol='Administrador';
-			}
-		if($rol=="P")		
-			{
-				$rol='Promotor';
-			}
-		if($rol=="U")
-			{
-				$rol='Alumno';
-			}
-
-	if (!isset($_POST['datos'])) 
-	{
-		$nombre=$_SESSION['nombre'];
-		$cveUser=$_SESSION['cveUser'];
-		
-		$sql="select correo from usuarios where cveusuario = '".$cveUser."'";
-		$datos_rs=$web->DB->GetAll($sql);
-		$corte=explode("@", $datos_rs[0]['correo']);
-		$coorreo=$corte[0];
-		contenidos($nombre,$cveUser,$rol,"",$coorreo,$web);
-	}
-	else
-	{
-		$coorreo=$_POST['datos']['correo']."@itcelaya.edu.mx";
-		$nombre=$_POST['datos']['nombre'];
-		$nomEspecialidad=$_POST['datos']['especialidad'];
-		$cveUser=$_SESSION['cveUser'];
-		
-		if ($_POST['datos']['pass']=='true') 
-		{
+if ($_SESSION['roles'] != 'A') {
+  $web->checklogin();
+}
+if(isset($_GET['accion'])){
+	switch($_GET['accion']){
+		case 'update':
+			$cveusuario = $_POST['cveusuario'];
 			
-			if ($_POST['datos']['contrasena']!="" && $_POST['datos']['contrasenaN']!="" && $_POST['datos']['confcontrasenaN']!="") 
-			{
-
-				$cont=$_POST['datos']['contrasena'];
-				$cont=md5($cont);
-				$sql="select pass from usuarios where cveusuario='".$cveUser."'";
-				$datos_rs=$web->DB->GetAll($sql);	
-				if($datos_rs[0]['pass']==$cont)
-				{
-					
-					if ($_POST['datos']['contrasenaN']==$_POST['datos']['confcontrasenaN']) 
-					{
-					//	echo "aqui toy";
-						if ($web->valida($coorreo)) 
-						{
-				$sql = "select correo from usuarios where correo='".$coorreo."' and cveusuario not in(select cveusuario from usuarios where cveusuario='".$_SESSION['cveUser']."')";
-							$datos_rs=$web->DB->GetAll($sql);
-							if($datos_rs==NULL)
-							{
-								$sql="select cveespecialidad from especialidad where nombre='".$nomEspecialidad."'";
-						
-								$datos_rs=$web->DB->GetAll($sql);
-								$cveEspecialidad=$datos_rs[0]['cveespecialidad'];
-								$sql = "update usuarios set nombre='".$nombre."', cveespecialidad='".$cveEspecialidad."',
-										pass=md5('".$_POST['datos']['contrasenaN']."'),correo = '".$coorreo."' where cveusuario='".$_SESSION['cveUser']."'";							
-								$web->query($sql);
-								$_SESSION['nombre'] = $nombre;
-								contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web);
-							}
-							else
-							{
-								contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web,"El correo ya existe");
-							}
-					    }
-					    else
-					    {
-					    	contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web,"Correo invalido");
-					    }
-					}
-					else
-					{
-						contenidos($nombre,$cveUser,$rol,"No coinciden las nuevas contraseñas",$_POST['datos']['correo'],$web);						
-					}
-				}
-				else
-				{
-					contenidos($nombre,$cveUser,$rol,"No coincide la contraseña original",$_POST['datos']['correo'],$web);							
-				}
-			}	
-		}
-		else
-		{
-			if ($web->valida($coorreo)) 
-			{
-				$sql = "select correo from usuarios where correo='".$coorreo."' and cveusuario not in(select cveusuario from usuarios where cveusuario='".$_SESSION['cveUser']."')";
-				$datos_rs=$web->DB->GetAll($sql);
-				$_SESSION['nombre'] = $nombre;
-				if($datos_rs==NULL)
-				{
-					$sql="select cveespecialidad from especialidad where nombre='".$nomEspecialidad."'";
-					$datos_rs=$web->DB->GetAll($sql);
-					$cveEspecialidad=$datos_rs[0]['cveespecialidad'];
-					$sql = "update usuarios set nombre='".$nombre."', cveespecialidad='".$cveEspecialidad."',correo = '".$coorreo."'
-							where cveusuario='".$_SESSION['cveUser']."'";
-					$web->query($sql);
-					contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web);
-				}
-				else
-				{
-					contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web,"El correo ya existe");
-				}
+			if($cveusuario != $_SESSION['cveUser']){
+				message('index datos', 'No alteres la estructura de la interfaz', 'danger', $web);
 			}
-			else
-			{
-				contenidos($nombre,$cveUser,$rol,"",$_POST['datos']['correo'],$web,"Correo invalido");
-			}
-
-		}
-	}
-}
-else
-{
-	$web->checklogin();	
-}
-
-//metodos
-	function contenidos($nombre,$cveUser,$rol,$msgpass,$correo,$web,$msgcorreo="")
-	{
-		$nombre1=$web->tipoCuenta();
-		$web->smarty->assign('nombrecuenta',$nombre1);
-		$web->smarty->assign('usuario',$_SESSION['nombre']);
-		$web->smarty->assign('encabezado','<h3>¡Bienvenido! <br>'.$_SESSION['cveUser'].'-'.$_SESSION['nombre'].'<br/></h3>');
-		$web->smarty->assign('nombre',$nombre);
-		$web->smarty->assign('correoEx',$correo);
-		$web->smarty->assign('correo','<label style= "color:red">'.$msgcorreo.'</label>');
-		$web->smarty->assign('cveUser',$cveUser);
-		$web->smarty->assign('rol',"Tipo de cuenta:  ".$rol);
-		$web->smarty->assign('combo',combo($cveUser,$web));
-		$web->smarty->assign('contrasena','');
-		$web->smarty->assign('contrasena','<label style= "color:red">'.$msgpass.'</label>');
-		$web->smarty->display('datos.html');
-	}
-
-	function combo($cveUser,$web)
-	{
-		$sql="select especialidad.cveespecialidad, especialidad.nombre, pass 
-			from usuarios inner join especialidad on usuarios.cveespecialidad = especialidad.cveespecialidad 
-			where  cveusuario='".$cveUser."'";
-
-		$datos_rs = $web->DB->GetAll($sql);
-		$cveEspecialidad=$datos_rs[0]["cveespecialidad"];
-		$nomEspecialidad=$datos_rs[0]["nombre"];
-		$sql="select * from especialidad ";
-		$datos_rs = $web->DB->GetAll($sql);		
-		$combito='<select name="datos[especialidad]" class="form-control" id="exampleInputEmail3" id="producto">';
+			if(!isset($_POST['datos']['nombre']) ||
+		        !isset($_POST['datos']['cveespecialidad']) ||
+		        !isset($_POST['datos']['correo'])) {
+		        message('index datos', 'No alteres la estructura de la interfaz', 'danger', $web);
+		      }
 		
-		for ($i=0; $i <count($datos_rs); $i++) { 
-			 if($datos_rs[$i][1]==$nomEspecialidad)
-			 {
-			 	$combito.='<option selected>'.$datos_rs[$i][1].'</option>';
-			 }
-			 else
-			 {
-			 	$combito.='<option>'.$datos_rs[$i][1].'</option>';
-			 }
-		}
-			 	$combito.='</select>';
-			 	return $combito;
+		      if (($_POST['datos']['nombre']) == '' ||
+		        ($_POST['datos']['cveespecialidad']) == '' ||
+		        ($_POST['datos']['correo']) == '') {
+		        message('index datos', 'Llene todos los campos', 'danger', $web);
+		      }
+		
+		      $sql   = "select * from usuarios where cveusuario=?";
+		      $datos = $web->DB->GetAll($sql, $cveusuario);
+		      if (!isset($datos[0])) {
+		        errores('', 'index promotor nuevo', $cveusuario, $web);
+		        message('index datos', 'El promotor no existe', 'danger', $web);
+		      }
+		
+		      $datosp = $datos;
+		      if (!$web->valida($_POST['datos']['correo'])) {
+		        message('index datos', 'Ingrese un correo valido', 'danger', $web);
+		      }
+		
+		      $sql            = "select correo from usuarios where cveusuario=?";
+		      $correo_usuario = $web->DB->GetAll($sql, $cveUsuario);
+		
+		      $sql     = "select correo from usuarios where correo=?";
+		      $correos = $web->DB->GetAll($sql, $correo);
+		      if (sizeof($correos) == 1) {
+		        if ($correo_usuario[0]['correo'] != $correos[0]['correo']) {
+		          message('index datos', 'El correo ya existe', 'danger', $web);
+		        }
+		      }
+		
+		      if ($_POST['datos']['pass'] == 'true') {
+		        if (!isset($_POST['datos']['contrasena']) ||
+		          !isset($_POST['datos']['contrasenaN']) ||
+		          !isset($_POST['datos']['confcontrasenaN'])) {
+		          message('index datos', 'No altere la estructura de la interfaz', 'danger', $web);
+		        }
+		
+		        if (isset($_POST['datos']['contrasena']) == '' ||
+		          isset($_POST['datos']['contrasenaN']) == '' ||
+		          isset($_POST['datos']['confcontrasenaN']) == '') {
+		          message('index datos', 'Llene todos los campos', 'danger', $web);
+		        }
+		
+		        if ($datosp[0]['pass'] != md5($_POST['datos']['contrasena'])) {
+					message('index datos', 'La contraseña es incorrecta', 'danger', $web);
+		        }
+		
+		        if ($_POST['datos']['confcontrasenaN'] != $_POST['datos']['contrasenaN']) {
+		          message('index datos', 'La contraseña nueva debe coincidir con la confirmación', 'danger', $web);
+		        }
+		
+		        $sql = "update usuarios set nombre=?, correo= ?, pass=? where cveusuario=?";
+		        $tmp = array(
+		          $_POST['datos']['nombre'],
+		          $_POST['datos']['correo'],
+		          md5($_POST['datos']['contrasenaN']),
+		          $cveusuario);
+		        if (!$web->query($sql, $tmp)) {
+		          $web->smarty->assign('alert', 'danger');
+		          $web->smarty->assign('msg', 'No se pudo completar la operación');
+		          break;
+		        }
+		      } else {
+		        $sql = "update usuarios set nombre=?, correo= ? where cveusuario=?";
+		        $tmp = array($_POST['datos']['nombre'], $_POST['datos']['correo'], $cveusuario);
+		        if (!$web->query($sql, $tmp)) {
+		          $web->smarty->assign('alert', 'danger');
+		          $web->smarty->assign('msg', 'No se pudo completar la operación');
+		          break;
+		        }
+		
+		        if (isset($_POST['datos']['especialidad'])) {
+		          if ($_POST['datos']['especialidad'] == 'true') {
+		            $sql = "update especialidad_usuario set cveespecialidad=?, otro = null where cveusuario=? ";
+		            $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
+		          } else {
+		            $sql = "update especialidad_usuario set cveespecialidad='O', otro=? where cveusuario=? ";
+		            $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
+		          }
+		        } else {
+		          $sql             = "select cveespecialidad from especialidad_usuario where cveusuario=?";
+		          $cveespecialidad = $web->DB->GetAll($sql, $cveusuario);
+		          if ($cveespecialidad[0]['cveespecialidad'] == 'O') {
+		            $sql = "update especialidad_usuario set cveespecialidad='O', otro=? where cveusuario=? ";
+		            $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
+		          } else {
+		            $sql = "update especialidad_usuario set cveespecialidad=?, otro = null where cveusuario=? ";
+		            $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
+		          }
+		        }
+		      }
+	    	header("Location: datos.php");
+			break;
 	}
+}
+
+$sql = "select u.cveusuario, u.nombre AS \"nombreUsuario\", e.nombre, eu.cveespecialidad, eu.otro, u.correo
+		from usuarios u 
+		inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
+		inner join especialidad e on e.cveespecialidad = eu.cveespecialidad
+		inner join usuario_rol ur on ur.cveusuario = u.cveusuario 
+		where u.cveusuario = ? and ur.cverol = ?";
+$datos = $web->DB->GetAll($sql, array($_SESSION['cveUser'], 1));
+
+//Verificar si se tiene serultados
+if(!isset($datos[0])){
+	message('index datos', 'Ocurrido un error inesperado', 'danger', $web);
+ }
+
+if($datos[0]['cveespecialidad'] != 'O'){
+	$selected = $datos[0]['cveespecialidad'];
+}
+else{
+	$selected = null;
+}
+$web->iniClases('admin', "index datos");
+$sql = "select cveespecialidad, nombre from especialidad where cveespecialidad <> ?";
+$combo = $web->combo($sql, $selected, '../', 'O');
+$web->smarty->assign('promotores', $datos[0]);
+$web->smarty->assign('combito', $combo);
+$web->smarty->assign('especialidad', $combo);
+$web->smarty->display('datos.html');
+
+function message($iniClases, $msg, $alert, $web)
+{
+  $web->iniClases('admin', $iniClases);
+
+  $web->smarty->assign('alert', $alert);
+  $web->smarty->assign('msg', $msg);
+
+  $web->smarty->display('datos.html');
+  die();
+}
  ?>

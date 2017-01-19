@@ -35,7 +35,12 @@ if (isset($_GET['accion'])) {
     case 'delete':
       eliminar_libro_alumno($web);
       break;
-
+      
+    case 'delete_promotor':
+      eliminar_libro_alumno($web, 'promotor');
+      break;
+      
+    case 'grupos':
     case 'promotores':
       mostrar_alumnos_promotor($web);
       break;
@@ -52,9 +57,8 @@ if (isset($_GET['accion'])) {
   }
 }
 
-// $web->smarty->assign();
-$web->smarty->display('grupo.html');
 
+$web->smarty->display('grupo.html');
 
 /**
  * Para ahorrar código y poder mandar mensajes de error o avisos
@@ -329,11 +333,16 @@ function insertar_libro_alumno($web,$tipo='alumno')
  * @param  Class   $web Objeto para poder hacer uso de smarty
  * @return boolean False -> Mostrar mensaje de error
  */
-function eliminar_libro_alumno($web)
+function eliminar_libro_alumno($web, $tipo=null)
 {
   global $cveperiodo;
-
-  $web->iniClases('admin', "index alumnos grupos");
+  
+  if($tipo == 'promotor'){
+   $web->iniClases('admin', "index alumnos grupos");  
+  }
+  else{
+   $web->iniClases('admin', "index alumnos grupos"); 
+  }
 
   if (!isset($_GET['info1']) ||
     !isset($_GET['info2'])) {
@@ -385,12 +394,18 @@ function eliminar_libro_alumno($web)
   $sql = "delete from lista_libros where cvelista=?";
   $web->query($sql, $lista_libros[0]['cvelista']);
 
-  $sql = "select letra, nocontrol from lectura
+  $sql = "select letra, nocontrol,  laboral.cvepromotor from lectura
   inner join abecedario on lectura.cveletra = abecedario.cve
+  inner join laboral on laboral.cveletra = abecedario.cve
   where cvelectura=?";
   $lectura = $web->DB->GetAll($sql, $cvelectura);
 
-  header('Location: grupo.php?accion=alumnos&info1=' . $lectura[0]['letra'] . '&info2=' . $lectura[0]['nocontrol']);
+  if($tipo == 'promotor'){
+   header('Location: grupo.php?accion=libros&info1=' . $lectura[0]['letra'] . '&info2=' .$lectura[0]['nocontrol'] . '&info3=' .$lectura[0]['cvepromotor']);
+  }
+  else{
+   header('Location: grupo.php?accion=alumnos&info1=' . $lectura[0]['letra'] . '&info2=' . $lectura[0]['nocontrol']);
+  }
   die(); //no funciona bien sin esto
 }
 
@@ -433,8 +448,12 @@ function mostrar_alumnos_promotor($web){
     message('danger', 'El grupo seleccionado no existe', $web);
     return false;
   }
-
-  $web->iniClases('admin', "index promotor grupo-" . $_GET['info1']);
+  if($_GET['accion'] == 'grupos'){
+   $web->iniClases('admin', "index grupos grupo-" . $_GET['info1']);     
+  }
+  else{
+   $web->iniClases('admin', "index promotor grupo-" . $_GET['info1']); 
+  }
 
   //Datos de la tabla = Calificaciones del alumno
   $sql = "select distinct usuarios.nombre, comprension, motivacion, participacion, asistencia,

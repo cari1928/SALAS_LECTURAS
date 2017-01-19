@@ -3,6 +3,7 @@
 {if isset($msg)}
 	{include file='../mensajes.html'}
 {/if}
+{if !isset($horas)}
 {if isset($datos)}
   <div class="page-header">
     <h1>Selección de Sala</h1>
@@ -34,7 +35,7 @@
     } );
   </script>
 {/if}
-
+{/if}
 {if isset($cvesala)}
   <div class="page-header">
     <h1>Selección de Horario</h1>
@@ -175,12 +176,14 @@
       <tr>
         <td colspan="6">
           <div class="form-group" align="right">
-            <input type="submit" class="btn btn-primary"/>
           </div>
         </td>
       </tr>
     </table>
     <input type="hidden" name="datos[cvesala]" value="{$cvesala}"/>
+    <h3>Seleccione libro grupal:</h3>
+    {$libros}
+  <input type="submit" class="btn btn-primary"/>
   </form>
 {/if}
 {include file='footer.html'}

@@ -1,15 +1,11 @@
 <?php
 include "../sistema.php";
 
-if (!isset($_SESSION['roles'])) {
-    header('Location: ../index.php');
-}
-
 if ($_SESSION['roles'] != 'P') {
-    header('Location: ../index.php');
+    $web->checklogin();
 }
 
-$web->iniClases('promotor', "index vergrupos redactar");
+$web->iniClases('promotor', "index grupos redactar");
 $grupos = $web->grupos($_SESSION['cveUser']);
 $web->smarty->assign('grupos', $grupos);
 
@@ -17,8 +13,8 @@ $accion = "";
 $para   = "";
 $perodo = "";
 
-if (!isset($_GET['info']) && !isset($_GET['para'])) {
-    header('Location: vergrupos.php');
+if (!isset($_GET['info1']) && !isset($_GET['info2'])) {
+    header('Location: grupos.php');
 }
 
 if (isset($_GET['info'])) {

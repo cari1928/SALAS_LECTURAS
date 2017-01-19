@@ -58,7 +58,11 @@ if(isset($_GET['accion'])) {
 				}
 			}
 			$web->smarty->assign('cvesala', $_GET['info']);
-			$web->smarty->display("promosala.html");
+			 $sql='select cvelibro, titulo from libro order by titulo';
+			 $libros = $web->combo($sql, null, "../");
+			 $web->smarty->assign('libros', $libros);
+			 $web->smarty->assign('horas', 'horas');
+			 $web->smarty->display("promosala.html");
 			die();
 		break;
 			
@@ -102,7 +106,27 @@ if(isset($_GET['accion'])) {
     		$web->smarty->assign('msg', 'Selecciona alguna hora porfavor');	
     		break;
 			}
-		
+			
+			// Para cuando el usuario escoge mas de dos horas
+			if($res < 10) {
+				$web->smarty->assign('alert', 'danger');
+    		$web->smarty->assign('msg', 'Solo debe seleccionar dos horas');	
+    		break;
+			}
+			
+			if(!isset($_POST['datos']['cvelibro'])){
+				$web->smarty->assign('alert', 'danger');
+    		$web->smarty->assign('msg', 'No altere la estructura de la interfaz');	
+    		break;
+			}
+			
+			if($_POST['datos']['cvelibro'] == -1){
+				$web->smarty->assign('alert', 'danger');
+    		$web->smarty->assign('msg', 'Seleccione un libro grupal');	
+    		break;
+			}
+			
+			$cvelibro=$_POST['datos']['cvelibro'];
 			$sql = "select COALESCE(MAX(cveletra),0) as cveletra from laboral where cveperiodo=?";
 			$grupo = $web->DB->GetAll($sql, $cveperiodo);
 			$grupo = ($grupo[0]['cveletra']+1);
@@ -113,7 +137,7 @@ if(isset($_GET['accion'])) {
 			
 			if(!verificaUbicacion(3, $web, $cveperiodo)) { break; }
 			
-			verificaUbicacion(4, $web, array('cveperiodo'=>$cveperiodo, 'grupo'=>$grupo, 'nombre'=>$nombre));
+			verificaUbicacion(4, $web, array('cveperiodo'=>$cveperiodo, 'grupo'=>$grupo, 'nombre'=>$nombre, 'cvelibro_grupal'=>$cvelibro));
 			
 			header('Location: vergrupos.php');
 		break;
@@ -192,8 +216,8 @@ function verificaUbicacion($op, $web, $elementos=null) {
 				
 				case 4: //insert final
 					if($_POST['datos']['horas'.$i.'_'.$j] != -1) {
-				 			$sql = "INSERT INTO laboral(cveperiodo, cvehoras, cvedia, cvesala, cveletra, nombre, cvepromotor) values(?, ?, ?, ?, ?, ?, ?)";
-							$parametros = array($elementos['cveperiodo'], $_POST['datos']['horas'.$i.'_'.$j], $i, $_POST['datos']['cvesala'], $elementos['grupo'], $elementos['nombre'], $_SESSION['cveUser']);
+				 			$sql = "INSERT INTO laboral(cveperiodo, cvehoras, cvedia, cvesala, cveletra, nombre, cvepromotor, cvelibro_grupal) values(?, ?, ?, ?, ?, ?, ?, ?)";
+							$parametros = array($elementos['cveperiodo'], $_POST['datos']['horas'.$i.'_'.$j], $i, $_POST['datos']['cvesala'], $elementos['grupo'], $elementos['nombre'], $_SESSION['cveUser'], $elementos['cvelibro_grupal']);
 							$web->query($sql, $parametros);
 				 		}
 				break;

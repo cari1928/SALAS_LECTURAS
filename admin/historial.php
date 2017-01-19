@@ -2,52 +2,56 @@
 include '../sistema.php';
 
 if ($_SESSION['roles'] != 'A') {
-    $web->checklogin();
+  $web->checklogin();
 }
 
-$accion="";
-if( isset($_GET['accion'])){
-    $accion=$_GET['accion'];
-}
+if (isset($_GET['accion'])) {
 
-switch($accion){
-    case 'alumnos':
-    break;
+  switch ($_GET['accion']) {
+
+    case 'periodo':
+      $web->iniClases('admin', "index historial promotor-alumno");
+      $web->smarty->assign('accion', $_GET['accion']);
+      $web->smarty->assign('periodo', $_GET['info1']);
+      $web->smarty->display('historial.html');
+      die();
+      break;
+
     case 'promotor':
-    break;
+      
+      break;
+
+    case 'alumnos':
+      die('promotor-alumno');
+      break;
+  }
 }
 
-$web->iniClases('admin', "index historial");
-$web->smarty->display('historial.html');
-// if (isset($_GET['info1'])) {
-//     $elimina = $_GET['info1'];
-//     $sql     = "delete from periodo where cveperiodo='" . $elimina . "'";
-//     $web->query($sql);
-// }
+if(isset($_GET['e'])) {
+  
+  if($_GET['e'] == 1) {
+    $web->iniClases('admin', "index historial promotor-alumno");
+    $web->smarty->assign('accion', 'periodo');
+    $web->smarty->assign('periodo', $_GET['info1']);
+    $web->simple_message('danger', 'No hay promotores para este periodo');
+    $web->smarty->display('historial.html');
+    die();
+  }
+}
 
-// $sql      = "select cveperiodo,fechainicio,fechafinal from periodo";
-// $periodos = $web->DB->GetAll($sql);
-// if (isset($periodos[0])) {
-//     $web->smarty->assign('periodos', $periodos);
-//     $web->smarty->assign('bandera', true);
-// } else {
-//     $web->smarty->assign('msj', "No hay periodos registrados");
-// }
-
-// $web->smarty->display("periodos.html");
+header("Location: periodos.php?accion=historial");
 
 /**
  * Método para mostrar el template form_alumnos cuando ocurre algún error
  * @param  String $iniClases Ruta a mostrar en links
  * @param  String $msg       Mensaje a desplegar
  * @param  $web              Para poder aplicar las funciones de $web
- * @param  String $cveusuario   Usado en caso de que se trate de un formulario de actualización
  */
-function message($iniClases, $msg, $web)
+function message($iniClases, $msg, $alert, $web)
 {
   $web->iniClases('admin', $iniClases);
 
-  $web->smarty->assign('alert', 'danger');
+  $web->smarty->assign('alert', $alert);
   $web->smarty->assign('msg', $msg);
 
   $web->smarty->display('historial.html');
