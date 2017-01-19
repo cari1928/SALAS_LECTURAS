@@ -56,7 +56,6 @@ if (isset($_GET['accion'])) {
         $web->smarty->assign('msg', 'No se pudo completar la operación');
         break;
       }
-
       header('Location: periodos.php');
       break;
 
@@ -106,6 +105,10 @@ if(isset($_GET['e'])) {
   switch ($_GET['e']) {
     case 1:
       $web->simple_message('danger', 'No fue posible generar el reporte, hacen falta datos');
+      break;
+      
+    case 2:
+      $web->simple_message('danger', 'No fue posible generar el reporte, hay error con los datos seleccionados');
       break;
   }
 }

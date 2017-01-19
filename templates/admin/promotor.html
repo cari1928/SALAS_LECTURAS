@@ -2,13 +2,14 @@
 {$ruta}  
 
 <table class='table'>
-	{if !isset($bandera)}
+	{if !isset($cveperiodo)}
 		<tr><td colspan='4' align='right'>
 			<a href='promotor.php?accion=form_insert'><img src='../Images/add.png'/> </a>
 		</td></tr>
 	{else}
-		<tr><td colspan='4' align='right'><a href='reporte_pdf.php?accion=periodos&info1=1'>
-				<img src='../Images/pdf.png' title='Reporte Promotores-Periodos'/>
+		<tr><td colspan='4' align='right'>
+			<a href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}'>
+			<img src='../Images/pdf.png' title='Reporte Promotores-Periodos'/>
 		</a></td></tr>
 	{/if}
 </table>
@@ -22,12 +23,12 @@
 			<th><center>PROMOTOR</center></th>
 			<th><center>EMAIL</center></th>
 			<th><center>ESPECIALIDAD</center></th>
-			{if !isset($bandera)}
+			{if !isset($cveperiodo)}
 				<th><center>ELIMINAR</center></th>
 				<th><center>ACTUALIZAR</center></th>
 			{/if}
 			<th><center>GRUPOS</center></th>
-			{if isset($bandera)}<th><center>REPORTE</center></th>{/if}
+			{if isset($cveperiodo)}<th><center>REPORTE</center></th>{/if}
 		</tr>
 	{foreach $promotores as $promotor}
 		<tr>
@@ -41,7 +42,7 @@
 					{$promotor.Especialidad}
 				{/if}
 			</center></td>
-			{if !isset($bandera)}
+			{if !isset($cveperiodo)}
 				<td><center>
 					<a class="delete" href="promotor.php?accion=delete&info1={$promotor.cveusuario}">
 						<img src="../Images/cancelar.png">
@@ -50,12 +51,13 @@
 					<img src="../Images/edit.png">
 				</a></center></td>
 			{/if}
-			<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($bandera)}&info2{/if}">
+			<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($cveperiodo)}&info2{/if}">
 				<img src="../Images/mostrar.png">
 			</a></center></td>
-			{if isset($bandera)}
+			{if isset($cveperiodo)}
 				<td colspan='4' align='right'><center>
-					<a href='reporte_pdf.php?accion=promotor&info1=1'><img src='../Images/pdf.png' title='Reporte Promotor-Periodo'/></a>
+					<a href='reporte_pdf.php?accion=promotor&info1=1&info2={$cveperiodo}&info3={$promotor.cveusuario}'>
+					<img src='../Images/pdf.png' title='Reporte Promotor-Periodo'/></a>
 				<center></td>
 			{/if}
 		</tr>

@@ -253,6 +253,7 @@ if(!$flag) {
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   order by u.cveusuario";
   $promotores = $web->DB->GetAll($sql);
+  
 } else {
   $promotores = $flag; //por si viene de historial
 }
@@ -463,7 +464,6 @@ function show_history($web) {
     return false;
   }
   
-  $web->smarty->assign('bandera', 'historial');
   $web->smarty->assign('cveperiodo', $_GET['info1']);
   return $promotores;
 }

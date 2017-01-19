@@ -12,7 +12,7 @@ if (isset($_GET['accion'])) {
     case 'periodo':
       $web->iniClases('admin', "index historial promotor-alumno");
       $web->smarty->assign('accion', $_GET['accion']);
-      $web->smarty->assign('periodo', $_GET['info1']);
+      $web->smarty->assign('cveperiodo', $_GET['info1']);
       $web->smarty->display('historial.html');
       die();
       break;

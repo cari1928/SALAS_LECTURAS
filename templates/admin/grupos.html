@@ -15,14 +15,17 @@
 		</tr>
 		{foreach $tablegrupos as $grupo}
 			<tr>
-				<td><center><a href="grupo.php?accion={$table}&info1={$grupo.letra}&info2={if $table eq 'grupos'}{$grupo.cvepromotor}{/if}{if $table eq 'promotores'}{$promotor}{else}{$grupo.nocontrol}{/if}">
+				<td style="vertical-align:middle"><center><a href="grupo.php?accion={if isset($bandera)}{$bandera}{else}grupos{/if}&info1={$grupo.letra}&info2={if $table eq 'grupos'}{$grupo.cvepromotor}{/if}{if $table eq 'promotores'}{$promotor}{else}{$grupo.nocontrol}{/if}">
 				  {$grupo.letra}
 			  </a></center></td>
-				<td><center>{$grupo.nombre}</center></td>
-				{if $table eq 'grupos'}<td><center>{$grupo.nombre_promotor}</center></td>{/if}
-				<td><center>{$grupo.ubicacion}</center></td>
-				<td><center>{$grupo.titulo}</center></td>
-				<td><center>{$grupo.horario}</center></td>
+				<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>
+				{if $table eq 'grupos'}
+				  <td style="vertical-align:middle">
+				    <center>{$grupo.nombre_promotor}</center>
+			    </td>{/if}
+				<td style="vertical-align:middle"><center>{$grupo.ubicacion}</center></td>
+				<td style="vertical-align:middle"><center>{$grupo.titulo}</center></td>
+				<td style="vertical-align:middle"><center>{$grupo.horario}</center></td>
 			</tr>
 		{/foreach}
 	</table>

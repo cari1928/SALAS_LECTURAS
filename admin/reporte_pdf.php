@@ -7,33 +7,48 @@ if ($_SESSION['roles'] != 'A') {
   $web->checklogin();
 }
 
+$titulo = ""; //necesario para colocar nombre al archivo pdf
 if(isset($_GET['accion'])) {
   
-  //verifica si se manda el campo más básico
+  //verifica si se manda el campo más básico, indica si es pdf o excel
   if(!isset($_GET['info1'])) {
-      header('Location: periodos.php?accion=historial&e=1');
+    header('Location: periodos.php?accion=historial&e=1');
   }
+  $tipo_archivo = $_GET['info1'];
   $html_code = getHeader();
   
   switch ($_GET['accion']) {
     
     case 'periodos':
-      reporte_periodos($web);
-      // prueba($web);
+      proceso_archivo($web);
+      $titulo = "reporte_periodos";
+      break;
+      
+    case 'promotores':
+      //verifica que mande cveperiodo
+      $datos = array('cveperiodo'=>verifica_periodo($web));
+      proceso_archivo($web, $datos);
+      $titulo = "reporte_periodo_promotores";
       break;
     
-    case 'promotores':
-      //si no manda el tipo de extensión o la cveperiodo
-      if(!isset($_GET['info2'])) {
+    case 'promotor':
+      //verifica que mande y sea válido cveperiodo
+      $datos = array('cveperiodo'=>verifica_periodo($web));
+      
+      //verifica que mande y sea válido cvepromotor
+      if(!isset($_GET['info3'])) {
         header('Location: periodos.php?accion=historial&e=1');
       }
-      
-      //la opcion == 2 se reserva para posible archivo de excel, si no se puede eliminar info1
-      if($_GET['info1'] == 1) {
-        //obtiene los grupos 
-        die('falta');
+      $cvepromotor = $_GET['info3'];
+      $sql = "select * from usuarios where cveusuario=?";
+      $promotor = $web->DB->GetAll($sql, $cvepromotor);
+      if(!isset($promotor[0])) {
+        header('Location: periodos.php?accion=historial&e=2');
       }
       
+      $datos = array('cveperiodo'=>$cveperiodo, 'cvepromotor'=>$cvepromotor);
+      proceso_archivo($web, $datos);
+      $titulo = "reporte_periodo_".$cvepromotor;
       break;
   }
   
@@ -47,7 +62,7 @@ $dompdf = new Dompdf();
 $dompdf->loadHtml($html_code);
 $dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
-$dompdf->stream();
+$dompdf->stream($titulo);
 
 function getHeader() {
   return '
@@ -55,9 +70,14 @@ function getHeader() {
     <html lang="en">
     <head>	  
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-      <link href="../css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-      <link href="../css/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-      <link href="../css/bootstrap/js/bootstrap.min.js" rel="stylesheet">
+      
+      <!-- Latest compiled and minified CSS -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Optional theme -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  
     	<link rel="stylesheet" type="text/css" href="../css/main.css">
     	<title>Reporte - Promotor</title>
     </head>
@@ -66,52 +86,95 @@ function getHeader() {
 
 function getFooter() {
   return '
-  </table>
   </body>
   </html>
   ';
 }
 
-function reporte_periodos($web) {
-  global $html_code;
+function verifica_periodo($web) {
+  //verifica que mande cveperiodo
+  if(!isset($_GET['info2'])) {
+    header('Location: periodos.php?accion=historial&e=1');
+    return false;
+  }
+  $cveperiodo = $_GET['info2'];
+  
+  //verifica que exista el periodo
+  $sql = "select * from periodo where cveperiodo=?";
+  $periodo = $web->DB->GetAll($sql, $cveperiodo);
+  if(!isset($periodo[0])) {
+    header('Location: periodos.php?accion=historial&e=2');
+    return false;
+  }
+  
+  return $cveperiodo;
+}
 
+function proceso_archivo($web, $datos=null) {
+  global $tipo_archivo;
+  
+  if($tipo_archivo == 1) { //pdf
+    reporte_periodos($web, $datos);
+  } else {
+    die('generar excel');
+  }
+}
+
+function reporte_periodos($web, $datos=null) {
+  global $html_code;
+  
   //obtener todos los promotores
   $sql = "select usuarios.cveusuario, usuarios.nombre AS \"nombre_usuario\", especialidad.nombre AS \"nombre_especialidad\", correo, especialidad.cveespecialidad AS \"especialidad_cve\", otro from usuarios
   inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
   inner join especialidad on especialidad.cveespecialidad = especialidad_usuario.cveespecialidad
-  where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=2)
-  order by usuarios.nombre";
-  $promotores = $web->DB->GetAll($sql);
+  where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=2)";
+  $parameters = array();
+  
+  //promotor específico
+  if(isset($datos['cvepromotor'])) {
+    $sql .= " and usuarios.cveusuario=?";
+    $parameters = $datos['cvepromotor'];
+  }
+  
+  $sql .= "order by usuarios.nombre";
+  $promotores = $web->DB->GetAll($sql, $parameters);
   
   //obtener los periodos
-  $sql = "select * from periodo order by cveperiodo";
-  $periodos = $web->DB->GetAll($sql);
+  $parameters = array();
+  if(isset($datos['cveperiodo'])) {
+    $sql = "select * from periodo where cveperiodo=?";
+    $parameters = $datos['cveperiodo'];
+  } else {
+    $sql = "select * from periodo order by cveperiodo";
+  }
+  $periodos = $web->DB->GetAll($sql, $parameters);
   
   for ($i = 0; $i < sizeof($promotores); $i++) {
-    
+    //checa si muestra especialidad u otro
     $especialidad = $promotores[$i]['nombre_especialidad'];
     if($promotores[$i]['especialidad_cve'] == 'O') {
       $especialidad = $promotores[$i]['otro'];
     }
     
+    //encabezado de promotor
     $html_code .= '
-    <table class="table table-bordered" border="0">
+    <table class="table table-condensed">
       <tr class="active">
-        <td><small>RFC</small><h4>'.$promotores[$i]['cveusuario'].'</h4></td>
+        <td width="130"><small>RFC</small><h4>'.$promotores[$i]['cveusuario'].'</h4></td>
         <td width="200"><small>PROMOTOR</small><h4>'.$promotores[$i]['nombre_usuario'].'</h4></td>
-        <td><small>ESPECIALIDAD</small><h4>'.$especialidad.'</h4></td>
+        <td width="190"><small>ESPECIALIDAD</small><h4>'.$especialidad.'</h4></td>
         <td colspan="2"><small>CORREO</small><h4>'.$promotores[$i]['correo'].'</h4></td>
       </tr>';
       
     for ($j = 0; $j < sizeof($periodos); $j++) {
-      
+      //encabezado de periodo
       $html_code .= '
-      <tr class="success"><td colspan="5">
+      <tr class="active"><td colspan="5">
         <h4>Periodo: '.$periodos[$j]['fechainicio'].' : '.$periodos[$j]['fechafinal'].'</h4>
     	</td></tr>';
       
       //obtiene los grupos del promotor por cada periodo
-      $sql = "select distinct laboral.cveletra, letra, cvesala, nombre, titulo from laboral 
+      $sql = "select distinct laboral.cveletra, letra, cvesala, nombre, titulo from laboral
       inner join abecedario on laboral.cveletra = abecedario.cve
       left join libro on laboral.cvelibro_grupal = libro.cvelibro
       where cveperiodo=? and cvepromotor=?
@@ -125,7 +188,7 @@ function reporte_periodos($web) {
       } else {
         for ($k = 0; $k < sizeof($grupos); $k++) {
           $html_code .= '
-          <tr class="warning">
+          <tr class="active">
           	<td><small>GRUPO</small><h4>'.$grupos[$k]['letra'].'</h4></td>
           	<td><small>SALA</small><h4>'.$grupos[$k]['cvesala'].'</h4></td>
           	<td><small>NOMBRE DEL GRUPO</small><h4>'.$grupos[$k]['nombre'].'</h4></td>
@@ -209,7 +272,8 @@ function reporte_periodos($web) {
       } //if-else existencia de grupos
       
     } //for periodos
-    
+    $html_code.= "</table><div style='page-break-after:always;'></div>";
   } // for promotores
+  $html_code = substr($html_code, 0, -44);  // devuelve "abcde"
 }
 ?>

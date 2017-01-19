@@ -41,7 +41,7 @@ if (isset($_GET['accion'])) {
       break;
       
     case 'grupos':
-    case 'promotores':
+    case 'historial':
       mostrar_alumnos_promotor($web);
       break;
       
@@ -169,60 +169,60 @@ function mostrar_alumnos($web)
  * @param  Class  $web    Objeto para hacer uso de smarty
  */
 function mostrar_libros_promotor($web){
-      global $cveperiodo; //si funciona? 
-      
-      //Checa que este especificado el grupo
-      if(!isset($_GET['info1'])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'Hace falta información para continuar, no se especificó el grupo', $web);
-        return false;
-      }
-      //Checa que este especificado el alumno
-      if(!isset($_GET['info2'])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'Hace falta información para continuar, no se especificó el alumno', $web);
-        return false;
-      }
-      //Checa que el grupo exista
-      $sql="SELECT * FROM laboral
-       where cveletra in (SELECT cve FROM abecedario WHERE letra = ?)
-             and cveperiodo = ?";
-      $grupo=$web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-      if(!isset($grupo[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El grupo no existe', $web);
-        return false;
-      }
-      //Checar que el promotor sea el propietario del grupo
-      if($grupo[0]['cvepromotor'] != $_GET['info3']){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El promotor seleccionado no es propietario del grupo', $web);
-        return false;
-      }
-      //Checa que el alumno exista
-      $sql="SELECT * FROM usuarios where cveusuario = ?";
-      $aux_alumno = $web->DB->GetAll($sql, $_GET['info2']);
-      if(!isset($aux_alumno[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El alumno no existe', $web);
-        return false;
-      }
-      //Checar que el alumno pertenezca al grupo
-      $sql="SELECT * FROM lectura
-       WHERE nocontrol = ? and
-             cveletra in (SELECT cve FROM abecedario 
-                         where cve in (SELECT cveletra from laboral
-                                       WHERE cveperiodo = ?)
-                          and letra = ?)";
-      $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1']));
-      if(!isset($alumno[0])){
-        $web->iniClases('admin', "index promotor");
-        message('danger', 'El alumno no pertenese al grupo', $web);
-        return false;
-      }
-      
-      $web->iniClases('admin', "index promotor libros");
-      mostrar_libros($web, $alumno);
+  global $cveperiodo;
+  
+  //Checa que este especificado el grupo
+  if(!isset($_GET['info1'])){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'Hace falta información para continuar, no se especificó el grupo', $web);
+    return false;
+  }
+  //Checa que este especificado el alumno
+  if(!isset($_GET['info2'])){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'Hace falta información para continuar, no se especificó el alumno', $web);
+    return false;
+  }
+  //Checa que el grupo exista
+  $sql="SELECT * FROM laboral
+  where cveletra in (SELECT cve FROM abecedario WHERE letra = ?)
+  and cveperiodo = ?";
+  $grupo=$web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  if(!isset($grupo[0])){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'El grupo no existe', $web);
+    return false;
+  }
+  //Checar que el promotor sea el propietario del grupo
+  if($grupo[0]['cvepromotor'] != $_GET['info3']){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'El promotor seleccionado no es propietario del grupo', $web);
+    return false;
+  }
+  //Checa que el alumno exista
+  $sql="SELECT * FROM usuarios where cveusuario = ?";
+  $aux_alumno = $web->DB->GetAll($sql, $_GET['info2']);
+  if(!isset($aux_alumno[0])){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'El alumno no existe', $web);
+    return false;
+  }
+  //Checar que el alumno pertenezca al grupo
+  $sql="SELECT * FROM lectura
+   WHERE nocontrol = ? and
+         cveletra in (SELECT cve FROM abecedario 
+                     where cve in (SELECT cveletra from laboral
+                                   WHERE cveperiodo = ?)
+                      and letra = ?)";
+  $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1']));
+  if(!isset($alumno[0])){
+    $web->iniClases('admin', "index promotor");
+    message('danger', 'El alumno no pertenese al grupo', $web);
+    return false;
+  }
+  
+  $web->iniClases('admin', "index promotor libros");
+  mostrar_libros($web, $alumno);
 }
 
 /**
@@ -418,7 +418,7 @@ function ver_reporte($web) {
 function mostrar_alumnos_promotor($web){
   global $cveperiodo;
 
-  //verifica que se haya mandado el promoto
+  //verifica que se haya mandado el promotor
   if (!isset($_GET['info2'])) {
     $web->iniClases('admin', "index promotor grupos");
     message('warning', 'Hacen falta datos para continuar', $web);
@@ -438,21 +438,23 @@ function mostrar_alumnos_promotor($web){
   //verifica la existencia del grupo
   $sql = "select * from lectura
   inner join laboral on laboral.cveletra = lectura.cveletra
-  where laboral.cveletra in (select cve from abecedario where letra=?) and laboral.cveperiodo=? and cvepromotor=?";
+  where laboral.cveletra in (select cve from abecedario where letra=?) 
+  and laboral.cveperiodo=? 
+  and cvepromotor=?";
   $grupo = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo, $_GET['info2']));
-  // echo "<pre>";
-  // print_r($grupo);
-  // die();
+
+  // $web->debug($grupo);
+
   if (!isset($grupo[0])) {
     $web->iniClases('admin', "index promotor grupos");
     message('danger', 'El grupo seleccionado no existe', $web);
     return false;
   }
-  if($_GET['accion'] == 'grupos'){
-   $web->iniClases('admin', "index grupos grupo-" . $_GET['info1']);     
-  }
-  else{
-   $web->iniClases('admin', "index promotor grupo-" . $_GET['info1']); 
+  
+  $web->iniClases('admin', "index promotor grupo-".$_GET['info1']);     
+  if($_GET['accion'] == 'historial'){
+    $web->iniClases('admin', "index historial grupo-".$_GET['info1']); 
+    $web->smarty->assign('bandera', 'historial');
   }
 
   //Datos de la tabla = Calificaciones del alumno
@@ -470,6 +472,7 @@ function mostrar_alumnos_promotor($web){
     message('warning', 'El promotor seleccionado no es el propietario', $web);
     return false;
   }
+  
   $web->smarty->assign('datos', $datos);
   $web->smarty->assign('promotor', 'promotor');
 }
