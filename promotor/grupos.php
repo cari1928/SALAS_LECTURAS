@@ -21,7 +21,8 @@ if (isset($_GET['accion'])) {
 
       case 'form_update':
         if (!isset($_GET['info'])) {
-            message('No se especificó el grupo', $web);
+            $web->simple_message('danger', 'No se especificó el grupo');
+            break;
         }
 
         $sql = "select * from laboral where cveletra in
@@ -29,7 +30,8 @@ if (isset($_GET['accion'])) {
         $grupo = $web->DB->GetAll($sql, $_GET['info']);
 
         if (!isset($grupo[0])) {
-            message('No existe el grupo seleccionado', $web);
+            $web->simple_message('danger', 'No existe el grupo seleccionado');
+            break;
         }
 
         $web->iniClases('promotor', "index grupos actualizar");
@@ -40,11 +42,13 @@ if (isset($_GET['accion'])) {
 
       case 'update':
         if (!isset($_POST['datos']['nombre'])) {
-            message("No alteres la estructura de la interfaz", $web);
+            $web->simple_message('danger', "No alteres la estructura de la interfaz");
+            break;
         }
 
         if ($_POST['datos']['nombre'] == "") {
-            message("Llena todos los campos", $web);
+            $web->simple_message('danger', "Llena todos los campos");
+            break;
         }
 
         $nombre = $_POST['datos']['nombre'];
@@ -65,8 +69,7 @@ $sql = "select distinct letra, nombre, ubicacion from laboral
 $tablegrupos = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
 
 if (!isset($tablegrupos[0])) {
-    $web->smarty->assign('alert', 'danger');
-    $web->smarty->assign('msg', 'No ha registrado algún grupo');
+  $web->simple_message('danger', 'No ha registrado algún grupo');
 }
 
 $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, horas.hora_final 
@@ -90,11 +93,3 @@ for($i=0; $i<sizeof($tablegrupos); $i++){
 
 $web->smarty->assign('tablegrupos', $tablegrupos);
 $web->smarty->display('vergrupos.html');
-
-/**/
-function message($msg, $web)
-{
-    $web->smarty->assign('alert', 'danger');
-    $web->smarty->assign('msg', $msg);
-    die();
-}

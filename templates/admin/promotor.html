@@ -9,7 +9,9 @@
 	{else}
 		<tr><td colspan='4' align='right'>
 			<a href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}'>
-			<img src='../Images/pdf.png' title='Reporte Promotores-Periodos'/>
+				<h4>Reporte General 
+					<img src='../Images/pdf.png' title='Reporte Promotores-Periodos'/>
+				</h4>	
 		</a></td></tr>
 	{/if}
 </table>
@@ -19,16 +21,16 @@
 {if isset($promotores)}
 	<table class='table table-hover'>
 		<tr class='info'>		
-			<th><center>RFC</center></th>
-			<th><center>PROMOTOR</center></th>
-			<th><center>EMAIL</center></th>
-			<th><center>ESPECIALIDAD</center></th>
+			<th style="vertical-align:middle"><center>RFC</center></th>
+			<th style="vertical-align:middle"><center>PROMOTOR</center></th>
+			<th style="vertical-align:middle"><center>EMAIL</center></th>
+			<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
 			{if !isset($cveperiodo)}
-				<th><center>ELIMINAR</center></th>
-				<th><center>ACTUALIZAR</center></th>
+				<th style="vertical-align:middle"><center>ELIMINAR</center></th>
+				<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
 			{/if}
-			<th><center>GRUPOS</center></th>
-			{if isset($cveperiodo)}<th><center>REPORTE</center></th>{/if}
+			<th style="vertical-align:middle"><center>GRUPOS</center></th>
+			{if isset($cveperiodo)}<th width='150'><center>REPORTE PROMOTOR</center></th>{/if}
 		</tr>
 	{foreach $promotores as $promotor}
 		<tr>
@@ -51,14 +53,18 @@
 					<img src="../Images/edit.png">
 				</a></center></td>
 			{/if}
-			<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($cveperiodo)}&info2{/if}">
-				<img src="../Images/mostrar.png">
-			</a></center></td>
 			{if isset($cveperiodo)}
+				<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($cveperiodo)}&info2={$cveperiodo}{/if}">
+					<img src="../Images/mostrar.png">
+				</a></center></td>
 				<td colspan='4' align='right'><center>
 					<a href='reporte_pdf.php?accion=promotor&info1=1&info2={$cveperiodo}&info3={$promotor.cveusuario}'>
 					<img src='../Images/pdf.png' title='Reporte Promotor-Periodo'/></a>
 				<center></td>
+			{else}
+				<td><center><a href="promotor.php?accion=mostrar&info1={$promotor.cveusuario}{if isset($cveperiodo)}&info2{/if}">
+					<img src="../Images/mostrar.png">
+				</a></center></td>
 			{/if}
 		</tr>
 	{/foreach}

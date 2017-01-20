@@ -29,7 +29,6 @@ if (isset($_GET['accion'])) {
       else{
         insertar_libro_alumno($web);  
       }
-      
       break;
 
     case 'delete':
@@ -42,7 +41,7 @@ if (isset($_GET['accion'])) {
       
     case 'grupos':
     case 'historial':
-      mostrar_alumnos_promotor($web);
+      mostrar_grupos_promotor($web);
       break;
       
     case 'reporte':
@@ -74,6 +73,7 @@ function message($alert, $msg, $web)
 
 /**
  * Muestra: Barra gris superior con los datos del grupo
+ * Lista de calificaciones
  * También datos sobre los libros, usa el metodo mostrarLibros()
  * @param  Class   $web Objeto para poder usar smarty
  * @return boolean False = Mostrar mensaje de error
@@ -160,7 +160,6 @@ function mostrar_alumnos($web)
   $web->smarty->assign('datos', $datos);
   $web->smarty->assign('alumnos', 'alumnos');
 }
-
 
 /**
  * Muestra:
@@ -409,13 +408,19 @@ function eliminar_libro_alumno($web, $tipo=null)
   die(); //no funciona bien sin esto
 }
 
+
 function ver_reporte($web) {
   $web->iniClases('admin', "index alumnos reporte");
   message('info', 'FALTA PROGRAMAR ESTA SECCION, PRIMERO DEBE PROGRAMARSE QUE EL PROMOTOR O EL ADMIN PUEDAN SUBIR EL REPORTE', $web);
   return false;
 }
 
-function mostrar_alumnos_promotor($web){
+/**
+ * Muestra la lista de alumnos de un grupo en base a un promotor
+ * @param  Class   $web Objeto para hacer uso de smarty
+ * @return boolean False -> Mostrar mensaje de error
+ */
+function mostrar_grupos_promotor($web){
   global $cveperiodo;
 
   //verifica que se haya mandado el promotor
@@ -442,8 +447,6 @@ function mostrar_alumnos_promotor($web){
   and laboral.cveperiodo=? 
   and cvepromotor=?";
   $grupo = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo, $_GET['info2']));
-
-  // $web->debug($grupo);
 
   if (!isset($grupo[0])) {
     $web->iniClases('admin', "index promotor grupos");

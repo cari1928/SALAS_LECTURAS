@@ -6,18 +6,25 @@
 {if isset($tablegrupos)}
 	<table class="table table-hover">
 		<tr class='info'>
-			<th><center>GRUPO</center></th>
-			<th><center>SALA</center></th>
+			<th style="vertical-align:middle"><center>GRUPO</center></th>
+			<th style="vertical-align:middle"><center>SALA</center></th>
 			{if $table eq 'grupos'}<th><center>PROMOTOR</center></th>{/if}
-			<th><center>UBICACIÓN</center></th>
-			<th width="150"><center>LIBRO GRUPAL</center></th>
-			<th width="400"><center>HORARIO</center></th>
+			<th style="vertical-align:middle"><center>UBICACIÓN</center></th>
+			<th style="vertical-align:middle" width="150"><center>LIBRO GRUPAL</center></th>
+			<th style="vertical-align:middle" width="300"><center>HORARIO</center></th>
+			{if isset($bandera)}{if $bandera eq 'historial'}
+		    <th width='140'><center>REPORTE GRUPAL</center></th>
+		  {/if}{/if}
 		</tr>
 		{foreach $tablegrupos as $grupo}
 			<tr>
-				<td style="vertical-align:middle"><center><a href="grupo.php?accion={if isset($bandera)}{$bandera}{else}grupos{/if}&info1={$grupo.letra}&info2={if $table eq 'grupos'}{$grupo.cvepromotor}{/if}{if $table eq 'promotores'}{$promotor}{else}{$grupo.nocontrol}{/if}">
-				  {$grupo.letra}
-			  </a></center></td>
+				<td style="vertical-align:middle"><center>
+				  {if $bandera eq 'historial'}
+				    {$grupo.letra}</a>
+          {else}
+  				  <a href="grupo.php?accion={if isset($bandera)}{$bandera}{/if}&info1={$grupo.letra}{if isset($promotor)}&info2={$promotor}{else}{if $bandera eq 'alumnos'}&info2={$grupo.nocontrol}{/if}{/if}">{$grupo.letra}</a>
+				  {/if}
+			  </center></td>
 				<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>
 				{if $table eq 'grupos'}
 				  <td style="vertical-align:middle">
@@ -26,6 +33,13 @@
 				<td style="vertical-align:middle"><center>{$grupo.ubicacion}</center></td>
 				<td style="vertical-align:middle"><center>{$grupo.titulo}</center></td>
 				<td style="vertical-align:middle"><center>{$grupo.horario}</center></td>
+				{if isset($bandera)}{if $bandera eq 'historial'}
+			    <td style="vertical-align:middle" colspan='4' align='right'><center>
+  					<a href='reporte_pdf.php?accion=grupo&info1=1&info2={$grupo.cveperiodo}&info3={$promotor}&info4={$grupo.letra}
+  					'>
+  					<img src='../Images/pdf.png' title='Reporte Promotor-Grupo'/></a>
+  				<center></td>
+			  {/if}{/if}
 			</tr>
 		{/foreach}
 	</table>

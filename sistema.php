@@ -739,6 +739,15 @@ class Sistema extends Conexion
       fclose ($fo);
       return $codigohtml;
   }
+  
+  /**
+   * get all assigned template vars
+   * @return variables asignadas con smarty->assing y sus contenidos
+   */ 
+  function get_smarty_assigns() {
+    $pageName = $this->smarty->getTemplateVars();
+    $this->debug($pageName);
+  }
 }
 
 //----------------------------------------------------------------------------------------

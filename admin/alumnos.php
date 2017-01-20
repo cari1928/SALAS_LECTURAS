@@ -42,54 +42,7 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'show':
-      if (!isset($_GET['info1'])) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No altere la estructura de la interfaz, no se especificó el alumno');
-        break;
-      }
-
-      $sql    = "select * from usuarios where cveusuario=?";
-      $alumno = $web->DB->GetAll($sql, $_GET['info1']);
-      if (sizeof($alumno) == 0) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No existe el alumno');
-        break;
-      }
-
-      $sql = "select distinct letra, nombre, ubicacion, nocontrol from laboral
-      inner join abecedario on laboral.cveletra = abecedario.cve
-      inner join lectura on lectura.cveletra = abecedario.cve
-      inner join sala on laboral.cvesala = sala.cvesala
-      where nocontrol=? and laboral.cveperiodo=? order by letra";
-      $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-
-      if (!isset($tablegrupos[0])) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No ha registrado algún grupo');
-      }
-
-      $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, horas.hora_final
-      from laboral
-      inner join dia on dia.cvedia=laboral.cvedia
-      inner join abecedario on laboral.cveletra = abecedario.cve
-      inner join horas on horas.cvehoras=laboral.cvehoras
-      inner join lectura on lectura.cveletra = abecedario.cve
-      where lectura.nocontrol=? and laboral.cveperiodo=? order by letra, dia.cvedia, horas.hora_inicial";
-      $horas = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-
-      for ($i = 0; $i < sizeof($tablegrupos); $i++) {
-        $tablegrupos[$i]['horario'] = "";
-        for ($j = 0; $j < sizeof($horas); $j++) {
-          if ($tablegrupos[$i]['letra'] == $horas[$j]['letra']) {
-            $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";
-          }
-        }
-      }
-      $web->smarty->assign('tablegrupos', $tablegrupos);
-      $web->smarty->assign('table', 'alumnos');
-      $web->iniClases('admin', "index alumnos grupos");
-      $web->smarty->display('grupos.html');
-      die();
+      show_groups($web);
       break;
   }
 }
@@ -109,12 +62,12 @@ $datos = array('data' => $datos);
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
   $datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
-
+  //eliminar
   $datos['data'][$i][5] = "alumnos.php?accion=delete&info1=" . $datos['data'][$i][0];
-
+  //editar
   $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=form_update&info2=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
-
-  $datos['data'][$i][7] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "'><img src='../Images/grupo.png'></a></center>";
+  //mostrar_grupos
+  $datos['data'][$i][7] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
 }
 
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
@@ -409,5 +362,64 @@ function form_update_student($web)
   $web->smarty->assign('cmb_especialidad', $combo);
   $web->smarty->assign('alumno', $alumno[0]);
   $web->smarty->display('form_alumnos.html');
+  die();
+}
+
+/**
+ * Muestra los grupos del alumno seleccionado
+ * Contenido de $_GET: 
+ * accion: show
+ * info1:  cvealumno
+ * @param  Class   $web  Objeto para poder hacer uso de smarty
+ * @return boolean false = Mostrar mensajes de error
+ */
+function show_groups($web) {
+  global $cveperiodo;
+  
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó el alumno');
+    return false;
+  }
+
+  $sql    = "select * from usuarios where cveusuario=?";
+  $alumno = $web->DB->GetAll($sql, $_GET['info1']);
+  if (sizeof($alumno) == 0) {
+    $web->simple_message('danger', 'No existe el alumno');
+    return false;
+  }
+
+  $sql = "select distinct letra, nombre, ubicacion, nocontrol from laboral
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join lectura on lectura.cveletra = abecedario.cve
+  inner join sala on laboral.cvesala = sala.cvesala
+  where nocontrol=? and laboral.cveperiodo=? order by letra";
+  $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+
+  if (!isset($tablegrupos[0])) {
+    $web->simple_message('danger', 'No ha registrado algún grupo');
+    return false;
+  }
+
+  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, 
+  horas.hora_final from laboral
+  inner join dia on dia.cvedia=laboral.cvedia
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join horas on horas.cvehoras=laboral.cvehoras
+  inner join lectura on lectura.cveletra = abecedario.cve
+  where lectura.nocontrol=? and laboral.cveperiodo=? order by letra, dia.cvedia, horas.hora_inicial";
+  $horas = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+
+  for ($i = 0; $i < sizeof($tablegrupos); $i++) {
+    $tablegrupos[$i]['horario'] = "";
+    for ($j = 0; $j < sizeof($horas); $j++) {
+      if ($tablegrupos[$i]['letra'] == $horas[$j]['letra']) {
+        $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";
+      }
+    }
+  }
+  $web->smarty->assign('tablegrupos', $tablegrupos);
+  $web->smarty->assign('bandera', 'alumnos');
+  $web->iniClases('admin', "index alumnos grupos");
+  $web->smarty->display('grupos.html');
   die();
 }

@@ -8,50 +8,64 @@ if ($_SESSION['roles'] != 'A') {
 }
 
 $titulo = ""; //necesario para colocar nombre al archivo pdf
-if(isset($_GET['accion'])) {
-  
+if (isset($_GET['accion'])) {
+
   //verifica si se manda el campo más básico, indica si es pdf o excel
-  if(!isset($_GET['info1'])) {
+  if (!isset($_GET['info1'])) {
     header('Location: periodos.php?accion=historial&e=1');
   }
   $tipo_archivo = $_GET['info1'];
-  $html_code = getHeader();
-  
+  $html_code    = getHeader();
+
   switch ($_GET['accion']) {
-    
+
     case 'periodos':
       proceso_archivo($web);
       $titulo = "reporte_periodos";
       break;
-      
+
     case 'promotores':
       //verifica que mande cveperiodo
-      $datos = array('cveperiodo'=>verifica_periodo($web));
+      $datos = array('cveperiodo' => verifica_periodo($web));
       proceso_archivo($web, $datos);
       $titulo = "reporte_periodo_promotores";
       break;
-    
+
     case 'promotor':
       //verifica que mande y sea válido cveperiodo
-      $datos = array('cveperiodo'=>verifica_periodo($web));
-      
+      $cveperiodo = verifica_periodo($web);
       //verifica que mande y sea válido cvepromotor
-      if(!isset($_GET['info3'])) {
+      $cvepromotor = verifica_promotor($web);
+
+      $datos   = array('cveperiodo' => $cveperiodo, 'cvepromotor' => $cvepromotor);
+      $periodo = proceso_archivo($web, $datos);
+      $titulo  = $periodo[0]['fechainicio'] . "_" . $periodo[0]['fechafinal'] . "_" . $cvepromotor;
+      break;
+
+    case 'grupo':
+      //verifica que mande y sea válido el periodo
+      $cveperiodo = verifica_periodo($web);
+      //verifica que mande y sea válido cvepromotor
+      $cvepromotor = verifica_promotor($web);
+
+      //verifica que mande y sea válida la cveletra
+      if (!isset($_GET['info4'])) {
         header('Location: periodos.php?accion=historial&e=1');
       }
-      $cvepromotor = $_GET['info3'];
-      $sql = "select * from usuarios where cveusuario=?";
-      $promotor = $web->DB->GetAll($sql, $cvepromotor);
-      if(!isset($promotor[0])) {
+      $letra = $_GET['info4'];
+      $sql   = "select distinct cveletra from laboral
+      where cveletra in (select cve from abecedario where letra=?)";
+      $grupo = $web->DB->GetAll($sql, $letra);
+      if (!isset($grupo[0])) {
         header('Location: periodos.php?accion=historial&e=2');
       }
-      
-      $datos = array('cveperiodo'=>$cveperiodo, 'cvepromotor'=>$cvepromotor);
-      proceso_archivo($web, $datos);
-      $titulo = "reporte_periodo_".$cvepromotor;
+
+      $datos = array('cveperiodo' => $cveperiodo, 'cvepromotor' => $cvepromotor, 'letra' => $letra);
+      $periodo = proceso_archivo($web, $datos);
+      $titulo = $periodo[0]['fechainicio'] . "_" . $periodo[0]['fechafinal'] . "_" . $cvepromotor . '_'.$letra;
       break;
   }
-  
+
 }
 
 $html_code .= getFooter();
@@ -64,216 +78,298 @@ $dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
 $dompdf->stream($titulo);
 
-function getHeader() {
+/**
+ * Genera código para poder aplicar estilos css y bootstrap 
+ * @return String Código html para poder usar css en el pdf
+ */
+function getHeader()
+{
   return '
     <!DOCTYPE html>
     <html lang="en">
-    <head>	  
+    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-      
+
       <!-- Latest compiled and minified CSS -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <!-- Optional theme -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
       <!-- Latest compiled and minified JavaScript -->
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-  
-    	<link rel="stylesheet" type="text/css" href="../css/main.css">
-    	<title>Reporte - Promotor</title>
+
+      <link rel="stylesheet" type="text/css" href="../css/main.css">
+      <title>Reporte</title>
     </head>
     <body>';
 }
 
-function getFooter() {
+/**
+ * Genera código para terminar de forma apropiada el código html
+ * @return String Fin del código html
+ */
+function getFooter()
+{
   return '
   </body>
   </html>
   ';
 }
 
-function verifica_periodo($web) {
+/**
+ * Ahorra código, verifica que haya sido enviado y sea válido 
+ * El periodo es enviado desde $_GET['info2']
+ * @param  Class  $web   Objeto para hacer uso de smarty
+ * @return String cveperiodo
+ */
+function verifica_periodo($web)
+{
   //verifica que mande cveperiodo
-  if(!isset($_GET['info2'])) {
+  if (!isset($_GET['info2'])) {
     header('Location: periodos.php?accion=historial&e=1');
     return false;
   }
   $cveperiodo = $_GET['info2'];
-  
+
   //verifica que exista el periodo
-  $sql = "select * from periodo where cveperiodo=?";
+  $sql     = "select * from periodo where cveperiodo=?";
   $periodo = $web->DB->GetAll($sql, $cveperiodo);
-  if(!isset($periodo[0])) {
+  if (!isset($periodo[0])) {
     header('Location: periodos.php?accion=historial&e=2');
     return false;
   }
-  
+
   return $cveperiodo;
 }
 
-function proceso_archivo($web, $datos=null) {
+/**
+ * Ahorra código, verifica que haya sido enviado y sea válido 
+ * El periodo es enviado desde $_GET['info2']
+ * @param  Class  $web   Objeto para hacer uso de smarty
+ * @return String cvepromotor
+ */
+function verifica_promotor($web)
+{
+  if (!isset($_GET['info3'])) {
+    header('Location: periodos.php?accion=historial&e=1');
+  }
+  $cvepromotor = $_GET['info3'];
+  $sql         = "select * from usuarios where cveusuario=?";
+  $promotor    = $web->DB->GetAll($sql, $cvepromotor);
+  if (!isset($promotor[0])) {
+    header('Location: periodos.php?accion=historial&e=2');
+  }
+  return $cvepromotor;
+}
+
+/**
+ * Simplifica código, todos los case de switch ocupan el if
+ * @param  Class  $web   Objeto para hacer uso de smarty
+ * @param  array $datos  Arreglo asociativo que puede tener campos con los nombres: cveperiodo, cvepromotor y letra como contenido
+ * @return String Contenido principal del cuerpo html del pdf
+ */
+function proceso_archivo($web, $datos = null)
+{
   global $tipo_archivo;
-  
-  if($tipo_archivo == 1) { //pdf
-    reporte_periodos($web, $datos);
+
+  if ($tipo_archivo == 1) {
+    //pdf
+    return reporte_periodos($web, $datos);
   } else {
     die('generar excel');
   }
 }
 
-function reporte_periodos($web, $datos=null) {
+/**
+ * Genera el código y estructura del archivo pdf 
+ * @param  Class  $web   Objeto para hacer uso de smarty
+ * @param  array $datos  Arreglo asociativo que puede tener campos con los nombres: cveperiodo, cvepromotor y letra como contenido
+ * @return String Contenido principal del cuerpo html del pdf
+ */
+function reporte_periodos($web, $datos = null)
+{
   global $html_code;
-  
+  $periodos = ""; //inicializa
+
+  // $web->debug($datos);
+
   //obtener todos los promotores
   $sql = "select usuarios.cveusuario, usuarios.nombre AS \"nombre_usuario\", especialidad.nombre AS \"nombre_especialidad\", correo, especialidad.cveespecialidad AS \"especialidad_cve\", otro from usuarios
   inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
   inner join especialidad on especialidad.cveespecialidad = especialidad_usuario.cveespecialidad
   where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=2)";
   $parameters = array();
-  
-  //promotor específico
-  if(isset($datos['cvepromotor'])) {
+
+  //si no se manda la cvepromotor, selecciona todos los promotores
+  //si se envía la cvepromotor, selecciona a ése promotor específico
+  if (isset($datos['cvepromotor'])) {
     $sql .= " and usuarios.cveusuario=?";
     $parameters = $datos['cvepromotor'];
   }
-  
+
   $sql .= "order by usuarios.nombre";
   $promotores = $web->DB->GetAll($sql, $parameters);
-  
+
   //obtener los periodos
   $parameters = array();
-  if(isset($datos['cveperiodo'])) {
-    $sql = "select * from periodo where cveperiodo=?";
+  if (isset($datos['cveperiodo'])) {
+    //si se indica cveperiodo, se selecciona ése periodo específico
+    $sql        = "select * from periodo where cveperiodo=?";
     $parameters = $datos['cveperiodo'];
   } else {
+    //si no se indica cveperiodo, selecciona todos los periodos
     $sql = "select * from periodo order by cveperiodo";
   }
   $periodos = $web->DB->GetAll($sql, $parameters);
-  
+
   for ($i = 0; $i < sizeof($promotores); $i++) {
-    //checa si muestra especialidad u otro
+    //checa si muestra el campo especialidad o el campo otro
     $especialidad = $promotores[$i]['nombre_especialidad'];
-    if($promotores[$i]['especialidad_cve'] == 'O') {
+    if ($promotores[$i]['especialidad_cve'] == 'O') {
       $especialidad = $promotores[$i]['otro'];
     }
-    
+
     //encabezado de promotor
     $html_code .= '
     <table class="table table-condensed">
       <tr class="active">
-        <td width="130"><small>RFC</small><h4>'.$promotores[$i]['cveusuario'].'</h4></td>
-        <td width="200"><small>PROMOTOR</small><h4>'.$promotores[$i]['nombre_usuario'].'</h4></td>
-        <td width="190"><small>ESPECIALIDAD</small><h4>'.$especialidad.'</h4></td>
-        <td colspan="2"><small>CORREO</small><h4>'.$promotores[$i]['correo'].'</h4></td>
+        <td width="130"><small>RFC</small><h4>' . $promotores[$i]['cveusuario'] . '</h4></td>
+        <td width="200"><small>PROMOTOR</small><h4>' . $promotores[$i]['nombre_usuario'] . '</h4></td>
+        <td width="190"><small>ESPECIALIDAD</small><h4>' . $especialidad . '</h4></td>
+        <td colspan="2"><small>CORREO</small><h4>' . $promotores[$i]['correo'] . '</h4></td>
       </tr>';
-      
+
     for ($j = 0; $j < sizeof($periodos); $j++) {
       //encabezado de periodo
       $html_code .= '
       <tr class="active"><td colspan="5">
-        <h4>Periodo: '.$periodos[$j]['fechainicio'].' : '.$periodos[$j]['fechafinal'].'</h4>
-    	</td></tr>';
-      
+        <h4>Periodo: ' . $periodos[$j]['fechainicio'] . ' : ' . $periodos[$j]['fechafinal'] . '</h4>
+      </td></tr>';
+
       //obtiene los grupos del promotor por cada periodo
       $sql = "select distinct laboral.cveletra, letra, cvesala, nombre, titulo from laboral
       inner join abecedario on laboral.cveletra = abecedario.cve
       left join libro on laboral.cvelibro_grupal = libro.cvelibro
-      where cveperiodo=? and cvepromotor=?
-      order by letra";
+      where cveperiodo=? and cvepromotor=?";
       $parameters = array($periodos[$j]['cveperiodo'], $promotores[$i]['cveusuario']);
+      if (isset($datos['letra'])) {
+        $sql .= "and cveletra in (select cve from abecedario where letra=?)";
+        $parameters = array($periodos[$j]['cveperiodo'], $promotores[$i]['cveusuario'], $datos['letra']);
+      }
+
+      $sql .= " order by letra";
       $grupos = $web->DB->GetAll($sql, $parameters);
-       
-      if(!isset($grupos[0])) {
+
+      if (!isset($grupos[0])) {
         $html_code .= '<tr><td colspan="5"><h4>No hay grupos en este periodo</h4></td></tr>';
-        
+
       } else {
         for ($k = 0; $k < sizeof($grupos); $k++) {
           $html_code .= '
           <tr class="active">
-          	<td><small>GRUPO</small><h4>'.$grupos[$k]['letra'].'</h4></td>
-          	<td><small>SALA</small><h4>'.$grupos[$k]['cvesala'].'</h4></td>
-          	<td><small>NOMBRE DEL GRUPO</small><h4>'.$grupos[$k]['nombre'].'</h4></td>
-          	<td colspan="2"><small>LIBRO GRUPAL</small><h4>'.$grupos[$k]['titulo'].'</h4></td>
+            <td><small>GRUPO</small><h4>' . $grupos[$k]['letra'] . '</h4></td>
+            <td><small>SALA</small><h4>' . $grupos[$k]['cvesala'] . '</h4></td>
+            <td><small>NOMBRE DEL GRUPO</small><h4>' . $grupos[$k]['nombre'] . '</h4></td>
+            <td colspan="2"><small>LIBRO GRUPAL</small><h4>' . $grupos[$k]['titulo'] . '</h4></td>
           </tr>';
-          
+
           //obtener los alumnos de ese grupo en ese periodo de ese promotor
           $sql = "select * from lectura
-          where cveletra in (select cveletra from laboral where cveperiodo=? 
+          where cveletra in (select cveletra from laboral where cveperiodo=?
                             and cvepromotor=?)
-          and cveletra=?";
-          $parameters = array($periodos[$j]['cveperiodo'], 
-                              $promotores[$i]['cveusuario'], 
-                              $grupos[$k]['cveletra']);
+          and cveletra=? and cveperiodo=?";
+          $parameters = array($periodos[$j]['cveperiodo'],
+            $promotores[$i]['cveusuario'],
+            $grupos[$k]['cveletra'], $periodos[$j]['cveperiodo']);
           $lecturas = $web->DB->GetAll($sql, $parameters);
-          
-          //no hay alumnos en ese grupo
-          if(!isset($lecturas[0])) {
+
+          if (!isset($lecturas[0])) {
             $html_code .= '<tr><td colspan="5"><h4>No hay alumnos en este grupo</h4></td></tr>';
           } else {
             $html_code .= '
-            <tr class="info"><td colspan="5"><h4>Lista de Alumnos</h4></td></tr>
-            <tr class="info">
-            	<td>NO. CONTROL</td>
-            	<td>NOMBRE</td>
-            	<td>ESPECIALIDAD</td>
-            	<td>CORREO</td>
-            	<td>TERMINADO</td>
-            </tr>
-            ';
+            <tr class="info"><td colspan="5"><h4>Lista de Alumnos</h4></td></tr>';
 
             for ($a = 0; $a < sizeof($lecturas); $a++) {
-              
+
               //obtener alumnos de cada lectura, ya se verificó el periodo, promotor y grupo
               $sql = "select usuarios.cveusuario, usuarios.nombre AS \"usuario_nombre\", especialidad.nombre AS \"especialidad_nombre\", correo from usuarios
               left join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
               left join especialidad on especialidad.cveespecialidad = especialidad_usuario.cveespecialidad
-              where usuarios.cveusuario=?";
-              $alumnos = $web->DB->GetAll($sql, $lecturas[$a]['nocontrol']);
-              
+              inner join lectura on lectura.nocontrol = usuarios.cveusuario
+              where usuarios.cveusuario=? and cveperiodo=? and cveletra=?";
+              $parameters = array($lecturas[$a]['nocontrol'], $periodos[$j]['cveperiodo'], $grupos[$k]['cveletra']);
+              $alumnos    = $web->DB->GetAll($sql, $parameters);
+
+              if (!isset($alumnos[0])) {
+                break;
+              }
+
               //obtener resultados de calificaciones
-              $sql = "select terminado from evaluacion where cvelectura=?";
+              $sql        = "select * from evaluacion where cvelectura=?";
               $evaluacion = $web->DB->GetAll($sql, $lecturas[$a]['cvelectura']);
-              
-              if(!isset($evaluacion[0])) {
+
+              if (!isset($evaluacion[0])) {
                 $terminado = "No";
+
               } else {
-                
                 switch ($evaluacion[0]['terminado']) {
-                  case 0:
-                    $terminado = "No";
+                  case 0:$terminado = "No";
                     break;
-                    
-                  case 100:
-                    $terminado = "Si";
+                  case 100:$terminado = "Si";
                     break;
-                  
-                  default:
-                    $terminado = "No";
+                  default:$terminado = "No";
                     break;
                 }
               }
-              
+
               for ($b = 0; $b < sizeof($alumnos); $b++) {
                 $html_code .= '
                 <tr>
-                	<td><h4>'.$alumnos[$b]['cveusuario'].'</h4></td>
-                	<td><h4>'.$alumnos[$b]['usuario_nombre'].'</h4></td>
-                	<td><h4>'.$alumnos[$b]['especialidad_nombre'].'</h4></td>
-                	<td><h4>'.$alumnos[$b]['correo'].'</h4></td>
-                	<td><center><h4>'.$terminado.'</h4></center></td>
-                </tr>'; 
+                  <td class="info">
+                    <small>NO. CONTROL</small>
+                    <h4>' . $alumnos[$b]['cveusuario'] . '</h4></td>
+                  <td><small>ALUMNO</small>
+                    <h4>' . $alumnos[$b]['usuario_nombre'] . '</h4>
+                  </td>
+                  <td><small>ESPECIALIDAD</small>
+                    <h4>' . $alumnos[$b]['especialidad_nombre'] . '</h4></td>
+                  <td><small>CORREO</small>
+                    <h4>' . $alumnos[$b]['correo'] . '</h4></td>
+                  <td><center><small>TERMINADO</small></center>
+                    <center><h4>' . $terminado . '</h4></center>
+                  </td>
+                </tr>
+                <tr>
+                  <td><small>COMPRENSIÓN</small>
+                    <h4>' . $evaluacion[0]['comprension'] . '</h4>
+                  </td>
+                  <td><small>MOTIVACIÓN</small>
+                    <h4>' . $evaluacion[0]['motivacion'] . '</h4>
+                  </td>
+                  <td><small>PARTICIPACIÓN</small>
+                    <h4>' . $evaluacion[0]['participacion'] . '</h4>
+                  </td>
+                  <td><small>ASISTENCIA</small>
+                    <h4>' . $evaluacion[0]['asistencia'] . '</h4>
+                  </td>
+                  <td><small>ACTIVIDADES</small>
+                    <h4>' . $evaluacion[0]['actividades'] . '</h4>
+                  </td>
+                </tr>';
               }
-              
-            }//for lecturas
-            
+
+            } //for lecturas
+
           } //if-else lecturas
-          
+
         } //for grupos
 
       } //if-else existencia de grupos
-      
+
     } //for periodos
-    $html_code.= "</table><div style='page-break-after:always;'></div>";
+    $html_code .= "</table><div style='page-break-after:always;'></div>";
   } // for promotores
-  $html_code = substr($html_code, 0, -44);  // devuelve "abcde"
+
+  //quita el último page-break-after porque pone una última página en blanco
+  $html_code = substr($html_code, 0, -44);
+  return $periodos;
 }
-?>
