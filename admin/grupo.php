@@ -113,6 +113,7 @@ function mostrar_alumnos($web)
   where cveletra in (select cve from abecedario where letra=?)
   and nocontrol=?";
   $alumno = $web->DB->GetAll($sql, array($_GET['info1'], $_GET['info2']));
+  
   if (!isset($alumno[0])) {
     message('danger', 'El alumno seleccionado no está registrado por completo en el grupo',
       $web);
@@ -140,12 +141,12 @@ function mostrar_alumnos($web)
 
   //Datos de la tabla = Calificaciones del alumno
   $sql = "select distinct usuarios.nombre, comprension, motivacion, participacion, asistencia,
-  terminado, nocontrol, cveeval, cveperiodo, lectura.cvelectura from lectura
+  terminado, nocontrol, cveeval, laboral.cveperiodo, lectura.cvelectura from lectura
   inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura
   inner join abecedario on lectura.cveletra = abecedario.cve
   inner join usuarios on lectura.nocontrol = usuarios.cveusuario
   inner join laboral on abecedario.cve = laboral.cveletra
-  where letra=? and cveperiodo=? and nocontrol=?
+  where letra=? and laboral.cveperiodo=? and nocontrol=?
   order by usuarios.nombre";
   $parameters = array($_GET['info1'], $cveperiodo, $alumno[0]['nocontrol']);
   $datos      = $web->DB->GetAll($sql, $parameters);
@@ -247,8 +248,7 @@ function mostrar_libros($web, $alumno)
   $combo      = $web->combo($sql, null, '../', $parameters);
 
   //Datos de la tabla = Libros
-  $sql = "select libro.cvelibro, titulo, autor, editorial, precio, estado, lectura.cvelectura, calif_reporte
-    from lista_libros
+  $sql = "select libro.cvelibro, titulo, autor, editorial, precio, estado, lectura.cvelectura, calif_reporte from lista_libros
     inner join lectura on lista_libros.cvelectura = lectura.cvelectura
     inner join libro on libro.cvelibro = lista_libros.cvelibro
     inner join estado on estado.cveestado = lista_libros.cveestado
@@ -257,9 +257,9 @@ function mostrar_libros($web, $alumno)
   $libros = $web->DB->GetAll($sql, array($alumno[0]['nocontrol'], $alumno[0]['cvelectura']));
 
   if (!isset($libros[0])) {
-    $web->smarty->assign('alert', 'warning');
-    $web->smarty->assign('msg', 'No hay libros registrados');
-    $web->smarty->assign('cvelectura', $alumno[0]['cvelectura']); //La agregue por que no mandava la cvelectura si no se encontrava algun libro registrado
+    $web->simple_message('warning', 'No hay libros registrados');
+    //La agregue por que no mandaba la cvelectura si no se encontraba algun libro registrado
+    $web->smarty->assign('cvelectura', $alumno[0]['cvelectura']); 
   } else {
     $web->smarty->assign('libros', $libros);
     $web->smarty->assign('cvelectura', $libros[0]['cvelectura']);
@@ -462,12 +462,14 @@ function mostrar_grupos_promotor($web){
 
   //Datos de la tabla = Calificaciones del alumno
   $sql = "select distinct usuarios.nombre, comprension, motivacion, participacion, asistencia,
-  terminado, nocontrol, cveeval, cveperiodo, lectura.cvelectura, laboral.cvepromotor, abecedario.letra from lectura
+  terminado, nocontrol, cveeval, laboral.cveperiodo, lectura.cvelectura, laboral.cvepromotor,
+  abecedario.letra from lectura
   inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura
   inner join abecedario on lectura.cveletra = abecedario.cve
   inner join usuarios on lectura.nocontrol = usuarios.cveusuario
   inner join laboral on abecedario.cve = laboral.cveletra
-  where letra=? and cveperiodo=? and cvepromotor=? order by usuarios.nombre";
+  where letra=? and laboral.cveperiodo=? and cvepromotor=? 
+  order by usuarios.nombre";
   $parameters = array($_GET['info1'], $cveperiodo, $_GET['info2']);
   $datos      = $web->DB->GetAll($sql, $parameters);
 

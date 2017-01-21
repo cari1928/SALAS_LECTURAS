@@ -193,7 +193,7 @@ function show_professor_groups($web)
     $web->smarty->assign('bandera', 'historial');
     //ya manda la cveperiodo
     $cveperiodo = $_GET['info2'];
-  
+    $web->smarty->assign('cveperiodo', $cveperiodo);
   } else {
     $cveperiodo = $web->periodo();
   }
@@ -243,7 +243,7 @@ function show_professor_groups($web)
     }
   }
 
-  $web->smarty->assign('promotor', $_GET['info1']);
+  $web->smarty->assign('cveusuario', $_GET['info1']);
   $web->smarty->assign('tablegrupos', $tablegrupos);
   $web->smarty->display('grupos.html');
   die();

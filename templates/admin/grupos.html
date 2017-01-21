@@ -22,7 +22,7 @@
 				  {if $bandera eq 'historial'}
 				    {$grupo.letra}</a>
           {else}
-  				  <a href="grupo.php?accion={if isset($bandera)}{$bandera}{/if}&info1={$grupo.letra}{if isset($promotor)}&info2={$promotor}{else}{if $bandera eq 'alumnos'}&info2={$grupo.nocontrol}{/if}{/if}">{$grupo.letra}</a>
+  				  <a href="grupo.php?accion={if isset($bandera)}{$bandera}{/if}&info1={$grupo.letra}{if isset($cveusuario)}&info2={$cveusuario}{else}{if $bandera eq 'alumnos'}&info2={$grupo.nocontrol}{/if}{/if}">{$grupo.letra}</a>
 				  {/if}
 			  </center></td>
 				<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>
@@ -35,7 +35,7 @@
 				<td style="vertical-align:middle"><center>{$grupo.horario}</center></td>
 				{if isset($bandera)}{if $bandera eq 'historial'}
 			    <td style="vertical-align:middle" colspan='4' align='right'><center>
-  					<a href='reporte_pdf.php?accion=grupo&info1=1&info2={$grupo.cveperiodo}&info3={$promotor}&info4={$grupo.letra}
+  					<a href='reporte_pdf.php?accion=grupo&info1=1&info2={$cveperiodo}&info3={$cveusuario}&info4={$grupo.letra}
   					'>
   					<img src='../Images/pdf.png' title='Reporte Promotor-Grupo'/></a>
   				<center></td>

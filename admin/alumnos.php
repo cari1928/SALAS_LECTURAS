@@ -10,6 +10,7 @@ if ($cveperiodo == "") {
   message("index alumnos", "No hay periodo actual", $web);
 }
 
+$flag = false; //para cuando viene de historial
 if (isset($_GET['accion'])) {
 
   switch ($_GET['accion']) {
@@ -44,6 +45,10 @@ if (isset($_GET['accion'])) {
     case 'show':
       show_groups($web);
       break;
+      
+    case 'historial':
+      $flag = 'historial';
+      break;
   }
 }
 
@@ -53,21 +58,48 @@ $sql = "select usuarios.cveusuario, usuarios.nombre AS \"usuario\", especialidad
 \"especialidad\", correo from usuarios
 inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
 inner join especialidad on especialidad_usuario.cveespecialidad = especialidad.cveespecialidad
-where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)
-order by usuarios.cveusuario";
+where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)";
+
+$parameters = array();
+if($flag == 'historial') {
+  if(!isset($_GET['info1'])) {
+    $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
+  
+  } else {
+    $sql .= ' and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)';
+    $parameters = $cveperiodo = $_GET['info1'];
+    
+    $web->iniClases('admin', "index historial alumnos");
+    $web->smarty->assign('bandera', 'historial');
+    $web->smarty->assign('cveperiodo', $_GET['info1']);
+  }
+}
+
+$sql .= " order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
-$datos = $web->DB->GetAll($sql);
+$datos = $web->DB->GetAll($sql, $parameters);
 $datos = array('data' => $datos);
 
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
+  
+  //estado-crédito
   $datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
-  //eliminar
-  $datos['data'][$i][5] = "alumnos.php?accion=delete&info1=" . $datos['data'][$i][0];
-  //editar
-  $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=form_update&info2=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
-  //mostrar_grupos
-  $datos['data'][$i][7] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+  
+  if($flag != 'historial') {
+    //eliminar
+    $datos['data'][$i][5] = "alumnos.php?accion=delete&info1=" . $datos['data'][$i][0];
+    //editar
+    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=form_update&info2=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";  
+    //mostrar_grupos
+    $datos['data'][$i][7] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+    
+  } else {
+    //reporte
+    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=alumno&info1=1&info2=".$cveperiodo."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";  
+    //mostrar_grupos
+    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "&info2=".$cveperiodo."'><img src='../Images/mostrar.png'></a></center>";
+  }
 }
 
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
@@ -388,7 +420,7 @@ function show_groups($web) {
     return false;
   }
 
-  $sql = "select distinct letra, nombre, ubicacion, nocontrol from laboral
+  $sql = "select distinct laboral.cveperiodo, letra, nombre, ubicacion, nocontrol from laboral
   inner join abecedario on laboral.cveletra = abecedario.cve
   inner join lectura on lectura.cveletra = abecedario.cve
   inner join sala on laboral.cvesala = sala.cvesala
@@ -417,9 +449,19 @@ function show_groups($web) {
       }
     }
   }
-  $web->smarty->assign('tablegrupos', $tablegrupos);
-  $web->smarty->assign('bandera', 'alumnos');
+  
   $web->iniClases('admin', "index alumnos grupos");
+  $web->smarty->assign('bandera', 'alumnos');
+  
+  //viene de historial
+  if(isset($_GET['info2'])) {
+    $web->iniClases('admin', "index historial grupos");
+    $web->smarty->assign('cveusuario', $_GET['info1']);
+    $web->smarty->assign('cveperiodo', $_GET['info2']);
+    $web->smarty->assign('bandera', 'historial');
+  }
+  
+  $web->smarty->assign('tablegrupos', $tablegrupos);
   $web->smarty->display('grupos.html');
   die();
 }

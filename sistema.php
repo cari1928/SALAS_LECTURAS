@@ -710,7 +710,7 @@ class Sistema extends Conexion
    */
   public function simple_message($alert, $msg)
   {
-    $this->smarty->assign('alert', 'danger');
+    $this->smarty->assign('alert', $alert);
     $this->smarty->assign('msg', $msg);
   }
   
