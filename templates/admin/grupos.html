@@ -22,7 +22,7 @@
 				  {if $bandera eq 'historial'}
 				    {$grupo.letra}</a>
           {else}
-  				  <a href="grupo.php?accion={if isset($bandera)}{$bandera}{/if}&info1={$grupo.letra}{if isset($cveusuario)}&info2={$cveusuario}{else}{if $bandera eq 'alumnos'}&info2={$grupo.nocontrol}{/if}{/if}">{$grupo.letra}</a>
+  				  <a href="grupo.php?accion={if isset($bandera)}{$bandera}{/if}&info1={$grupo.letra}{if isset($cveusuario)}&info2={$cveusuario}{else}{if $bandera eq 'alumnos' || $bandera eq 'grupos'}&info2={$grupo.nocontrol}{/if}{/if}">{$grupo.letra}</a>
 				  {/if}
 			  </center></td>
 				<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>

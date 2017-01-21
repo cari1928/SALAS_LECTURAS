@@ -53,6 +53,9 @@ if (isset($_GET['accion'])) {
       $web->smarty->assign('libros_promo', 'libros');
       break;
   
+    case 'index_grupos':
+      mostrar_alumnos_grupo($web);
+      break;
   }
 }
 
@@ -73,7 +76,7 @@ function message($alert, $msg, $web)
 
 /**
  * Muestra: Barra gris superior con los datos del grupo
- * Lista de calificaciones
+ * Lista de calificaciones en base a un alumno
  * También datos sobre los libros, usa el metodo mostrarLibros()
  * @param  Class   $web Objeto para poder usar smarty
  * @return boolean False = Mostrar mensaje de error
@@ -408,13 +411,6 @@ function eliminar_libro_alumno($web, $tipo=null)
   die(); //no funciona bien sin esto
 }
 
-
-function ver_reporte($web) {
-  $web->iniClases('admin', "index alumnos reporte");
-  message('info', 'FALTA PROGRAMAR ESTA SECCION, PRIMERO DEBE PROGRAMARSE QUE EL PROMOTOR O EL ADMIN PUEDAN SUBIR EL REPORTE', $web);
-  return false;
-}
-
 /**
  * Muestra la lista de alumnos de un grupo en base a un promotor
  * @param  Class   $web Objeto para hacer uso de smarty
@@ -459,6 +455,19 @@ function mostrar_grupos_promotor($web){
     $web->iniClases('admin', "index historial grupo-".$_GET['info1']); 
     $web->smarty->assign('bandera', 'historial');
   }
+  
+  //Info de encabezado
+  $sql = "select distinct letra, laboral.nombre as \"nombre_grupo\", sala.ubicacion,
+  fechainicio, fechafinal, usuarios.nombre as \"nombre_promotor\" from laboral
+  inner join sala on laboral.cvesala = sala.cvesala
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join periodo on laboral.cveperiodo= periodo.cveperiodo
+  inner join lectura on abecedario.cve = abecedario.cve
+  inner join usuarios on laboral.cvepromotor = usuarios.cveusuario
+  where laboral.cveperiodo=? and letra=?
+  order by letra";
+  $info = $web->DB->GetAll($sql, array($cveperiodo, $_GET['info1']));
+  $web->smarty->assign('info', $info[0]);
 
   //Datos de la tabla = Calificaciones del alumno
   $sql = "select distinct usuarios.nombre, comprension, motivacion, participacion, asistencia,
@@ -480,4 +489,56 @@ function mostrar_grupos_promotor($web){
   
   $web->smarty->assign('datos', $datos);
   $web->smarty->assign('promotor', 'promotor');
+}
+
+/**
+ * Muestra la lista de alumnos de un grupo
+ * @param  Class   $web Objeto para hacer uso de smarty
+ * @return boolean False -> Mostrar mensaje de error
+ */
+function mostrar_alumnos_grupo($web) {
+  global $cveperiodo;
+  
+  //verifica que se haya mandado y sea válido la letra
+  if(!isset($_GET['info1'])) {
+    $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
+    return false;
+  }
+  
+  $sql = "select distinct usuarios.nombre, comprension, motivacion, participacion, asistencia,
+  terminado, nocontrol, laboral.cvepromotor,
+  abecedario.letra from lectura
+  inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura
+  inner join usuarios on usuarios.cveusuario = lectura.nocontrol
+  inner join abecedario on abecedario.cve = lectura.cveletra
+  inner join laboral on laboral.cveletra= lectura.cveletra
+  where letra=? and lectura.cveperiodo=?";
+  $grupo_alumnos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  if(!isset($grupo_alumnos[0])) {
+    $web->simple_message('danger', 'El grupo no existe');
+  }
+  
+  $web->iniClases('admin', "index grupos grupo-".$_GET['info1']);     
+  
+  //Info de encabezado
+  $sql = "select distinct letra, laboral.nombre as \"nombre_grupo\", sala.ubicacion,
+  fechainicio, fechafinal, usuarios.nombre as \"nombre_promotor\" from laboral
+  inner join sala on laboral.cvesala = sala.cvesala
+  inner join abecedario on laboral.cveletra = abecedario.cve
+  inner join periodo on laboral.cveperiodo= periodo.cveperiodo
+  inner join lectura on abecedario.cve = abecedario.cve
+  inner join usuarios on laboral.cvepromotor = usuarios.cveusuario
+  where laboral.cveperiodo=? and letra=?
+  order by letra";
+  $info = $web->DB->GetAll($sql, array($cveperiodo, $_GET['info1']));
+  $web->smarty->assign('info', $info[0]);
+
+  $web->smarty->assign('datos', $grupo_alumnos);
+}
+
+/*FALTA PROGRAMAR*/
+function ver_reporte($web) {
+  $web->iniClases('admin', "index alumnos reporte");
+  message('info', 'FALTA PROGRAMAR ESTA SECCION, PRIMERO DEBE PROGRAMARSE QUE EL PROMOTOR O EL ADMIN PUEDAN SUBIR EL REPORTE', $web);
+  return false;
 }
