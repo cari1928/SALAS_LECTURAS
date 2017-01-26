@@ -1,5 +1,8 @@
 {include file="header.html"}
 {$ruta}   
+
+{if isset($msg)} {include file='../mensajes.html'} {/if}
+
 <table class='table'>
 	<tr><td colspan='4' align='right'>
 		<a href='salas.php?accion=form_insert&tabla=sala'>
@@ -7,30 +10,25 @@
 		</a>
 	</td></tr>
 </table>
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong>{$msg}
-	</div>
-{/if}
+
 {if isset($salones)}
 	<table id="example" class='table table-striped display' cellspacing="0" width="100%">
 		<tr>		
 			<th>CLAVE SALA</th>
 			<th>UBICACION</th>
-			<th>ELIMINAR</th>
-			<th>ACTUALIZAR</th>
+			<th><center>ELIMINAR</center></th>
+			<th><center>ACTUALIZAR</center></th>
 		</tr>
 	{foreach $salones as $salon}
 		<tr>
 			<td>{$salon.cvesala}</td>
 			<td>{$salon.ubicacion}</td>
-			<td><a class="delete" href="salas.php?accion=delete&info1={$salon.cvesala}">
+			<td><center><a class="delete" href="salas.php?accion=delete&info1={$salon.cvesala}">
 				<img src="../Images/cancelar.png">
-			</a></td>
-			<td><a href="salas.php?accion=form_update&info2={$salon.cvesala}">
+			</a></center></td>
+			<td><center><a href="salas.php?accion=form_update&info2={$salon.cvesala}">
 				<img src="../Images/edit.png">
-			</a></td>
+			</a></center></td>
 		</tr>
 	{/foreach}
 	</table>

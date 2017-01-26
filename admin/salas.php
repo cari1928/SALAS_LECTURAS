@@ -5,6 +5,11 @@ if ($_SESSION['roles'] != 'A') {
     $web->checklogin();
 }
 
+$cveperiodo = $web->periodo();
+if ($cveperiodo == "") {
+  message("index salas", "No hay periodo actual", $web);
+}
+
 if (isset($_GET['accion'])) {
 
     switch ($_GET['accion']) {
@@ -100,14 +105,14 @@ if (isset($_GET['accion'])) {
 
 $web->iniClases('admin', "index salas");
 
+//obtiene todas las salas a mostrar
 $sql     = 'select cvesala, ubicacion from sala order by cvesala';
 $salones = $web->DB->GetAll($sql);
 
 if (!isset($salones[0])) {
-    $web->smarty->assign('alert', 'warning');
-    $web->smarty->assign('msg', " No hay salones registrados");
+  $web->simple_message('warning', " No hay salones registrados");
 } else {
-    $web->smarty->assign('salones', $salones);
+  $web->smarty->assign('salones', $salones);
 }
 
 $web->smarty->display("salas.html");

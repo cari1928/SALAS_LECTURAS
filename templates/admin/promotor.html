@@ -1,6 +1,8 @@
 {include file='header.html'}
 {$ruta}  
 
+{if isset($msg)} {include file='../mensajes.html'} {/if}
+
 <table class='table'>
 	{if !isset($cveperiodo)}
 		<tr><td colspan='4' align='right'>
@@ -15,8 +17,6 @@
 		</a></td></tr>
 	{/if}
 </table>
-
-{if isset($msg)} {include file='../mensajes.html'} {/if}
 
 {if isset($promotores)}
 	<table class='table table-hover'>

@@ -1,8 +1,8 @@
 {include file='header.html'}
 {$ruta}
-{if isset($msg)}
-	{include file='../mensajes.html'}
-{/if}
+
+{if isset($msg)} {include file='../mensajes.html'} {/if}
+
 <table class='table'>
 	<tr>
 		<td colspan='4' align='right'>
@@ -40,9 +40,8 @@
 	
 	<script type="text/javascript">
 	  $(document).ready(function() {
-	    
 	  	var table = $('#example').DataTable( {
-	      "ajax": "libros.txt",
+	      "ajax": "TextFiles/libros.txt",
 	      "columnDefs": [ {
 	          "targets": -2,
 	          "data": null,

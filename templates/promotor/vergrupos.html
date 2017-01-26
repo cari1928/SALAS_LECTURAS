@@ -18,13 +18,13 @@
 			</tr>
 			{foreach $tablegrupos as $grupo}
 				<tr>
-					<td><center>
+					<td style="vertical-align:middle"><center>
 						<a href="grupo.php?info1={$grupo.letra}">{$grupo.letra}</a></center>
 					</td>
-					<td><center>{$grupo.nombre}</center></td>
-					<td><center>{$grupo.ubicacion}</center></td>
-					<td><center>{$grupo.horario}</center></td>
-					<td><center><a href="grupos.php?accion=form_update&info={$grupo.letra}"><img src="../Images/edit.png"></a></center></td>
+					<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>
+					<td style="vertical-align:middle"><center>{$grupo.ubicacion}</center></td>
+					<td style="vertical-align:middle"><center>{$grupo.horario}</center></td>
+					<td style="vertical-align:middle"><center><a href="grupos.php?accion=form_update&info={$grupo.letra}"><img src="../Images/edit.png"></a></center></td>
 				</tr>
 			{/foreach}
 		</table>

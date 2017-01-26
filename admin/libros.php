@@ -35,7 +35,6 @@ if (isset($_GET['accion'])) {
       $libros[0]['precio'] = substr($libros[0]['precio'], 1);
 
       $web->iniClases('admin', "index libros actualizar");
-      $web->smarty->assign('msg', '');
       $web->smarty->assign('libros', $libros[0]);
       $web->smarty->display('form_libros.html');
       die();
@@ -122,11 +121,10 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = json_encode($datos);
 
-$file = fopen("libros.txt", "w");
+$file = fopen("TextFiles/libros.txt", "w");
 fwrite($file, $datos);
 
 $web->smarty->assign('datos', $datos);
-
 $web->smarty->display("libros.html");
 
 /**
@@ -153,6 +151,12 @@ function message($iniClases, $msg, $web, $cvelibro = null)
   die();
 }
 
+/**
+ * Ahorro de código, elimina un elemento de la tabla libro junto con los elementos relacionados en
+ * otras tablas, o simplemente coloca en null los valores fuera de la tabla libro
+ * @param  Class    $web Objeto para poder usar smarty
+ * @return boolean  false = Mostrar mensaje de error
+ */
 function delete_book($web)
 {
   //se valida la contraseña
@@ -179,6 +183,7 @@ function delete_book($web)
     return false;
   }
   
+  $web->DB->startTrans();
   //actualiza laboral colocando el libro grupal como nulo
   $sql = "update laboral set cvelibro_grupal=null where cvelibro_grupal=?";
   $web->query($sql, $_GET['info1']);
@@ -187,10 +192,12 @@ function delete_book($web)
   $sql = "delete from lista_libros where cvelibro=?";
   $web->query($sql, $_GET['info1']);
   $sql = "delete from libro where cvelibro=?";
-  if (!$web->query($sql, $_GET['info1'])) {
+  $web->query($sql, $_GET['info1']);
+  if ($web->DB->HasFailedTrans()) {
     $web->simple_message('danger', 'No se pudo completar la operación');
+    $web->DB->CompleteTrans();
     return false;
   }
-
+  $web->DB->CompleteTrans();
   header('Location: libros.php');
 }

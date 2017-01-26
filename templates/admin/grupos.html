@@ -15,6 +15,11 @@
 			{if isset($bandera)}{if $bandera eq 'historial'}
 		    <th width='140'><center>REPORTE GRUPAL</center></th>
 		  {/if}{/if}
+		  {if isset($bandera)}
+		    {if $bandera eq 'index_grupos'}
+		      <th style="vertical-align:middle"><center>ELIMINAR</center></th>
+		    {/if}
+		  {/if}
 		</tr>
 		{foreach $tablegrupos as $grupo}
 			<tr>
@@ -40,6 +45,14 @@
   					<img src='../Images/pdf.png' title='Reporte Promotor-Grupo'/></a>
   				<center></td>
 			  {/if}{/if}
+			  {if isset($bandera)}
+			    {if $bandera eq 'index_grupos'}
+			      <td><center>
+    					<a class="delete" href="grupos.php?accion=delete&info1={$grupo.letra}">
+    						<img src="../Images/cancelar.png">
+    					</a></center></td>
+			    {/if}
+			  {/if}
 			</tr>
 		{/foreach}
 	</table>

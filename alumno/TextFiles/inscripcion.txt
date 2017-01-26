@@ -1,0 +1,1 @@
+{"data":[{"letra":"<a href='inscripcion.php?info=A'>A<\/a>","nombre_grupo":"SALA - A","cvesala":"S01","ubicacion":"Biblioteca Campus 1","nombre_promotor":"Rodr\u00edguez Garc\u00eda Victor "},{"letra":"<a href='inscripcion.php?info=B'>B<\/a>","nombre_grupo":"SALA - B","cvesala":"S01","ubicacion":"Biblioteca Campus 1","nombre_promotor":"Rodr\u00edguez Garc\u00eda Victor "}]}

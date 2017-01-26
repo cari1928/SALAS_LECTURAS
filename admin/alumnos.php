@@ -55,38 +55,76 @@ if (isset($_GET['accion'])) {
 $web->iniClases('admin', "index alumnos");
 
 $sql = "select usuarios.cveusuario, usuarios.nombre AS \"usuario\", especialidad.nombre AS
-\"especialidad\", correo from usuarios
+\"especialidad\", correo, usuarios.estado_credito from usuarios
 inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
 inner join especialidad on especialidad_usuario.cveespecialidad = especialidad.cveespecialidad
 where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)";
-
 $parameters = array();
+
+//Se realiza la consulta para obtener el estado de los libros de cada alumno
+$sql_libros = 'select lectura.nocontrol, e.estado from lista_libros
+              inner join estado e on e.cveestado = lista_libros.cveestado
+              inner join lectura on lectura.cvelectura = lista_libros.cvelectura';
+
+//si viene de historial
 if($flag == 'historial') {
   if(!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
-  
   } else {
     $sql .= ' and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)';
+    $sql_libros .= 'where lista_libros.cveperiodo = ?';
     $parameters = $cveperiodo = $_GET['info1'];
-    
     $web->iniClases('admin', "index historial alumnos");
     $web->smarty->assign('bandera', 'historial');
     $web->smarty->assign('cveperiodo', $_GET['info1']);
   }
 }
 
+$sql_libros .= " order by lectura.nocontrol, e.estado";
 $sql .= " order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = $web->DB->GetAll($sql, $parameters);
+$datos_libros = $web->DB->GetAll($sql_libros, $parameters);
 $datos = array('data' => $datos);
 
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
   
+  
   //estado-crédito
-  $datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
+  if($datos['data'][$i][4] ==  NULL){
+    $cont=0;
+    $bandera_libros = true;
+    for($h = 0; $h < sizeof($datos_libros) && $bandera_libros == true; $h++){
+      if($datos_libros[$h][0] == $datos['data'][$i][0] ){
+        if($datos_libros[$h][1] == 'Terminado'){
+          $cont++;  
+        }
+        else{
+          $bandera_libros = false;
+        }
+      }
+    }
+    if($bandera_libros == false){
+      $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
+    }
+    else{
+      if($cont >= 7){
+        $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>"; 
+      }
+      else{
+        $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
+      }
+    }
+    echo $cont;
+    echo "<br>";
+  }
+  
+  //$datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
   
   if($flag != 'historial') {
+    //se preparan parametros
+    
     //eliminar
     $datos['data'][$i][5] = "alumnos.php?accion=delete&info1=" . $datos['data'][$i][0];
     //editar
@@ -105,7 +143,7 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = json_encode($datos);
 
-$file = fopen("alumnos.txt", "w");
+$file = fopen("TextFiles/alumnos.txt", "w");
 fwrite($file, $datos);
 
 $web->smarty->assign('datos', $datos);
@@ -122,7 +160,7 @@ function message($iniClases, $msg, $web, $cveusuario = null)
 {
   $web->iniClases('admin', $iniClases);
 
-  $sql   = "select cveespecialidad, nombre from especialidad";
+  $sql   = "select cveespecialidad, nombre from especialidad where cveespecialidad <> 'O'";
   $combo = $web->combo($sql, null, '../');
 
   $web->smarty->assign('alert', 'danger');

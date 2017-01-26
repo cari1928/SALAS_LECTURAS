@@ -17,30 +17,40 @@ if ($cveperiodo == "") {
 
 if(isset($_GET['accion'])) {
   
-  if (!isset($_GET['info'])) {
-    message('danger', 'Información incompleta', $web);
+  switch($_GET['accion']) {
+    
+    case 'libros':
+      if (!isset($_GET['info'])) {
+        message('danger', 'Información incompleta', $web);
+      }
+      
+      $sql = "select * from lectura where cvelectura=?";
+      $lectura = $web->DB->GetAll($sql, $_GET['info']);
+      if(!isset($lectura[0])) {
+        message('danger', 'No altere la estructura de la interfaz', $web);
+      }
+      
+      $sql = "select * from lista_libros 
+        inner join lectura on lista_libros.cvelectura = lectura.cvelectura
+        inner join libro on libro.cvelibro = lista_libros.cvelibro
+        where nocontrol=? and lectura.cveperiodo=?
+        order by libro.cvelibro";
+      $libros = $web->DB->GetAll($sql, array($lectura[0]['nocontrol'], $cveperiodo));
+      if(!isset($libros[0])) {
+        $web->simple_message('warning', 'No hay libros registrados');
+      } else {
+        $web->smarty->assign('libros', $libros);
+      }
+      
+      $web->iniClases('promotor', "index grupos libros");
+      $web->smarty->display('grupo.html');
+      die();
+      break;  
+    
+    case 'reporte':
+      
+      break;
   }
-  
-  $sql = "select * from lectura where cvelectura=?";
-  $lectura = $web->DB->GetAll($sql, $_GET['info']);
-  
-  $sql = "select * from lista_libros 
-    inner join lectura on lista_libros.cvelectura = lectura.cvelectura
-    inner join libro on libro.cvelibro = lista_libros.cvelibro
-    where nocontrol=?
-    order by libro.cvelibro";
-  $libros = $web->DB->GetAll($sql, $lectura[0]['nocontrol']);
-
-  if(!isset($libros[0])) {
-    $web->smarty->assign('alert', 'warning');
-    $web->smarty->assign('msg', 'No hay libros registrados');
-  } else {
-    $web->smarty->assign('libros', $libros);
-  }
-  
-  $web->iniClases('promotor', "index grupos libros");
-  $web->smarty->display('grupo.html');
-  die();
 }
 
 if (!isset($_GET['info1'])) {
@@ -113,29 +123,20 @@ $datos_rs = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo, $gru
 $web->smarty->assign('info', $datos_rs[0]);
 
 //Datos de la tabla = Alumnos
-$sql   = "select distinct usuarios.nombre, comprension, motivacion, reporte, tema, participacion, terminado, nocontrol, cveeval, cveperiodo, lectura.cvelectura, asistencia from lectura
-	inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
-	inner join abecedario on lectura.cveletra = abecedario.cve 
-	inner join usuarios on lectura.nocontrol = usuarios.cveusuario
-	inner join laboral on abecedario.cve = laboral.cveletra	
-	where letra=? and cveperiodo=?
-	order by usuarios.nombre";
+$sql   = "select distinct usuarios.nombre, comprension, motivacion, participacion, 
+terminado, asistencia, actividades, nocontrol, cveeval, lectura.cveperiodo, lectura.cvelectura, asistencia from lectura 
+inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
+inner join abecedario on lectura.cveletra = abecedario.cve 
+inner join usuarios on lectura.nocontrol = usuarios.cveusuario 
+inner join laboral on abecedario.cve = laboral.cveletra  	
+where letra=? and lectura.cveperiodo=?
+order by usuarios.nombre";
 $datos = $web->DB->GetAll($sql, array($grupo, $cveperiodo));
-
 if(!isset($datos[0])) {
-  $web->smarty->assign('alert', 'warning');
-  $web->smarty->assign('msg', 'No hay alumnos inscritos');
+  $web->simple_message('warning', 'No hay alumnos inscritos');
   $web->smarty->display("grupo.html");
   die();
 }
-
-// $web->smarty->assign('para', $_GET['info1']);
-
-/*
-  //////////////////////////////////////////////////////////////////
-FALTAN QUE PUEDA VER LOS LIBROS DE LOS ALUMNOS!!!!!!!!
-  //////////////////////////////////////////////////////////////////
-*/
 
 $web->smarty->assign('bandera', 'true');
 $web->smarty->assign('cveperiodo', $cveperiodo);
@@ -143,15 +144,14 @@ $web->smarty->assign('datos', $datos);
 $web->smarty->assign('grupo', $grupo);
 $web->smarty->display("grupo.html");
 
-/*
-  //////////////////////////////////////////////////////////////////
-*/
+/**
+ * Ahorro de código para mostrar mensajes al usuario
+ * @param  String $alert warning | danger principalmente
+ * @param  String $msg   Texto a mostrar al usuario
+ * @param  Class  $web   Objeto para hacer uso de smarty
+ */
 function message($alert, $msg, $web) {
-    $web->smarty->assign('alert', $alert);
-    $web->smarty->assign('msg', $msg);
-    $web->smarty->display("grupo.html");
-    die();
+  $web->simple_message($alert, $msg);
+  $web->smarty->display("grupo.html");
+  die();
 }
-/*
-  //////////////////////////////////////////////////////////////////
-*/

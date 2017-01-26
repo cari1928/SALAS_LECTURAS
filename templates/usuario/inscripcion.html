@@ -13,36 +13,39 @@
   </div>
   <table id="example" class="display" cellspacing="0" width="100%">
     <thead>
-        <tr>
-            <th>GRUPO</th>
-            <th>NOMBRE SALA</th>
-            <th>CLAVE SALA</th>
-            <th>UBICACION</th>
-            <th>PROMOTOR</th>
-        </tr>
+      <tr>
+        <th><center>GRUPO</center></th>
+        <th><center>NOMBRE SALA</center></th>
+        <th><center>CLAVE SALA</center></th>
+        <th><center>UBICACION</center></th>
+        <th><center>PROMOTOR</center></th>
+      </tr>
     </thead>
     <tfoot>
-        <tr>
-            <th>GRUPO</th>
-            <th>NOMBRE SALA</th>
-            <th>CLAVE SALA</th>
-            <th>UBICACION</th>
-            <th>PROMOTOR</th>
-        </tr>
+      <tr>
+        <th><center>GRUPO</center></th>
+        <th><center>NOMBRE SALA</center></th>
+        <th><center>CLAVE SALA</center></th>
+        <th><center>UBICACION</center></th>
+        <th><center>PROMOTOR</center></th>
+      </tr>
     </tfoot>
   </table>
   <script type="text/javascript">
     $(document).ready(function() {
       $('#example').DataTable( {
-          // "ajax": "{$datos}",
-          "ajax": "inscripcion.txt",
+          "ajax": "TextFiles/inscripcion.txt",
           "columns": [
               { "data": "letra" },
               { "data": "nombre_grupo" },
               { "data": "cvesala" },
               { "data": "ubicacion" },
               { "data": "nombre_promotor" }
-          ]
+          ],
+          "columnDefs": [ {
+  					"className": "dt-center", 
+  					"targets": "_all"
+				}]
       } );
     } );
   </script>

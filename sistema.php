@@ -3,6 +3,7 @@ session_start();
 include 'config.php';
 define('PATHLIB', PATHAPP . LIB);
 include PATHLIB . 'adodb/adodb.inc.php';
+include PATHLIB . 'adodb/adodb-errorpear.inc.php';
 include PATHLIB . 'smarty/libs/Smarty.class.php';
 include PATHLIB . 'phpmailer/PHPMailerAutoload.php';
 //clases del sistema
@@ -21,18 +22,18 @@ class Conexion
 }
 class Sistema extends Conexion
 {
-  //varaiables
+  //variables
   public $rs    = '';
   public $query = '';
   public $rol   = "";
   public $smarty;
-  public function combo($query, $selected = null, $ruta = "", $parameters = null)
+  public function combo($query, $selected = null, $ruta = "", $parameters=array())
   {
-    if ($parameters != null) {
-      $datosList = $this->DB->GetAll($query, $parameters);
-    } else {
-      $datosList = $this->DB->GetAll($query);
+    $datosList = $this->DB->GetAll($query, $parameters);
+    if(!isset($datosList[0])) {
+      return false;
     }
+  
     $nombrescolumnas = array_keys($datosList[0]);
     $this->smarty->assign('selected', $selected);
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
@@ -40,19 +41,23 @@ class Sistema extends Conexion
     $this->smarty->assign('datos', $datosList);
     return $this->smarty->fetch($ruta . 'select.component.html');
   }
-  public function query($query, $parameters = null)
+  
+  /**
+   * Ejecuta operación SQL de manera más sencilla que DB->GetAll
+   * @param  String $query      Consulta SQL
+   * @param  array $parameters  Contenedor de las incógnitas en $query
+   * @return [type]             [description]
+   */
+  public function query($query, $parameters=array())
   {
     $this->query = $query;
-    if ($parameters == null) {
-      $this->rs = &$this->DB->Execute($this->query);
-    } else {
-      $this->rs = &$this->DB->Execute($this->query, $parameters);
-    }
+    $this->rs = &$this->DB->Execute($this->query, $parameters);
+    
     if ($this->DB->ErrorMsg()) {
-      echo $this->DB->ErrorMsg();
-      return false;
+      $msg = $this->DB->ErrorMsg();
+      echo $msg;
+      return $msg;
     } else {
-      // echo $this->DB->ErrorMsg();
       return true;
     }
   }
@@ -75,6 +80,7 @@ class Sistema extends Conexion
     $this->smarty->assign('datos', $datos);
     return $this->smarty->fetch('muestratabla.html');
   }
+  
   public function tipoCuenta()
   {
     $sql      = "select nombre from usuarios where cveusuario='" . $_SESSION['cveUser'] . "'";
@@ -223,7 +229,7 @@ class Sistema extends Conexion
           } else {
             $tabla .= "<td> <a href='" . $direccion . ".php?info2=" . $contenido . "'><img src='../Images/edit.png' /> </a></td>";
           }
-          $tabla .= "<td> <a href='show" . $direccion . ".php?info1=" . $contenido . "'><img src='../Images/mostrarL.png' /> </a></td>";
+          $tabla .= "<td> <a href='show" . $direccion . ".php?info1=" . $contenido . "'><img src='../Images/libros.png' /> </a></td>";
         }
         $cont2++;
       }
@@ -234,6 +240,7 @@ class Sistema extends Conexion
     $tabla .= '</table>';
     return $tabla;
   }
+  
   /**
    * Inicializa variables necesarias para desplegar un template
    * Entre ellas la ruta a mostrar con links de la página
@@ -263,6 +270,7 @@ class Sistema extends Conexion
     $cad .= "</div>";
     $this->smarty->assign('ruta', $cad);
   }
+  
   public function smarty()
   {
     $this->smarty = new Smarty();
@@ -274,6 +282,7 @@ class Sistema extends Conexion
     $this->smarty->caching        = true;
     $this->smarty->cache_lifetime = 0;
   }
+  
   public function getAllRecords($query)
   {
     $this->query            = $query;
@@ -287,6 +296,7 @@ class Sistema extends Conexion
     $this->smarty->assign('mensaje', $mensaje);
     $this->smarty->display('error.html');
   }
+  
   public function valida($correo)
   {
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL) === false) {
