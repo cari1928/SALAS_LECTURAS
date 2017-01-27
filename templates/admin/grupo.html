@@ -90,6 +90,9 @@
     						<a href="grupo.php?accion={if isset($bandera)}{if $bandera eq 'index_grupos_libros'}{$bandera}{else}historial{/if}{else}libros{/if}&info1={$alumno.letra}&info2={$alumno.nocontrol}&info3={$alumno.cvepromotor}">
     							<img src="../Images/libros.png">
     						</a>
+    						<a class="delete" href="#">
+              		<img src="../Images/cancelar.png">
+          			</a>
   						</center></td>
   					{/if}
   				</form>
@@ -148,7 +151,7 @@
 			<td><center>{$libro.editorial}</center></td>
 			<td><center>{$libro.precio}</center></td>
 			<td>
-			  <center><a href="grupo.php?accion=delete{if isset($libros_promo)}_promotor{/if}&info1={$libro.cvelibro}&info2={$cvelectura}" class="delete">
+			  <center><a href="grupo.php?accion=delete{if isset($libros_promo)}{if $libros_promo eq 'libros'}_promotor{/if}{/if}&info1={$libro.cvelibro}&info2={$cvelectura}" class="delete">
 				<img src="../Images/cancelar.png">
 			</a></center>
 			</td>

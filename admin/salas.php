@@ -106,8 +106,8 @@ if (isset($_GET['accion'])) {
 $web->iniClases('admin', "index salas");
 
 //obtiene todas las salas a mostrar
-$sql     = 'select cvesala, ubicacion from sala order by cvesala';
-$salones = $web->DB->GetAll($sql);
+$sql     = 'select cvesala, ubicacion from sala where cveperiodo=? order by cvesala';
+$salones = $web->DB->GetAll($sql, $cveperiodo);
 
 if (!isset($salones[0])) {
   $web->simple_message('warning', " No hay salones registrados");

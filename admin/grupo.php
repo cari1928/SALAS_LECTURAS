@@ -50,8 +50,11 @@ if (isset($_GET['accion'])) {
       
     case 'index_grupos_libros':
     case 'libros':
-      mostrar_libros_promotor($web);   
+      mostrar_libros_promotor($web); 
       $web->smarty->assign('libros_promo', 'libros');
+      if($_GET['accion'] == 'index_grupos_libros') {
+        $web->smarty->assign('libros_promo', 'index');
+      }
       break;
   
     case 'index_grupos':
@@ -197,10 +200,6 @@ function mostrar_libros_promotor($web){
   where cveletra in (SELECT cve FROM abecedario WHERE letra = ?)
   and cveperiodo = ?";
   $grupo=$web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
-  
-  // echo $_GET['info1']."<br>";
-  // echo $cveperiodo;
-  // $web->debug($grupo);
   
   if(!isset($grupo[0])){
     message('danger', 'El grupo no existe', $web);
@@ -354,7 +353,7 @@ function eliminar_libro_alumno($web, $tipo=null)
   global $cveperiodo;
   
   if($tipo == 'promotor'){
-   $web->iniClases('admin', "index alumnos grupos");  
+   $web->iniClases('admin', "index promotor grupos");  
   }
   else{
    $web->iniClases('admin', "index alumnos grupos"); 
@@ -502,7 +501,7 @@ function mostrar_grupos_promotor($web) {
   }
   
   $web->smarty->assign('datos', $datos);
-  $web->smarty->assign('bandera_mensajes', 'true'); //La agregue para que aparesca el icono de mensaje en el header
+  $web->smarty->assign('bandera_mensajes', 'true'); //para icono de mensaje en el header
   $web->smarty->assign('promotor', 'promotor');
 }
 

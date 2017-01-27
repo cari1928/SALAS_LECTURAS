@@ -63,8 +63,8 @@ $parameters = array();
 
 //Se realiza la consulta para obtener el estado de los libros de cada alumno
 $sql_libros = 'select lectura.nocontrol, e.estado from lista_libros
-              inner join estado e on e.cveestado = lista_libros.cveestado
-              inner join lectura on lectura.cvelectura = lista_libros.cvelectura';
+inner join estado e on e.cveestado = lista_libros.cveestado
+inner join lectura on lectura.cvelectura = lista_libros.cvelectura';
 
 //si viene de historial
 if($flag == 'historial') {
@@ -72,7 +72,7 @@ if($flag == 'historial') {
     $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
   } else {
     $sql .= ' and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)';
-    $sql_libros .= 'where lista_libros.cveperiodo = ?';
+    $sql_libros .= ' where lectura.cveperiodo = ?';
     $parameters = $cveperiodo = $_GET['info1'];
     $web->iniClases('admin', "index historial alumnos");
     $web->smarty->assign('bandera', 'historial');
@@ -89,7 +89,6 @@ $datos = array('data' => $datos);
 
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
-  
   
   //estado-crédito
   if($datos['data'][$i][4] ==  NULL){
@@ -110,14 +109,17 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
     }
     else{
       if($cont >= 7){
-        $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>"; 
+        if($flag == 'historial'){
+          $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>";
+        }
+        else{
+          $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "'><label display='color:red'> PERMITIDO </label></a>"; 
+        }
       }
       else{
         $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
       }
     }
-    echo $cont;
-    echo "<br>";
   }
   
   //$datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
