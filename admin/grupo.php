@@ -98,8 +98,9 @@ function mostrar_alumnos($web)
   //verifica la existencia del grupo
   $sql = "select * from lectura
   inner join laboral on laboral.cveletra = lectura.cveletra
-  where laboral.cveletra in (select cve from abecedario where letra=?)";
-  $grupo = $web->DB->GetAll($sql, $_GET['info1']);
+  where laboral.cveletra in (select cve from abecedario where letra=?)
+        and lectura.cveperiodo = ?";
+  $grupo = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
   if (!isset($grupo[0])) {
     $web->iniClases('admin', "index alumnos grupos");
     message('danger', 'El grupo seleccionado no existe', $web);
@@ -117,8 +118,8 @@ function mostrar_alumnos($web)
   // verifica la existencia del alumno
   $sql = "select * from lectura
   where cveletra in (select cve from abecedario where letra=?)
-  and nocontrol=?";
-  $alumno = $web->DB->GetAll($sql, array($_GET['info1'], $_GET['info2']));
+  and nocontrol=? and cveperiodo=?";
+  $alumno = $web->DB->GetAll($sql, array($_GET['info1'], $_GET['info2'], $cveperiodo));
   
   if (!isset($alumno[0])) {
     message('danger', 'El alumno seleccionado no está registrado por completo en el grupo',
@@ -134,9 +135,9 @@ function mostrar_alumnos($web)
     inner join periodo on laboral.cveperiodo= periodo.cveperiodo
     inner join lectura on abecedario.cve = abecedario.cve
     inner join usuarios on laboral.cvepromotor = usuarios.cveusuario
-    where nocontrol=? and laboral.cveperiodo=? and letra=?
+    where nocontrol=? and laboral.cveperiodo=? and letra=? and lectura.cveperiodo=?
     order by letra";
-  $parameters = array($alumno[0]['nocontrol'], $cveperiodo, $_GET['info1']);
+  $parameters = array($alumno[0]['nocontrol'], $cveperiodo, $_GET['info1'], $cveperiodo);
   $datos_rs   = $web->DB->GetAll($sql, $parameters);
   $web->smarty->assign('info', $datos_rs[0]);
   
@@ -152,9 +153,9 @@ function mostrar_alumnos($web)
   inner join abecedario on lectura.cveletra = abecedario.cve
   inner join usuarios on lectura.nocontrol = usuarios.cveusuario
   inner join laboral on abecedario.cve = laboral.cveletra
-  where letra=? and laboral.cveperiodo=? and nocontrol=?
+  where letra=? and laboral.cveperiodo=? and nocontrol=? and lectura.cveperiodo=?
   order by usuarios.nombre";
-  $parameters = array($_GET['info1'], $cveperiodo, $alumno[0]['nocontrol']);
+  $parameters = array($_GET['info1'], $cveperiodo, $alumno[0]['nocontrol'], $cveperiodo);
   $datos      = $web->DB->GetAll($sql, $parameters);
 
   if (!isset($datos[0])) {
@@ -223,8 +224,9 @@ function mostrar_libros_promotor($web){
          cveletra in (SELECT cve FROM abecedario 
                      where cve in (SELECT cveletra from laboral
                                    WHERE cveperiodo = ?)
-                      and letra = ?)";
-  $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1']));
+                      and letra = ?)
+         and lectura.cveperiodo = ?";
+  $alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo, $_GET['info1'], $cveperiodo));
   if(!isset($alumno[0])){
     message('danger', 'El alumno no pertenese al grupo', $web);
     return false;
@@ -258,9 +260,9 @@ function mostrar_libros($web, $alumno)
     inner join lectura on lectura.cvelectura = lista_libros.cvelectura
     inner join abecedario on abecedario.cve = lectura.cveletra
     inner join laboral on laboral.cveletra = abecedario.cve
-    where nocontrol=? and laboral.cveperiodo=? and lectura.cvelectura=?)
+    where nocontrol=? and laboral.cveperiodo=? and lectura.cvelectura=? and lectura.cveperiodo=? )
   order by titulo";
-  $parameters = array($alumno[0]['nocontrol'], $cveperiodo, $alumno[0]['cvelectura']);
+  $parameters = array($alumno[0]['nocontrol'], $cveperiodo, $alumno[0]['cvelectura'], $cveperiodo);
   $combo      = $web->combo($sql, null, '../', $parameters);
 
   //Datos de la tabla = Libros
@@ -310,8 +312,8 @@ function insertar_libro_alumno($web,$tipo='alumno')
   $sql = "select distinct letra, nocontrol, laboral.cvepromotor from lectura 
   inner join abecedario on lectura.cveletra = abecedario.cve
   inner join laboral on laboral.cveletra = abecedario.cve
-  where lectura.cvelectura=?";
-  $lectura = $web->DB->GetAll($sql, $_POST['datos']['cvelectura']);
+  where lectura.cvelectura=? and lectura.cveperiodo=?";
+  $lectura = $web->DB->GetAll($sql, array($_POST['datos']['cvelectura'], $cveperiodo));
   if (!isset($lectura[0])) {
     message('danger', 'ERROR, no se puede continuar con la operación', $web);
     return false;
@@ -323,8 +325,8 @@ function insertar_libro_alumno($web,$tipo='alumno')
   //verifica si el libro ya está registrado para ese alumno
   $sql = "select * from lista_libros
   inner join lectura on lectura.cvelectura = lista_libros.cvelectura
-  where cvelibro=? and lectura.cvelectura=?";
-  $libro = $web->DB->GetAll($sql, array($cvelibro, $cvelectura));
+  where cvelibro=? and lectura.cvelectura=? and lectura.cveperiodo";
+  $libro = $web->DB->GetAll($sql, array($cvelibro, $cvelectura, $cveperiodo));
   if (isset($libro[0])) {
     message('danger', 'El libro ya está para este alumno', $web);
     return false;

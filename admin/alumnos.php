@@ -58,21 +58,21 @@ $sql = "select usuarios.cveusuario, usuarios.nombre AS \"usuario\", especialidad
 \"especialidad\", correo, usuarios.estado_credito from usuarios
 inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
 inner join especialidad on especialidad_usuario.cveespecialidad = especialidad.cveespecialidad
-where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)";
-$parameters = array();
+where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)
+      and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)";
+$parameters = $cveperiodo;
 
 //Se realiza la consulta para obtener el estado de los libros de cada alumno
 $sql_libros = 'select lectura.nocontrol, e.estado from lista_libros
 inner join estado e on e.cveestado = lista_libros.cveestado
-inner join lectura on lectura.cvelectura = lista_libros.cvelectura';
+inner join lectura on lectura.cvelectura = lista_libros.cvelectura
+where lectura.cveperiodo = ?';
 
 //si viene de historial
 if($flag == 'historial') {
   if(!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
   } else {
-    $sql .= ' and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)';
-    $sql_libros .= ' where lectura.cveperiodo = ?';
     $parameters = $cveperiodo = $_GET['info1'];
     $web->iniClases('admin', "index historial alumnos");
     $web->smarty->assign('bandera', 'historial');
@@ -92,34 +92,35 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
   
   //estado-crédito
   if($datos['data'][$i][4] ==  NULL){
-    $cont=0;
-    $bandera_libros = true;
-    for($h = 0; $h < sizeof($datos_libros) && $bandera_libros == true; $h++){
-      if($datos_libros[$h][0] == $datos['data'][$i][0] ){
-        if($datos_libros[$h][1] == 'Terminado'){
-          $cont++;  
-        }
-        else{
-          $bandera_libros = false;
-        }
-      }
-    }
-    if($bandera_libros == false){
-      $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
-    }
-    else{
-      if($cont >= 7){
-        if($flag == 'historial'){
-          $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>";
-        }
-        else{
-          $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "'><label display='color:red'> PERMITIDO </label></a>"; 
-        }
-      }
-      else{
-        $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
-      }
-    }
+    $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
+    // $cont=0;
+    // $bandera_libros = true;
+    // for($h = 0; $h < sizeof($datos_libros) && $bandera_libros == true; $h++){
+    //   if($datos_libros[$h][0] == $datos['data'][$i][0] ){
+    //     if($datos_libros[$h][1] == 'Terminado'){
+    //       $cont++;  
+    //     }
+    //     else{
+    //       $bandera_libros = false;
+    //     }
+    //   }
+    // }
+    // if($bandera_libros == false){
+    //   $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
+    // }
+    // else{
+    //   if($cont >= 5){
+    //     if($flag == 'historial'){
+    //       $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>";
+    //     }
+    //     else{
+    //       $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "'><label display='color:red'> PERMITIDO </label></a>"; 
+    //     }
+    //   }
+    //   else{
+    //     $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
+    //   }
+    // }
   }
   
   //$datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
@@ -464,8 +465,8 @@ function show_groups($web) {
   inner join abecedario on laboral.cveletra = abecedario.cve
   inner join lectura on lectura.cveletra = abecedario.cve
   inner join sala on laboral.cvesala = sala.cvesala
-  where nocontrol=? and laboral.cveperiodo=? order by letra";
-  $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  where nocontrol = ? and laboral.cveperiodo = ? and lectura.cveperiodo = ? order by letra";
+  $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo, $cveperiodo));
 
   if (!isset($tablegrupos[0])) {
     $web->simple_message('danger', 'No ha registrado algún grupo');

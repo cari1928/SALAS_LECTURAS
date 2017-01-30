@@ -33,6 +33,7 @@ if(isset($_GET['accion'])) {
       $sql = "select * from lista_libros 
         inner join lectura on lista_libros.cvelectura = lectura.cvelectura
         inner join libro on libro.cvelibro = lista_libros.cvelibro
+        inner join estado on lista_libros.cveestado = estado.cveestado
         where nocontrol=? and lectura.cveperiodo=?
         order by libro.cvelibro";
       $libros = $web->DB->GetAll($sql, array($lectura[0]['nocontrol'], $cveperiodo));

@@ -43,6 +43,25 @@ class Sistema extends Conexion
   }
   
   /**
+  Muestra informacion de los mensajes publicos
+  **/
+  function msj($sql)
+	{
+		$datos=$this->DB->GetAll($sql);
+		if (!isset($datos[0]))
+		{
+			return "No se encuentra informacion";
+		}
+		$nombrescolumnas=array_keys($datos[0]);
+		$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
+		$this->smarty->assign('msj',$datos);
+		//var_dump($this->DB->GetAll("select nombre from usuarios where cveusuario='".$datos[0][4]."'"));
+		//die();
+		$this->smarty->assign('promotor',$this->DB->GetAll("select nombre from usuarios where cveusuario='".$datos[0][4]."'"));
+		return $this->smarty->fetch('componentmsj.html'); 
+	}
+  
+  /**
    * Ejecuta operación SQL de manera más sencilla que DB->GetAll
    * @param  String $query      Consulta SQL
    * @param  array $parameters  Contenedor de las incógnitas en $query
@@ -240,6 +259,38 @@ class Sistema extends Conexion
     $tabla .= '</table>';
     return $tabla;
   }
+  
+  /*
+  MUESTRA LOS MENSAJES PUBLICOS 
+  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A indes.php NIVEL PUBLICO
+  */
+  	function muestraMSJ($query,$tipo)
+	{
+	 // echo $query;
+		$datosmsj=$this->DB->GetAll($query);
+		// print_r($datosmsj);
+  	$nombrescolumnas=array_keys($datosmsj[0]);
+  	$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
+		$this->smarty->assign('datos',$datosmsj);
+		return $this->smarty->fetch('componentmsj.html'); 
+  		
+		if($tipo=='PU')
+		{
+			$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
+  			$this->smarty->assign('datos',$datosmsj);
+  			return $this->smarty->fetch('componentmsj.html'); 
+		}
+		if($tipo=='PR')
+		{
+
+		}
+		if($tipo=='G')
+		{
+
+		}
+		$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
+	}
+  
   
   /**
    * Inicializa variables necesarias para desplegar un template

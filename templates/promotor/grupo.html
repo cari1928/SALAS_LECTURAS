@@ -132,12 +132,14 @@
     <tr>
     	<th><center>CLAVE</center></th>
 			<th><center>TITULO</center></th>
+			<th><center>ESTADO</center></th>
 			<th><center>REPORTE</center></th>
 		</tr>
 		{foreach $libros as $libro}
 			<tr>
 				<td><center>{$libro.cvelibro}</center></td>
 				<td><center>{$libro.titulo}</center></td>
+				<td><center>{$libro.estado}</center></td>
 				<td><center>
 				  <a href="grupo.php?accion=reporte&info1={$libro.cvelibro}"> 
 				  <img src="../Images/reporte.png"></a>
