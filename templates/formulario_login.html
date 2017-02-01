@@ -1,14 +1,9 @@
 {include file='header.html'}
 {$ruta}
-{if isset($msg)}
-	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  		<span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> {$msg}
-	</div>
-{/if}
+{if isset($msg)}{include file='mensajes.html'}{/if}
+
 <center>
-    <h3>¡Bienvenido! <br> Por favor, inicia sesion. <br/></h3>
+    <h3>Login</h3>
        <form class="form-inline" action='login.php' method='post' enctype='multipart/form-data' accept-charset='utf-8'>
   <div class="form-group">
     <label>Usuario:</label>

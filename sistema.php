@@ -20,6 +20,7 @@ class Conexion
     $this->DB->PConnect($this->host, $this->userdb, $this->passdb, $this->database);
   }
 }
+
 class Sistema extends Conexion
 {
   //variables
@@ -27,6 +28,7 @@ class Sistema extends Conexion
   public $query = '';
   public $rol   = "";
   public $smarty;
+  
   public function combo($query, $selected = null, $ruta = "", $parameters=array())
   {
     $datosList = $this->DB->GetAll($query, $parameters);
@@ -42,9 +44,9 @@ class Sistema extends Conexion
     return $this->smarty->fetch($ruta . 'select.component.html');
   }
   
-  /**
+  /*
   Muestra informacion de los mensajes publicos
-  **/
+  */
   function msj($sql)
 	{
 		$datos=$this->DB->GetAll($sql);
@@ -80,6 +82,7 @@ class Sistema extends Conexion
       return true;
     }
   }
+  
   public function __construct()
   {
     parent::Conectar();
@@ -262,7 +265,7 @@ class Sistema extends Conexion
   
   /*
   MUESTRA LOS MENSAJES PUBLICOS 
-  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A indes.php NIVEL PUBLICO
+  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
   */
   	function muestraMSJ($query,$tipo)
 	{

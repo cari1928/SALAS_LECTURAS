@@ -72,44 +72,63 @@ if($grupo_promotor[0]['cvepromotor'] != $_SESSION['cveUser']){
 }
 
 if(isset($_POST['datos'])) {
-  if (!isset($_POST['datos']['nocontrol']) ||
+  
+  if (!isset($_POST['datos']['cveeval']) ||
       !isset($_POST['datos']['comprension']) ||
       !isset($_POST['datos']['motivacion']) ||
-      !isset($_POST['datos']['reporte']) ||
-      !isset($_POST['datos']['tema']) ||
       !isset($_POST['datos']['participacion']) || 
+      !isset($_POST['datos']['asistencia']) ||
+      !isset($_POST['datos']['actividades']) ||
       !isset($_POST['datos']['terminado']) ||
-      !isset($_POST['datos']['cveeval']) || 
-      !is_numeric($_POST['datos']['nocontrol']) ||
+      !is_numeric($_POST['datos']['cveeval']) ||
       !is_numeric($_POST['datos']['comprension']) ||
       !is_numeric($_POST['datos']['motivacion']) ||
-      !is_numeric($_POST['datos']['reporte']) ||
-      !is_numeric($_POST['datos']['tema']) ||
       !is_numeric($_POST['datos']['participacion']) || 
-      !is_numeric($_POST['datos']['terminado']) ||
-      !is_numeric($_POST['datos']['cveeval'])) {
+      !is_numeric($_POST['datos']['asistencia']) ||
+      !is_numeric($_POST['datos']['actividades']) || 
+      !is_numeric($_POST['datos']['terminado'])) {
         message("danger", "No alteres la estructura de la interfaz", $web);
   }
   
+  if($_POST['datos']['cveeval'] < 0 ||
+    $_POST['datos']['comprension'] < 0 ||
+    $_POST['datos']['motivacion'] < 0 ||
+    $_POST['datos']['participacion'] < 0 || 
+    $_POST['datos']['asistencia'] < 0 ||
+    $_POST['datos']['actividades'] < 0 || 
+    $_POST['datos']['terminado'] < 0) {
+      message("danger", "Ingrese solo valores positivos", $web);
+    }
+  
   $sql = "select * from evaluacion 
-    inner join lectura on lectura.cvelectura = evaluacion.cvelectura
-    inner join abecedario on abecedario.cve = lectura.cveletra
-    inner join laboral on abecedario.cve = laboral.cveletra
-    where cvepromotor=? and cveeval=?";
+  inner join lectura on lectura.cvelectura = evaluacion.cvelectura
+  inner join abecedario on abecedario.cve = lectura.cveletra
+  inner join laboral on abecedario.cve = laboral.cveletra
+  where cvepromotor=? and cveeval=?";
   $eval = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $_POST['datos']['cveeval']));
   if(!isset($eval[0])) {
     message('danger', 'Permiso denegado', $web);
   }
   
-  $sql = "update evaluacion set comprension=?, motivacion=?, reporte=?, tema=?, participacion=?, terminado=? where cveeval=?";
+  $web->DB->startTrans(); //por si hay errores durante la ejecusión del query
+  $sql = "update evaluacion set comprension=?, motivacion=?, participacion=?, asistencia=?,
+  actividades=?, terminado=? 
+  where cveeval=?";
   $parametros = array(
     $_POST['datos']['comprension'], 
     $_POST['datos']['motivacion'], 
-    $_POST['datos']['reporte'],
-    $_POST['datos']['tema'],
     $_POST['datos']['participacion'],
+    $_POST['datos']['asistencia'],
+    $_POST['datos']['actividades'],
     $_POST['datos']['terminado'],
     $_POST['datos']['cveeval']);
+  $web->query($sql, $parametros);
+    
+  if($web->DB->HasFailedTrans()) {
+    //falta programar esta parte para que no muestre directamente el resultado de sql
+  }  
+  
+  $web->DB->CompleteTrans();
   $web->query($sql, $parametros);
 }
 
@@ -125,7 +144,8 @@ $web->smarty->assign('info', $datos_rs[0]);
 
 //Datos de la tabla = Alumnos
 $sql   = "select distinct usuarios.nombre, comprension, motivacion, participacion, 
-terminado, asistencia, actividades, nocontrol, cveeval, lectura.cveperiodo, lectura.cvelectura, asistencia from lectura 
+terminado, asistencia, actividades, nocontrol, cveeval, lectura.cveperiodo, lectura.cvelectura, 
+asistencia from lectura 
 inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
 inner join abecedario on lectura.cveletra = abecedario.cve 
 inner join usuarios on lectura.nocontrol = usuarios.cveusuario 

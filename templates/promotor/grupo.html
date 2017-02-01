@@ -28,7 +28,7 @@
 		{foreach $datos as $alumno}
 			<tr> 
 				 <form class='form - inline' action='grupo.php?info1={$info.letra}' method='post' >
-					 <input type="hidden" name="datos[nocontrol]" value="{$alumno.nocontrol}" > 
+					 <input type="hidden" name="datos[cveeval]" value="{$alumno.cveeval}"> 
 					 <td width='500' style="vertical-align:middle"> {$alumno.nombre} </td>
 					 <td width='500'>  
 					 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$alumno.comprension}% ;height: 100%; background-color: #4caf50;"> 
@@ -118,10 +118,10 @@
 							<img src="../Images/libros.png">
 						</a>
 					</td>
-				</tr>
+				</form>
+			</tr>
 			{/foreach}
 		</table>
-	</form>
 {/if}
 
 {if isset($libros)}

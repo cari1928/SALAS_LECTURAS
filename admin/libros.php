@@ -60,8 +60,7 @@ if (isset($_GET['accion'])) {
       $sql = "insert into libro (autor, titulo, editorial, precio) values (?, ?, ?, ?)";
       $tmp = array($_POST['autor'], $_POST['titulo'], $_POST['editorial'], $_POST['precio']);
       if (!$web->query($sql, $tmp)) {
-        $web->smarty->assign('alert', 'danger');
-        $web->smarty->assign('msg', 'No se pudo completar la operación');
+        $web->simple_message('danger', 'No se pudo completar la operación');
         break;
       }
 

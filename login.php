@@ -63,6 +63,18 @@ if(isset($_GET['info'])) {
     }
 }
 
+//para mensajes cuando la página es llamada principalmente por header: Location
+if(isset($_GET['m'])) {
+    switch($_GET['m']) {
+        case 1:
+            $web->simple_message('info', 'Espere que un administrador acepte su registro');
+        break;
+        case 2:
+            $web->simple_message('info', 'Inicia sesion como administrador');
+        break;
+    }
+}
+
 
 // $web->smarty->assign('mensaje', $msg);
 $web->smarty->display('formulario_login.html');

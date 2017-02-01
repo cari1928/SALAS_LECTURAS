@@ -4,7 +4,21 @@ include 'sistema.php';
 $contraseña = '';
 $web        = new sistema;
 
+$web->iniClases(null, "index registrar");
+$sql = "SELECT * FROM especialidad where cveespecialidad != 'O' order by nombre";
+$web->smarty->assign('especialidad', $web->combo($sql));
+$web->smarty->assign('encabezado', '<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
+
 if(isset($_POST['datos'])) {
+	register_student($web);
+}
+
+$web->smarty->display('registrar.html');
+
+/*
+* Para ahorrar espacio y poder usar la opción de return para poder mostrar los mensajes
+*/
+function register_student($web) {
 	
 	if (!isset($_POST['datos']['nombre']) ||
       !isset($_POST['datos']['usuario']) ||
@@ -12,7 +26,8 @@ if(isset($_POST['datos'])) {
       !isset($_POST['datos']['cveespecialidad']) ||
       !isset($_POST['datos']['correo']) ||
       !isset($_POST['datos']['confcontrasena'])) {
-      message("No alteres la estructura de la interfaz", $web);
+      	$web->simple_message('danger', "No alteres la estructura de la interfaz");
+      	return false;
   }
   
   if ($_POST['datos']['nombre'] == "" ||
@@ -21,7 +36,8 @@ if(isset($_POST['datos'])) {
       $_POST['datos']['correo'] == "" ||
       $_POST['datos']['contrasena'] == "" ||
       $_POST['datos']['confcontrasena'] == "") {
-      message("Llena todos los campos", $web);
+	      $web->simple_message('danger', "Llena todos los campos");
+	      return false;
   }
 	
 	$nombre         = $_POST['datos']['nombre'];
@@ -30,67 +46,75 @@ if(isset($_POST['datos'])) {
 	$confcontrasena = $_POST['datos']['confcontrasena'];
 	$especialidad   = $_POST['datos']['cveespecialidad'];
 	$correo         = $_POST['datos']['correo'];
-	$tipo           = $_POST['datos']['tipo'];
 	
 	if ($contrasena != $confcontrasena) {
-	  mensajes("Las contraseñas no coinciden", $web);
+	  $web->simple_message('danger', "Las contraseñas no coinciden");
+    return false;
 	}
 	
 	$tamano  = strlen($cveUsuario);
-	if ($tipo == "U") {
-	  if ($tamano != 8 || !is_numeric($cveUsuario)) {
-	    mensajes("El número de control debe tener 8 caracteres numéricos", $web);
-	  }
-	
-	} else {
-	  if ($tamano != 13) {
-	    mensajes("El RFC debe tener 13 caracteres", $web);
-	  }
-	}
-	
+  if ($tamano != 8 || !is_numeric($cveUsuario)) {
+    $web->simple_message('danger', "El número de control debe tener 8 caracteres numéricos");
+    return false;
+  }
+  
 	$sql      = "select cveusuario from usuarios where cveusuario=?";
   $datos_rs = $web->DB->GetAll($sql, $cveUsuario);
   if ($datos_rs != null) {
-      message("El usuario ya existe", $web);
+    $web->simple_message('danger', "El usuario ya existe");
+  	return false;
   }
 
   if (!$web->valida($correo)) {
-    mensajes("Ingrese un correo válido", $web);
+    $web->simple_message('danger', "Ingrese un correo válido");
+  	return false;
   }
   
   $sql     = "select * from usuarios where correo=?";
   $correos = $web->DB->GetAll($sql, $correo);
   if (sizeof($correos) == 1) {
-      message("El correo ya existe", $web);
+    $web->simple_message('danger', "El correo ya existe");
+  	return false;
   }
 	
-	$query = "insert into usuarios (cveusuario, nombre, pass, correo) values (?, ?, ?, ?, ?, ?)";
-  $parameters = array($cveUsuario, $nombre, md5($contrasena), $especialidad, $tipo, $coorreo);
-  $web->query($query, $parameters);
-  die();
-  header('Location: index.php');
-}
-
-$web->iniClases(null, "index registrar");
-$sql = "SELECT * FROM especialidad where cveespecialidad != 'O' order by nombre";
-$web->smarty->assign('especialidad', $web->combo($sql));
-$web->smarty->assign('encabezado', '<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
-$web->smarty->display('registrar.html');
-
-/**
- * Para ahorrar código y desplegar contenido con smarty
- * @param  Class $web Para poder usar la herramienta smarty y poder hacer assign | display
- * @return Muestra la plantilla
- */
-function message($msg, $web)
-{
-  $web->iniClases(null, "index registrar");
-  $sql = "SELECT * FROM especialidad where cveespecialidad != 'O' order by nombre";
+	$sql = "select nombre from especialidad where cveespecialidad = ?";
+	$nombre_especialidad = $web->DB->GetAll($sql, $especialidad);
+	if(!isset($nombre_especialidad[0])){
+		$web->simple_message('danger', "La especialidad seleccionada no existe");
+  	return false;
+	}
+	
+	$web->DB->startTrans(); //para que si falla algún insert, no se realiza ninguno
+	
+	//inserta en usuarios, usuario_rol y especialidad_usuario
+	$sql = "insert into usuarios (cveusuario, nombre, pass, correo, estado_credito) 
+	values (?, ?, ?, ?, 'No Permitido')";
+  $web->query($sql, array($cveUsuario, $nombre, md5($contrasena), $correo));
+  $sql = "insert into usuario_rol(cveusuario, cverol) values(?, 3)";
+  $web->query($sql, $cveUsuario);
+  $sql = "insert into especialidad_usuario(cveusuario, cveespecialidad) values(?, ?)";
+  $web->query($sql, array($cveUsuario, $cveespecialidad));
   
-  $web->smarty->assign('especialidad', $web->combo($sql));
-  $web->smarty->assign('alert', 'danger');
-  $web->smarty->assign('msg', $msg);
-  $web->smarty->assign('encabezado', '<h3>¡Bienvenido! <br> Por favor Ingrese datos. <br/></h3>');
-  $web->smarty->display('registrar.html');
-  die();
+  if($web->DB->HasFailedTrans()) { //si falló algo entra al if
+    $web->simple_message('danger', 'No se pudo completar la operación');
+    return false;
+  }
+  
+  $web->DB->CompleteTrans();
+  $sql="select correo, nombre from usuarios where cveusuario in (select cveusuario from usuario_rol where cverol = ?)";
+  $correos = $web->DB->GetAll($sql, 1);
+  
+  if(!isset($correos[0])){
+  	$web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
+    return false;
+  }
+  
+  for($i = 0; $i < sizeof($correos); $i++){
+
+  	$mensaje = "Hola ".$correos[$i]['nombre']."\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: ".$cveUsuario."<br><br>Nombre del usuario: ".$nombre."<br><br>Especialidad: ".$nombre_especialidad[0]['nombre']."<br><br>Correo del usuario: ".$correo."<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: "." <a href='http://www.salas_lectura.com/admin/validar.php?accion=aceptar&clave=".$cveUsuario."'>Aceptar</a>". ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace."."<a href='http://www.salas_lectura.com/admin/validar.php?accion=rechazar&clave=".$cveUsuario."'>Rechazar</a>"."<br><br> ¡Gracias!";
+  	
+		$web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
+  }
+  
+  header('Location: login.php?m=1');
 }
