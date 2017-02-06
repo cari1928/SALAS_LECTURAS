@@ -84,7 +84,7 @@ function register_student($web) {
   	return false;
 	}
 	
-	$web->DB->startTrans(); //para que si falla algún insert, no se realiza ninguno
+	$web->DB->startTrans(); //por si falla algún query y no se realicen cambios
 	
 	//inserta en usuarios, usuario_rol y especialidad_usuario
 	$sql = "insert into usuarios (cveusuario, nombre, pass, correo, estado_credito) 
@@ -101,8 +101,8 @@ function register_student($web) {
   }
   
   $web->DB->CompleteTrans();
-  $sql="select correo, nombre from usuarios where cveusuario in (select cveusuario from usuario_rol where cverol = ?)";
-  $correos = $web->DB->GetAll($sql, 1);
+  $sql="select correo, nombre from usuarios where cveusuario in (select cveusuario from usuario_rol where cverol=1)";
+  $correos = $web->DB->GetAll($sql);
   
   if(!isset($correos[0])){
   	$web->simple_message('danger', 'No existe un administrador que apruebe tu registro');

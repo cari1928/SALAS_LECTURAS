@@ -58,22 +58,24 @@ $sql = "select usuarios.cveusuario, usuarios.nombre AS \"usuario\", especialidad
 \"especialidad\", correo, usuarios.estado_credito from usuarios
 inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
 inner join especialidad on especialidad_usuario.cveespecialidad = especialidad.cveespecialidad
-where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)
-      and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)";
-$parameters = $cveperiodo;
+where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=3)";
+$parameters = array();
 
 //Se realiza la consulta para obtener el estado de los libros de cada alumno
 $sql_libros = 'select lectura.nocontrol, e.estado from lista_libros
 inner join estado e on e.cveestado = lista_libros.cveestado
 inner join lectura on lectura.cvelectura = lista_libros.cvelectura
 where lectura.cveperiodo = ?';
+$parameters_b = $cveperiodo;
 
 //si viene de historial
 if($flag == 'historial') {
   if(!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
   } else {
+    $sql.= " and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)";
     $parameters = $cveperiodo = $_GET['info1'];
+    $parameters_b = $parameters;
     $web->iniClases('admin', "index historial alumnos");
     $web->smarty->assign('bandera', 'historial');
     $web->smarty->assign('cveperiodo', $_GET['info1']);
@@ -84,7 +86,7 @@ $sql_libros .= " order by lectura.nocontrol, e.estado";
 $sql .= " order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = $web->DB->GetAll($sql, $parameters);
-$datos_libros = $web->DB->GetAll($sql_libros, $parameters);
+$datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
 $datos = array('data' => $datos);
 
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)

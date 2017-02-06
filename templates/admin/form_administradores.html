@@ -1,5 +1,6 @@
 {include file='header.html'}
 {$ruta}    
+
 {include file='../number_style.html'}
 
 <div class="container-fluid">
@@ -8,41 +9,60 @@
       
       {if isset($msg)}{include file='../mensajes.html'}{/if}
       
-      <form action="alumnos.php?accion={if isset($alumno)}update{else}insert{/if}" method="post">
+      <form action="administradores.php?accion={if isset($administrador)}update{else}insert{/if}" method="post">
+        
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
-              {if isset($alumno)} Actualizar Alumno - Número de Control: {$alumno.cveusuario}
-              {else} Nuevo Alumno {/if}
+              {if isset($administrador)} 
+                Actualizar Administrador - RFC: {$administrador.cveusuario}
+              {else} 
+                Nuevo Administrador 
+              {/if}
             </h3>
           </div>
+          
           <div class="panel-body">
-            {if isset($alumno)}
-              <input type="hidden" name="datos[usuario]" value="{$alumno.cveusuario}">
+            {if isset($administrador)}
+              <input type="hidden" name="datos[usuario]" value="{$administrador.cveusuario}">
+            {/if}
+            {if !isset($administrador)}
+            <div class="form-group">
+              <label>RFC: </label>
+              <input class="form-control" placeholder="RFC" name="datos[usuario]" maxlength="13" required>
+            </div>
             {/if}
             <div class="form-group">
               <label>Nombre Completo: </label>
               <input class="form-control" placeholder="Nombre y Apellidos" name="datos[nombre]" required 
-              {if isset($alumno)} value="{$alumno.nombre}" {/if}>
+              {if isset($administrador)} value="{$administrador.nombreUsuario}" {/if}>
             </div>
+            
             <div class="form-group">
-              <label>Especialidad: </label>
-              {$cmb_especialidad}
-            </div>
-            {if !isset($alumno)}
-              <div class="form-group">
-                <label>Número de Control:</label>
-                <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number">
+              <label>Especialidad:</label>
+              <label id="l4" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}">Carrera</label>
+              <input id="r4" type="radio" class="btn btn-default" value='true' name="datos[especialidad]" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}" onclick="otro()">
+              <div id="carrera" class="form-group" style="display:{if $administrador.cveespecialidad ne 'O'}block{else}none{/if}">
+                {$cmb_especialidad}
               </div>
-            {/if}
+              <!--label|input display:inline -> texto y radio button en el mismo renglón-->
+              <label id="l3" style="display:{if $administrador.cveespecialidad ne 'O'}inline{else}none{/if}">Otro</label>
+              <input id="r3" type="radio" value='false' name="datos[especialidad]" style="display:{if $administrador.cveespecialidad ne 'O'}inline{else}none{/if}" onclick="otro()">
+              <div id="especialidad" class="form-group" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}">
+                <label>¿Cual otro?</label>
+                <input class="form-control" placeholder="Escriba Cual" name="datos[otro]"
+                {if isset($administrador)} value="{$administrador.otro}" {/if}>
+              </div>
+            </div>
+            
             <div class="form-group">
               <label>Correo:</label>
               <input type='email' class="form-control" placeholder="Correo" name="datos[correo]" maxlength="75"
-              {if isset($alumno)} value="{$alumno.correo}" {/if}>
+              {if isset($administrador)} value="{$administrador.correo}" {/if}>
             </div>
             
             <!-- Si es update se muestra el radio button -->
-            {if isset($alumno)}
+            {if isset($administrador)}
               <div id='js' class="form-group">
                 <label id="l1">Modificar contraseña</label>
                 <input id="r1" type="radio" class="btn btn-default" value='true' name="datos[pass]" onclick="mostrar()">
@@ -79,14 +99,16 @@
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary">
-            {if isset($alumno)} Actualizar 
+            {if isset($administrador)} Actualizar 
             {else} Guardar {/if}
           </button>
         </div>
       </form>
+      
     </nav>
   </div>
 </div>
+
 <script>
   var bandera = 0;
     function mostrar()
@@ -107,5 +129,26 @@
           document.getElementById('l1').style.display="inline";
         }
     }
+    
+    function otro(){
+      var test = document.getElementsByName('datos[especialidad]');
+      if(test[0].checked == false) {
+        document.getElementById('carrera').style.display="none";
+        document.getElementById('especialidad').style.display="block";
+        document.getElementById('r3').style.display="none";
+        document.getElementById('l3').style.display="none";
+        document.getElementById('r4').style.display="inline";
+        document.getElementById('l4').style.display="inline";
+      }
+      else{
+        document.getElementById('carrera').style.display="block";
+        document.getElementById('especialidad').style.display="none";
+        document.getElementById('r3').style.display="inline";
+        document.getElementById('l3').style.display="inline";
+        document.getElementById('r4').style.display="none";
+        document.getElementById('l4').style.display="none";
+      }
+    }
 </script>
+
 {include file='footer.html'}

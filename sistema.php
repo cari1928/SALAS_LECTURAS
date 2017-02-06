@@ -24,6 +24,7 @@ class Conexion
 class Sistema extends Conexion
 {
   //variables
+  public $aceptacion    = 'No guardado';
   public $rs    = '';
   public $query = '';
   public $rol   = "";
@@ -264,31 +265,32 @@ class Sistema extends Conexion
   }
   
   /*
-  MUESTRA LOS MENSAJES PUBLICOS 
-  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
+    MUESTRA LOS MENSAJES PUBLICOS 
+    SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
   */
-  	function muestraMSJ($query,$tipo)
+  function muestraMSJ($query, $tipo)
 	{
-	 // echo $query;
-		$datosmsj=$this->DB->GetAll($query);
-		// print_r($datosmsj);
+		$datosmsj = $this->DB->GetAll($query);
+		if(!isset($datosmsj[0])) {
+		  return false;
+		}
+		
   	$nombrescolumnas=array_keys($datosmsj[0]);
   	$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
 		$this->smarty->assign('datos',$datosmsj);
 		return $this->smarty->fetch('componentmsj.html'); 
   		
-		if($tipo=='PU')
-		{
+		if($tipo=='PU') {
 			$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
-  			$this->smarty->assign('datos',$datosmsj);
-  			return $this->smarty->fetch('componentmsj.html'); 
+			$this->smarty->assign('datos',$datosmsj);
+			return $this->smarty->fetch('componentmsj.html'); 
 		}
-		if($tipo=='PR')
-		{
+		
+		if($tipo=='PR'){
 
 		}
-		if($tipo=='G')
-		{
+		
+		if($tipo=='G') {
 
 		}
 		$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
@@ -515,69 +517,88 @@ class Sistema extends Conexion
       header('Location: ../index.php');
     }
   }
+  
   /**
    * Gestiona el proceso de logueo: validaciones y creación de variables de sesión
-   * @param  [String] $email      [Clave del usuario, no es el email]
-   * @param  [String] $contrasena [Contraseña ingresada por el usuario]
-   * @return [Boolean]            [Representa si el logueo fue exitoso]
+   * @param  String $email      Clave del usuario, no es el email
+   * @param  String $contrasena Contraseña ingresada por el usuario
+   * @return boolean            Representa si el logueo fue exitoso
    */
-  public function login($email, $contrasena)
+  public function login($email, $contrasena, $usuario_clave=null, $validar=null)
   {
     $msj        = '';
     $contrasena = md5($contrasena);
 
     $sql      = "select * from usuarios where pass=? and cveusuario=?";
     $datos_rs = $this->DB->GetAll($sql, array($contrasena, $email));
+    
+    //falta verificar si la contraseña que esta insertando es la clave que se mando por correo para
+    
     if (!isset($datos_rs[0])) {
       return false;
+    }
+    
+    $this->aceptacion = $datos_rs[0]['validacion'];
+    if($this->aceptacion == 'Rechazado' || $this->aceptacion == ''){
+      return false;
+    }
+    
+    $sql   = "select * from usuario_rol where cveusuario=?";
+    $roles = $this->DB->GetAll($sql, $email);
 
-    } else {
+    $nombre = $datos_rs[0]["nombre"];
+    $sql    = "update usuarios set clave=null where cveusuario=?";
+    $this->query($sql, $email);
 
-      $sql   = "select * from usuario_rol where cveusuario=?";
-      $roles = $this->DB->GetAll($sql, $email);
+    $_SESSION['nombre']  = $nombre;
+    $_SESSION['cveUser'] = $email;
 
-      $nombre = $datos_rs[0]["nombre"];
-      $sql    = "update usuarios set clave=null where cveusuario=?";
-      $this->query($sql, $email);
+    if (sizeof($roles) == 1) {
+      $_SESSION['logueado'] = true;
 
-      $_SESSION['nombre']  = $nombre;
-      $_SESSION['cveUser'] = $email;
-
-      if (sizeof($roles) == 1) {
-        $_SESSION['logueado'] = true;
-
-        if ($roles[0]['cverol'] == 3) {
-          $_SESSION['roles'] = 'U';
-          header('Location: alumno');
-        }
-        if ($roles[0]['cverol'] == 2) {
-          $_SESSION['roles'] = 'P';
-          header('Location: promotor');
-        }
-        if ($roles[0]['cverol'] == 1) {
-          $_SESSION['roles'] = 'A';
-          header('Location: admin');
-        }
-
-      } else {
-        //Aqui va si tiene mas de 1 rol :3
-        $this->iniClases(null, 'index login roles');
-        $this->smarty->assign('roles', $roles);
-        $this->smarty->display('roles.html');
-        exit;
+      if ($roles[0]['cverol'] == 3) {
+        $_SESSION['roles'] = 'U';
+        header('Location: alumno');
       }
+      
+      if ($roles[0]['cverol'] == 2) {
+        $_SESSION['roles'] = 'P';
+        header('Location: promotor');
+      }
+      
+      if ($roles[0]['cverol'] == 1) {
+        $_SESSION['roles'] = 'A';
+        
+        if($usuario_clave!=null && $validar!=null){
+          header('Location: admin/validar.php?accion='.$validar.'&clave='.$usuario_clave);
+        }
+        header('Location: admin');
+      }
+    } else {
+      //Si es que viene de validar.php
+      if($usuario_clave!=null && $validar!=null && 
+         ($roles[0]['cverol'] == 1 || $roles[1]['cverol'] == 1)){
+        $_SESSION['roles'] = 'A';
+        header('Location: admin/validar.php?accion='.$validar.'&clave='.$usuario_clave);
+      }
+      //Aqui va si tiene mas de 1 rol :3
+      $this->iniClases(null, 'index login roles');
+      $this->smarty->assign('roles', $roles);
+      $this->smarty->display('roles.html');
+      exit;
     }
     return true;
   }
+  
   /**/
   public function logout()
   {
     unset($_SESSION);
     session_destroy();
   }
+  
   public function recuperaId($email)
   {
-
     if ($this->validarEmail($email)) {
       $this->query("select id from usuario where email=?", $email);
       while (!$this->rs->EOF) {
