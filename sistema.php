@@ -3,7 +3,7 @@ session_start();
 include 'config.php';
 define('PATHLIB', PATHAPP . LIB);
 include PATHLIB . 'adodb/adodb.inc.php';
-include PATHLIB . 'adodb/adodb-errorpear.inc.php';
+// include PATHLIB . 'adodb/adodb-errorpear.inc.php';
 include PATHLIB . 'smarty/libs/Smarty.class.php';
 include PATHLIB . 'phpmailer/PHPMailerAutoload.php';
 //clases del sistema
@@ -24,19 +24,19 @@ class Conexion
 class Sistema extends Conexion
 {
   //variables
-  public $aceptacion    = 'No guardado';
-  public $rs    = '';
-  public $query = '';
-  public $rol   = "";
+  public $aceptacion = 'No guardado';
+  public $rs         = '';
+  public $query      = '';
+  public $rol        = "";
   public $smarty;
-  
-  public function combo($query, $selected = null, $ruta = "", $parameters=array())
+
+  public function combo($query, $selected = null, $ruta = "", $parameters = array())
   {
     $datosList = $this->DB->GetAll($query, $parameters);
-    if(!isset($datosList[0])) {
+    if (!isset($datosList[0])) {
       return false;
     }
-  
+
     $nombrescolumnas = array_keys($datosList[0]);
     $this->smarty->assign('selected', $selected);
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
@@ -44,37 +44,36 @@ class Sistema extends Conexion
     $this->smarty->assign('datos', $datosList);
     return $this->smarty->fetch($ruta . 'select.component.html');
   }
-  
+
   /*
   Muestra informacion de los mensajes publicos
-  */
-  function msj($sql)
-	{
-		$datos=$this->DB->GetAll($sql);
-		if (!isset($datos[0]))
-		{
-			return "No se encuentra informacion";
-		}
-		$nombrescolumnas=array_keys($datos[0]);
-		$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
-		$this->smarty->assign('msj',$datos);
-		//var_dump($this->DB->GetAll("select nombre from usuarios where cveusuario='".$datos[0][4]."'"));
-		//die();
-		$this->smarty->assign('promotor',$this->DB->GetAll("select nombre from usuarios where cveusuario='".$datos[0][4]."'"));
-		return $this->smarty->fetch('componentmsj.html'); 
-	}
-  
+   */
+  public function msj($sql)
+  {
+    $datos = $this->DB->GetAll($sql);
+    if (!isset($datos[0])) {
+      return "No se encuentra informacion";
+    }
+    $nombrescolumnas = array_keys($datos[0]);
+    $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+    $this->smarty->assign('msj', $datos);
+    //var_dump($this->DB->GetAll("select nombre from usuarios where cveusuario='".$datos[0][4]."'"));
+    //die();
+    $this->smarty->assign('promotor', $this->DB->GetAll("select nombre from usuarios where cveusuario='" . $datos[0][4] . "'"));
+    return $this->smarty->fetch('componentmsj.html');
+  }
+
   /**
    * Ejecuta operación SQL de manera más sencilla que DB->GetAll
    * @param  String $query      Consulta SQL
    * @param  array $parameters  Contenedor de las incógnitas en $query
    * @return [type]             [description]
    */
-  public function query($query, $parameters=array())
+  public function query($query, $parameters = array())
   {
     $this->query = $query;
-    $this->rs = &$this->DB->Execute($this->query, $parameters);
-    
+    $this->rs    = &$this->DB->Execute($this->query, $parameters);
+
     if ($this->DB->ErrorMsg()) {
       $msg = $this->DB->ErrorMsg();
       echo $msg;
@@ -83,7 +82,7 @@ class Sistema extends Conexion
       return true;
     }
   }
-  
+
   public function __construct()
   {
     parent::Conectar();
@@ -103,7 +102,7 @@ class Sistema extends Conexion
     $this->smarty->assign('datos', $datos);
     return $this->smarty->fetch('muestratabla.html');
   }
-  
+
   public function tipoCuenta()
   {
     $sql      = "select nombre from usuarios where cveusuario='" . $_SESSION['cveUser'] . "'";
@@ -263,40 +262,39 @@ class Sistema extends Conexion
     $tabla .= '</table>';
     return $tabla;
   }
-  
+
   /*
-    MUESTRA LOS MENSAJES PUBLICOS 
-    SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
-  */
-  function muestraMSJ($query, $tipo)
-	{
-		$datosmsj = $this->DB->GetAll($query);
-		if(!isset($datosmsj[0])) {
-		  return false;
-		}
-		
-  	$nombrescolumnas=array_keys($datosmsj[0]);
-  	$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
-		$this->smarty->assign('datos',$datosmsj);
-		return $this->smarty->fetch('componentmsj.html'); 
-  		
-		if($tipo=='PU') {
-			$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
-			$this->smarty->assign('datos',$datosmsj);
-			return $this->smarty->fetch('componentmsj.html'); 
-		}
-		
-		if($tipo=='PR'){
+  MUESTRA LOS MENSAJES PUBLICOS
+  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
+   */
+  public function muestraMSJ($query, $tipo)
+  {
+    $datosmsj = $this->DB->GetAll($query);
+    if (!isset($datosmsj[0])) {
+      return false;
+    }
 
-		}
-		
-		if($tipo=='G') {
+    $nombrescolumnas = array_keys($datosmsj[0]);
+    $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+    $this->smarty->assign('datos', $datosmsj);
+    return $this->smarty->fetch('componentmsj.html');
 
-		}
-		$this->smarty->assign('nombrecolumna',$nombrescolumnas[1]);
-	}
-  
-  
+    if ($tipo == 'PU') {
+      $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+      $this->smarty->assign('datos', $datosmsj);
+      return $this->smarty->fetch('componentmsj.html');
+    }
+
+    if ($tipo == 'PR') {
+
+    }
+
+    if ($tipo == 'G') {
+
+    }
+    $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+  }
+
   /**
    * Inicializa variables necesarias para desplegar un template
    * Entre ellas la ruta a mostrar con links de la página
@@ -326,7 +324,7 @@ class Sistema extends Conexion
     $cad .= "</div>";
     $this->smarty->assign('ruta', $cad);
   }
-  
+
   public function smarty()
   {
     $this->smarty = new Smarty();
@@ -338,7 +336,7 @@ class Sistema extends Conexion
     $this->smarty->caching        = true;
     $this->smarty->cache_lifetime = 0;
   }
-  
+
   public function getAllRecords($query)
   {
     $this->query            = $query;
@@ -352,7 +350,7 @@ class Sistema extends Conexion
     $this->smarty->assign('mensaje', $mensaje);
     $this->smarty->display('error.html');
   }
-  
+
   public function valida($correo)
   {
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL) === false) {
@@ -517,32 +515,32 @@ class Sistema extends Conexion
       header('Location: ../index.php');
     }
   }
-  
+
   /**
    * Gestiona el proceso de logueo: validaciones y creación de variables de sesión
    * @param  String $email      Clave del usuario, no es el email
    * @param  String $contrasena Contraseña ingresada por el usuario
    * @return boolean            Representa si el logueo fue exitoso
    */
-  public function login($email, $contrasena, $usuario_clave=null, $validar=null)
+  public function login($email, $contrasena, $usuario_clave = null, $validar = null)
   {
     $msj        = '';
     $contrasena = md5($contrasena);
 
     $sql      = "select * from usuarios where pass=? and cveusuario=?";
     $datos_rs = $this->DB->GetAll($sql, array($contrasena, $email));
-    
+
     //falta verificar si la contraseña que esta insertando es la clave que se mando por correo para
-    
+
     if (!isset($datos_rs[0])) {
       return false;
     }
-    
+
     $this->aceptacion = $datos_rs[0]['validacion'];
-    if($this->aceptacion == 'Rechazado' || $this->aceptacion == ''){
+    if ($this->aceptacion == 'Rechazado' || $this->aceptacion == '') {
       return false;
     }
-    
+
     $sql   = "select * from usuario_rol where cveusuario=?";
     $roles = $this->DB->GetAll($sql, $email);
 
@@ -553,35 +551,52 @@ class Sistema extends Conexion
     $_SESSION['nombre']  = $nombre;
     $_SESSION['cveUser'] = $email;
 
-    if (sizeof($roles) == 1) {
+    //no tiene ningún rol
+    if (sizeof($roles) == 0) {
+
+      //caso especial
+      // if ($email == '9999999999999') {
+      //   $this->smarty->assign('especial', $email);
+      // }
+
+      $this->simple_message('danger', 'Su usuario no está registrado por completo');
+      $this->iniClases(null, 'index login roles');
+      // $this->smarty->assign('roles', $roles);
+      $this->smarty->display('roles.html');
+      die();
+
+    } else if (sizeof($roles) == 1) {
+      //tiene 1 rol
       $_SESSION['logueado'] = true;
 
       if ($roles[0]['cverol'] == 3) {
         $_SESSION['roles'] = 'U';
         header('Location: alumno');
       }
-      
+
       if ($roles[0]['cverol'] == 2) {
         $_SESSION['roles'] = 'P';
         header('Location: promotor');
       }
-      
+
       if ($roles[0]['cverol'] == 1) {
         $_SESSION['roles'] = 'A';
-        
-        if($usuario_clave!=null && $validar!=null){
-          header('Location: admin/validar.php?accion='.$validar.'&clave='.$usuario_clave);
+
+        if ($usuario_clave != null && $validar != null) {
+          header('Location: admin/validar.php?accion=' . $validar . '&clave=' . $usuario_clave);
         }
         header('Location: admin');
       }
+
     } else {
-      //Si es que viene de validar.php
-      if($usuario_clave!=null && $validar!=null && 
-         ($roles[0]['cverol'] == 1 || $roles[1]['cverol'] == 1)){
+      //tiene mas de 1 rol
+
+      if ($usuario_clave != null && $validar != null &&
+        ($roles[0]['cverol'] == 1 || $roles[1]['cverol'] == 1)) {
         $_SESSION['roles'] = 'A';
-        header('Location: admin/validar.php?accion='.$validar.'&clave='.$usuario_clave);
+        header('Location: admin/validar.php?accion=' . $validar . '&clave=' . $usuario_clave);
       }
-      //Aqui va si tiene mas de 1 rol :3
+
       $this->iniClases(null, 'index login roles');
       $this->smarty->assign('roles', $roles);
       $this->smarty->display('roles.html');
@@ -589,14 +604,14 @@ class Sistema extends Conexion
     }
     return true;
   }
-  
+
   /**/
   public function logout()
   {
     unset($_SESSION);
     session_destroy();
   }
-  
+
   public function recuperaId($email)
   {
     if ($this->validarEmail($email)) {
@@ -676,7 +691,7 @@ class Sistema extends Conexion
     $this->smarty->assign('datos', $datos);
     return $this->smarty->fetch('muestraUsuarios . html');
   }
-  public function combo_P($query, $name)
+  public function comboP($query, $name)
   {
     $this->query($query);
     $campos = $this->DB->GetAll($query);
@@ -685,7 +700,7 @@ class Sistema extends Conexion
     return $this->smarty->fetch('agregaProducto . html');
   }
 //----------------------------------------------------------------------------------------
-  public function combo_M($query, $name)
+  public function comboM($query, $name)
   {
     $this->query($query);
     $campos = $this->DB->GetAll($query);
@@ -694,7 +709,7 @@ class Sistema extends Conexion
     return $this->smarty->fetch('agregaMarca . html');
   }
 //----------------------------------------------------------------------------------------
-  public function combo_C($query, $name)
+  public function comboC($query, $name)
   {
     $this->query($query);
     $campos = $this->DB->GetAll($query);
@@ -703,7 +718,7 @@ class Sistema extends Conexion
     return $this->smarty->fetch('agregaCliente . html');
   }
 //-----------------------------------------------------------------------------------------
-  public function guarda_foto_empleado($id, $foto)
+  public function guardaFotoEmpleado($id, $foto)
   {
     $encoded = $foto;
     $encoded = str_replace('', '+', $encoded);
@@ -769,7 +784,7 @@ class Sistema extends Conexion
    * @param  String $cveusuario Clave del usuario administrador
    * @return int    1 y 2 = mensaje de error, 3 = exito en la operación
    */
-  public function valida_pass($cveusuario)
+  public function validaPass($cveusuario)
   {
     //verifica que se mande la contraseña
     if (!isset($_GET['infoc'])) {
@@ -798,38 +813,41 @@ class Sistema extends Conexion
     $this->smarty->assign('alert', $alert);
     $this->smarty->assign('msg', $msg);
   }
-  
+
   /**
    * Para pruebas
    * @param  array $array Arreglo a mostrar
    * @return Contenido del arreglo
    */
-  public function debug($array) {
+  public function debug($array)
+  {
     echo "<pre>";
     print_r($array);
     die();
   }
-  
+
   /**
    * Obtiene el contenido de un archivo
    * @param  String $url Dirección del archivo
    * @return String Contenido del archivo
-   */  
-  function obtenerhtml($url){
-      $codigohtml = "";
-      $fo= fopen($url,"r") or die ("No se ha encontrado la pagina.");
-      while (!feof($fo)) {
-          $codigohtml .= fgets($fo, 4096);
-      }
-      fclose ($fo);
-      return $codigohtml;
+   */
+  public function obtenerhtml($url)
+  {
+    $codigohtml = "";
+    $fo         = fopen($url, "r") or die("No se ha encontrado la pagina.");
+    while (!feof($fo)) {
+      $codigohtml .= fgets($fo, 4096);
+    }
+    fclose($fo);
+    return $codigohtml;
   }
-  
+
   /**
    * get all assigned template vars
    * @return variables asignadas con smarty->assing y sus contenidos
-   */ 
-  function get_smarty_assigns() {
+   */
+  public function getSmartyAssigns()
+  {
     $pageName = $this->smarty->getTemplateVars();
     $this->debug($pageName);
   }

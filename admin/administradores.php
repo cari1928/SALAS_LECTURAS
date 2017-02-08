@@ -10,23 +10,23 @@ if ($cveperiodo == "") {
   $web->simple_message('warning', 'No hay periodo actual');
 }
 
-if(isset($_GET['accion'])) {
+if (isset($_GET['accion'])) {
   switch ($_GET['accion']) {
-    
+
     case 'form_insert':
-      show_form_insert($web);
+      showFormInsert($web);
       break;
-      
+
     case 'form_update':
-      show_form_update($web);
+      showFormUpdate($web);
       break;
-      
+
     case 'insert':
-      insert_admin($web);
+      insertAdmin($web);
       break;
-      
+
     case 'update':
-      update_admin($web);
+      updateAdmin($web);
       break;
   }
 }
@@ -35,22 +35,25 @@ $web->iniClases('admin', "index administradores");
 $sql = "select usuarios.cveusuario, usuarios.nombre, especialidad.nombre, correo from usuarios
 inner join especialidad_usuario on especialidad_usuario.cveusuario = usuarios.cveusuario
 inner join especialidad on especialidad_usuario.cveespecialidad = especialidad.cveespecialidad
-where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=1) 
+where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=1)
 order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM); //cambio para crear JSON
 $datos = $web->DB->GetAll($sql);
+
+// $web->debug($datos);
+
 $datos = array('data' => $datos);
 
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
   //eliminar
   $datos['data'][$i][4] = "administradores.php?accion=delete&info1=" . $datos['data'][$i][0];
   //editar
-  $datos['data'][$i][5] = "<center><a href='administradores.php?accion=form_update&info1=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>"; 
+  $datos['data'][$i][5] = "<center><a href='administradores.php?accion=form_update&info1=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
 }
 
 $web->DB->SetFetchMode(ADODB_FETCH_NUM); //cambio de nuevo
 $datos = json_encode($datos);
-$file = fopen("TextFiles/administradores.txt", "w");
+$file  = fopen("TextFiles/administradores.txt", "w");
 fwrite($file, $datos);
 
 $web->smarty->assign('datos', $datos);
@@ -64,11 +67,12 @@ $web->smarty->display("administradores.html");
  * @param  Class  $web        Objeto para usar las herramientas smarty
  * @return Error desplegado en una plantilla
  */
-function errores($msg, $ruta, $web, $cveusuario=null) {
+function errores($msg, $ruta, $web, $cveusuario = null)
+{
   $web->simple_message('danger', $msg);
   $web->iniClases('admin', $ruta);
 
-  $sql     = "select cveespecialidad, nombre from especialidad 
+  $sql = "select cveespecialidad, nombre from especialidad
   where cveespecialidad <> 'O'";
   $cmb_especialidad = $web->combo($sql, null, '../');
   $web->smarty->assign('cmb_especialidad', $cmb_especialidad);
@@ -83,25 +87,27 @@ function errores($msg, $ruta, $web, $cveusuario=null) {
   die();
 }
 
-function show_form_insert($web) {
+function showFormInsert($web)
+{
   $web->iniClases('admin', "index administradores nuevo");
-  
+
   //<> Usado para no seleccionar la opción O, creo...
   $sql = "select cveespecialidad, nombre from especialidad
   where cveespecialidad <> 'O' order by nombre";
   $combo = $web->combo($sql, null, '../');
-  
+
   $web->smarty->assign('cmb_especialidad', $combo);
   $web->smarty->display('form_administradores.html');
   die();
 }
 
-function show_form_update($web) {
+function showFormUpdate($web)
+{
   if (!isset($_GET['info1'])) {
     $web->simple_message('danger', "No se ha especificado el administrador a modificar");
     return false;
   }
-  
+
   $web->iniClases('admin', "index administradores actualizar");
 
   $sql = 'select u.cveusuario, u.nombre AS "nombreUsuario", e.nombre, eu.cveespecialidad,
@@ -115,7 +121,7 @@ function show_form_update($web) {
     $web->simple_message('danger', "No existe el administrador seleccionado");
     return false;
   }
-  
+
   $sql = "select cveespecialidad, nombre from especialidad
   where cveespecialidad <> 'O'
   order by nombre";
@@ -127,8 +133,9 @@ function show_form_update($web) {
   die();
 }
 
-function insert_admin($web) {
-  
+function insertAdmin($web)
+{
+
   if (!isset($_POST['datos']['usuario']) ||
     !isset($_POST['datos']['nombre']) ||
     !isset($_POST['datos']['cveespecialidad']) ||
@@ -140,13 +147,13 @@ function insert_admin($web) {
   }
 
   if (($_POST['datos']['usuario']) == '' ||
-      ($_POST['datos']['nombre']) == '' ||
-      ($_POST['datos']['correo']) == '' ||
-      ($_POST['datos']['contrasena']) == '' ||
-      ($_POST['datos']['confcontrasena'] == '')) {
-      errores('Llene todos los campos', 'index administradores nuevo', $web);
+    ($_POST['datos']['nombre']) == '' ||
+    ($_POST['datos']['correo']) == '' ||
+    ($_POST['datos']['contrasena']) == '' ||
+    ($_POST['datos']['confcontrasena'] == '')) {
+    errores('Llene todos los campos', 'index administradores nuevo', $web);
   }
-  
+
   if (strlen($_POST['datos']['usuario']) != 13) {
     errores('La longitud del RFC debe de ser de 13 caracteres', 'index administradores nuevo', $web);
   }
@@ -158,7 +165,7 @@ function insert_admin($web) {
   if ($_POST['datos']['contrasena'] != $_POST['datos']['confcontrasena']) {
     errores('Las contraseñas no coinciden', 'index administradores nuevo', $web);
   }
-  
+
   $sql   = "select * from usuarios where correo=?";
   $datos = $web->DB->GetAll($sql, $_POST['datos']['correo']);
   if (isset($datos[0])) {
@@ -170,12 +177,12 @@ function insert_admin($web) {
   if (isset($datos[0])) {
     errores('El RFC ingresado ya está registrado', 'index administradores nuevo', $web);
   }
-  
+
   $usuario    = $_POST['datos']['usuario'];
   $contrasena = $_POST['datos']['contrasena'];
   $nombre     = $_POST['datos']['nombre'];
   $correo     = $_POST['datos']['correo'];
-  
+
   $web->DB->startTrans(); //inicia transacción
   $sql = "INSERT INTO usuarios values (?,?,?,null,?,null,null)";
   $tmp = array($usuario, $nombre, md5($contrasena), $correo);
@@ -183,9 +190,9 @@ function insert_admin($web) {
 
   $sql = "INSERT INTO usuario_rol values(?, 1)";
   $web->query($sql, $usuario);
-  
+
   if (isset($_POST['datos']['especialidad'])) {
-    
+
     if ($_POST['datos']['especialidad'] != "") {
       $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
       $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
@@ -197,53 +204,55 @@ function insert_admin($web) {
     $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
     $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
   }
-  
-  if($web->DB->HasFailedTrans()) { //verifica errores durante la transacción
+
+  if ($web->DB->HasFailedTrans()) {
+    //verifica errores durante la transacción
     //falta programar esta parte para que no muestre directamente el resultado de sql
     $web->simple_message('danger', 'No fue posible completar el registro');
     $web->DB->CompleteTrans(); //termina la transacción haya sido exitosa o no
     return false;
   }
-  
+
   $web->DB->CompleteTrans(); //termina la transacción haya sido exitosa o no
   header('Location: administradores.php');
 }
 
-function update_admin($web) {
+function updateAdmin($web)
+{
   global $cveperiodo;
   $cveusuario = $_POST['datos']['usuario'];
-  
+
   if (!isset($_POST['datos']['usuario']) ||
-      !isset($_POST['datos']['nombre']) ||
-      !isset($_POST['datos']['cveespecialidad']) ||
-      !isset($_POST['datos']['otro']) ||
-      !isset($_POST['datos']['correo']) ||
-      !isset($_POST['datos']['pass']) ||
-      !isset($_POST['datos']['contrasena']) ||
-      !isset($_POST['datos']['contrasenaN']) ||
-      !isset($_POST['datos']['confcontrasenaN'])) {
+    !isset($_POST['datos']['nombre']) ||
+    !isset($_POST['datos']['cveespecialidad']) ||
+    !isset($_POST['datos']['otro']) ||
+    !isset($_POST['datos']['correo']) ||
+    !isset($_POST['datos']['pass']) ||
+    !isset($_POST['datos']['contrasena']) ||
+    !isset($_POST['datos']['contrasenaN']) ||
+    !isset($_POST['datos']['confcontrasenaN'])) {
     errores('No altere la estructura de la interfaz', 'index administrador nuevo', $web, $cveusuario);
   }
 
   if ($_POST['datos']['usuario'] == '' ||
-      $_POST['datos']['nombre'] == '' ||
-      $_POST['datos']['cveespecialidad'] == '' ||
-      $_POST['datos']['correo'] == '' ||
-      $_POST['datos']['pass'] == '') {
+    $_POST['datos']['nombre'] == '' ||
+    $_POST['datos']['cveespecialidad'] == '' ||
+    $_POST['datos']['correo'] == '' ||
+    $_POST['datos']['pass'] == '') {
     errores('Llene todos los campos', 'index administradores nuevo', $web, $cveusuario);
-  }  
-  
+  }
+
   $sql   = "select * from usuarios where cveusuario=?";
   $datos = $web->DB->GetAll($sql, $cveusuario);
   if (!isset($datos[0])) {
     errores('El administrador a actualizar no está registrado', 'index administradores nuevo', $web, $cveusuario);
   }
-  
+
   $datosp = $datos;
   if (!$web->valida($_POST['datos']['correo'])) {
     errores('Ingrese un correo valido', 'index administradores nuevo', $web, $cveusuario);
   }
-  
+
   $sql            = "select correo from usuarios where cveusuario=?";
   $correo_usuario = $web->DB->GetAll($sql, $cveUsuario);
 
@@ -254,12 +263,12 @@ function update_admin($web) {
       errores('El correo ingresado ya está registrado', 'index administradores nuevo', $cveusuario, $web);
     }
   }
-  
+
   if ($_POST['datos']['pass'] == 'true') {
 
     if (isset($_POST['datos']['contrasena']) == '' ||
-        isset($_POST['datos']['contrasenaN']) == '' ||
-        isset($_POST['datos']['confcontrasenaN']) == '') {
+      isset($_POST['datos']['contrasenaN']) == '' ||
+      isset($_POST['datos']['confcontrasenaN']) == '') {
       errores('Llene los campos para el cambio de contraseña', 'index administradores nuevo', $web, $cveusuario);
     }
 
@@ -270,7 +279,7 @@ function update_admin($web) {
     if ($_POST['datos']['confcontrasenaN'] != $_POST['datos']['contrasenaN']) {
       errores('La contraseña nueva debe coincidir con la confirmación', 'index administradores nuevo', $web, $cveusuario);
     }
-    
+
     $web->DB->startTrans();
 
     $sql = "update usuarios set nombre=?, correo=?, pass=? where cveusuario=?";
@@ -280,46 +289,46 @@ function update_admin($web) {
       md5($_POST['datos']['contrasenaN']),
       $cveusuario);
     $web->query($sql, $tmp);
-    
+
     $sql = "update usuarios set nombre=?, correo= ? where cveusuario=?";
     $tmp = array($_POST['datos']['nombre'], $_POST['datos']['correo'], $cveusuario);
     $web->query($sql, $tmp);
 
     if (isset($_POST['datos']['especialidad'])) {
-      
+
       if ($_POST['datos']['especialidad'] == 'true') {
-        $sql = "update especialidad_usuario set cveespecialidad=?, otro=null 
+        $sql = "update especialidad_usuario set cveespecialidad=?, otro=null
         where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
-        
+
       } else {
-        $sql = "update especialidad_usuario set cveespecialidad='O', otro=? 
+        $sql = "update especialidad_usuario set cveespecialidad='O', otro=?
         where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
       }
     } else {
-      
-      $sql = "select cveespecialidad from especialidad_usuario where cveusuario=?";
+
+      $sql             = "select cveespecialidad from especialidad_usuario where cveusuario=?";
       $cveespecialidad = $web->DB->GetAll($sql, $cveusuario);
-      
+
       if ($cveespecialidad[0]['cveespecialidad'] == 'O') {
         $sql = "update especialidad_usuario set cveespecialidad='O', otro=? where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
-        
+
       } else {
         $sql = "update especialidad_usuario set cveespecialidad=?, otro =null where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
       }
     }
   }
-  
-  if($web->DB->HasFailedTrans()) {
+
+  if ($web->DB->HasFailedTrans()) {
     //falta programar esta parte para que no muestre directamente el resultado de sql
     $web->simple_message('danger', 'No fue posible completar la operación');
     $web->DB->CompleteTrans();
     return false;
   }
-  
+
   $web->DB->CompleteTrans();
   header('Location: administradores.php');
 }
