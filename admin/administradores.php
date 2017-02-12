@@ -11,6 +11,7 @@ if ($cveperiodo == "") {
 }
 
 if (isset($_GET['accion'])) {
+  
   switch ($_GET['accion']) {
 
     case 'form_insert':
@@ -28,6 +29,10 @@ if (isset($_GET['accion'])) {
     case 'update':
       updateAdmin($web);
       break;
+      
+    case 'delete':
+      deleteAdmin($web);
+      break;
   }
 }
 
@@ -39,9 +44,6 @@ where usuarios.cveusuario in (select cveusuario from usuario_rol where cverol=1)
 order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM); //cambio para crear JSON
 $datos = $web->DB->GetAll($sql);
-
-// $web->debug($datos);
-
 $datos = array('data' => $datos);
 
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
@@ -184,8 +186,9 @@ function insertAdmin($web)
   $correo     = $_POST['datos']['correo'];
 
   $web->DB->startTrans(); //inicia transacción
-  $sql = "INSERT INTO usuarios values (?,?,?,null,?,null, ?)";
-  $tmp = array($usuario, $nombre, md5($contrasena), $correo, 'Aceptado');
+  $sql = "INSERT INTO usuarios(cveusuario, nombre, pass, correo, validacion)
+  values (?, ?, ?, ?, 'Aceptado')";
+  $tmp = array($usuario, $nombre, md5($contrasena), $correo);
   $web->query($sql, $tmp);
 
   $sql = "INSERT INTO usuario_rol values(?, 1)";
@@ -329,6 +332,55 @@ function updateAdmin($web)
     return false;
   }
 
+  $web->DB->CompleteTrans();
+  header('Location: administradores.php');
+}
+
+/**
+ * Eliminar un administrador
+ * @param  Class $web Objeto para poder hacer uso de smarty
+ */
+function deleteAdmin($web) {
+  //se valida la contraseña
+  switch ($web->valida_pass($_SESSION['cveUser'])) {
+    case 1:
+      $web->simple_message('danger', 'No se especificó la contraseña de seguridad');
+      return false;
+      break;
+    case 2:
+      $web->simple_message('danger', 'La contraseña de seguridad ingresada no es válida');
+      return false;
+      break;
+  }
+  
+  //verifica que se reciben los datos necesarios
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', "No se especificó el administrador a eliminar");
+    return false;
+  }
+  
+  //verifica que el administrador exista
+  $sql   = "select * from usuarios where cveusuario=?";
+  $datos = $web->DB->GetAll($sql, $_GET['info1']);
+  if (!isset($datos[0])) {
+    $web->simple_message('danger', "El administrador no existe");
+    return false;
+  }
+
+  $web->DB->startTrans();
+  $sql = "DELETE FROM especialidad_usuario WHERE cveusuario=?";
+  $web->query($sql, $_GET['info1']);
+  $sql = "DELETE FROM usuario_rol WHERE cveusuario=?";
+  $web->query($sql, $_GET['info1']);
+  $sql = "DELETE FROM usuarios WHERE cveusuario=?";
+  $web->query($sql, $_GET['info1']);
+  
+  if($web->DB->HasFailedTrans()) {
+    $web->simple_message('danger', 'No fue posible completar la operación');
+    $web->DB->CompleteTrans();
+    return false;
+  }
+  
   $web->DB->CompleteTrans();
   header('Location: administradores.php');
 }

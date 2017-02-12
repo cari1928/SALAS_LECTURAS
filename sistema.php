@@ -638,10 +638,20 @@ class Sistema extends Conexion
     $con    = strtolower(md5($strnum));
     return substr($con, 0, 8);
   }
+  
+  /**
+   * Envíar correo electrónico
+   * @param  String $destino Correo destino
+   * @param  String $nombre  Nombre del destinatario
+   * @param  String $asunto  Asunto del correo
+   * @param  String $mensaje Contenido del correo
+   * @return ???             Errores
+   */
   public function sendEmail($destino, $nombre, $asunto, $mensaje)
   {
     $mail = new PHPMailer();
     $mail->IsSMTP();
+    
     try {
       $mail->SMTPDebug  = MAIL_SMTPDEBUG; // enables SMTP debug information (for testing)
       $mail->SMTPAuth   = MAIL_SMTPAUTH; // enable SMTP authentication
@@ -650,16 +660,17 @@ class Sistema extends Conexion
       $mail->Port       = MAIL_PORT; // set the SMTP port for the GMAIL server
       $mail->Username   = MAIL_USERNAME; // GMAIL username
       $mail->Password   = MAIL_PASS; // GMAIL password
-      //$mail->AddReplyTo('name@yourdomain . com', 'FirstLast');
+      
       $mail->AddAddress($destino, $nombre);
       $mail->SetFrom(MAIL_USERNAME, 'SalasLectura');
       $mail->Subject = $asunto;
       $mail->AltBody = $mensaje; // optional - MsgHTML will create an alternate automatically
       $mail->MsgHTML($mensaje);
-      //$mail->AddAttachment('images / phpmailer . gif');      // attachment
+      
       $mail->Send();
       $this->smarty->display('templates / admin / index . html');
       echo "<center><h3>Revisa tu correo electronico</h3></center>";
+      
     } catch (phpmailerException $e) {
       echo $e->errorMessage(); //Pretty error messages from PHPMailer
     } catch (Exception $e) {
@@ -787,7 +798,7 @@ class Sistema extends Conexion
    * @param  String $cveusuario Clave del usuario administrador
    * @return int    1 y 2 = mensaje de error, 3 = exito en la operación
    */
-  public function validaPass($cveusuario)
+  public function valida_pass($cveusuario)
   {
     //verifica que se mande la contraseña
     if (!isset($_GET['infoc'])) {

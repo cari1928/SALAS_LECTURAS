@@ -13,12 +13,13 @@ if (isset($_POST['datos'])) {
   registerStudent($web);
 }
 
-// $web->getSmartyAssigns();
-
 $web->smarty->display('registrar.html');
 
-/*
- * Para ahorrar espacio y poder usar la opción de return para poder mostrar los mensajes
+/**
+ * Ingresa un usuario en la BD
+ * Se envía un correo y desde ahí se completa el registro
+ * @param  Class $web Objeto para hacer uso de Smarty
+ * @return boolean    En caso de algún error
  */
 function registerStudent($web)
 {
@@ -100,13 +101,13 @@ function registerStudent($web)
   if ($web->DB->HasFailedTrans()) {
     //si falló algo entra al if
     $web->simple_message('danger', 'No se pudo completar la operación');
+    $web->DB->CompleteTrans();
     return false;
   }
-
   $web->DB->CompleteTrans();
-  $sql     = "select correo, nombre from usuarios where cveusuario in (select cveusuario from usuario_rol where cverol=1)";
+  
+  $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
   $correos = $web->DB->GetAll($sql);
-
   if (!isset($correos[0])) {
     $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
     return false;
@@ -114,7 +115,7 @@ function registerStudent($web)
 
   for ($i = 0; $i < sizeof($correos); $i++) {
 
-    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='http://tigger.itc.mx/salasLectura/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='http://tigger.itc.mx/salasLectura/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
 
     $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
   }

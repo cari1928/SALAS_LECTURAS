@@ -53,20 +53,7 @@ if (!$flag) {
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   order by u.cveusuario";
   $promotores = $web->DB->GetAll($sql);
-  $sql = "select cveusuario, rol.rol from usuario_rol 
-          inner join rol on rol.cverol=usuario_rol.cverol 
-          where cveusuario in
-          (select cveusuario from usuario_rol where cverol = 2)
-          order by cveusuario";
-  $roles_promotor = $web->DB->GetAll($sql);
-  for($i = 0; $i<sizeof($promotores); $i++){
-    $promotores[$i]['roles']="";
-    for($j = 0; $j<sizeof($roles_promotor); $j++){
-      if($promotores[$i]['cveusuario'] == $roles_promotor[$j]['cveusuario']){
-        $promotores[$i]['roles'].=$roles_promotor[$j]['rol']."<br>";
-      }
-    }
-  }
+
 } else {
   $promotores = $flag; //por si viene de historial
 }
@@ -84,8 +71,7 @@ $web->smarty->display("promotor.html");
  */
 function errores($msg, $ruta, $cveusuario = null, $web)
 {
-  $web->smarty->assign('alert', 'danger');
-  $web->smarty->assign('msg', $msg);
+  $web->simple_message('danger', $msg);
   $web->iniClases('admin', $ruta);
 
   $sql     = "select cveespecialidad, nombre from especialidad 
@@ -398,36 +384,52 @@ function insert_professor($web) {
   $contrasena = $_POST['datos']['contrasena'];
   $nombre     = $_POST['datos']['nombre'];
   $correo     = $_POST['datos']['correo'];
-
-<<<<<<< HEAD
+  
   $web->DB->startTrans();
 
-  $sql = "INSERT INTO usuarios values (?,?,?,?,?,?,?)";
-  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo, null, 'Aceptado');
-=======
   $sql = "INSERT INTO usuarios values (?,?,?,?,?)";
   $tmp = array($usuario, $nombre, md5($contrasena), null, $correo);
->>>>>>> 239f7a6888015cf475f21c6d18dda1ef9d958232
-  if (!$web->query($sql, $tmp)) {
-    $web->simple_message('danger', 'No se pudo completar la operación');
-    return false;
-  }
+  $web->query($sql, $tmp);
   $sql = "INSERT INTO usuario_rol values(?, ?)";
   $web->query($sql, array($usuario, 2));
 
   if (isset($_POST['datos']['especialidad'])) {
     
     if ($_POST['datos']['especialidad'] == 'true') {
-      $sql = "insert into especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
+      $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) VALUES(?, ?)";
       $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
     } else {
-      $sql = "insert into especialidad_usuario values(?, ?, ?)";
+      $sql = "INSERT INTO especialidad_usuario VALUES(?, ?, ?)";
       $web->query($sql, array($usuario, 'O', $_POST['datos']['otro']));
     }
   } else {
-    $sql = "insert into especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
+    $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) VALUES(?, ?)";
     $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
   }
+  
+  if($web->DB->HasFailedTrans()) {
+    $web->simple_message('danger', 'No se pudo completar la operación');
+    $web->DB->CompleteTrans();
+    return false;
+  }
+  $web->DB->CompleteTrans();
+  
+  //Busca administradores
+  $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
+  $correos = $web->DB->GetAll($sql);
+  if (!isset($correos[0])) {
+    $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
+    return false;
+  }
+
+  //envía correos a todos los administradores
+  for ($i = 0; $i < sizeof($correos); $i++) {
+    
+    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+
+    $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
+  }
+
   header('Location: promotor.php');
 }
 

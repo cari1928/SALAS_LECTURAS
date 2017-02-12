@@ -33,7 +33,7 @@ if (isset($_POST['datos']['contrasena'])) {
         break;
 
       case "":
-        $web->simple_message('danger', 'Tu registro aín no ha sido autorizado. Para mayor información comunícate con el administrador');
+        $web->simple_message('danger', 'Tu registro aún no ha sido autorizado. Para mayor información comunícate con el administrador');
         break;
     }
     $web->smarty->display('formulario_login.html');
@@ -65,20 +65,12 @@ if (isset($_GET['info'])) {
   }
 
   $_SESSION['logueado'] = true;
-<<<<<<< HEAD
   $_SESSION['bandera_roles'] = "true";
   switch($_GET['info']) {
     case 1: 
         $_SESSION['roles'] = 'A';
         header('Location: admin');
         break;
-=======
-  switch ($_GET['info']) {
-    case 1:
-      $_SESSION['roles'] = 'A';
-      header('Location: admin');
-      break;
->>>>>>> 239f7a6888015cf475f21c6d18dda1ef9d958232
     case 2:
       $_SESSION['roles'] = 'P';
       header('Location: promotor');
@@ -92,6 +84,7 @@ if (isset($_GET['info'])) {
 
 //para mensajes cuando la página es llamada principalmente por header: Location
 if (isset($_GET['m'])) {
+  
   switch ($_GET['m']) {
     case 1:
       $web->simple_message('info', 'Espere que un administrador acepte su registro');
@@ -109,18 +102,4 @@ if (isset($_GET['m'])) {
   }
 }
 
-// if (isset($_GET['accion'])) {
-//   if ($_GET['accion'] == 'especial') {
-//     $sql = $_POST['datos']['especial'];
-//     $web->DB->startTrans();
-//     $web->query($sql);
-//     if ($web->DB->HasFailedTrans()) {
-//       //si falló algo entra al if
-//       $web->simple_message('danger', 'No se pudo completar la operación');
-//     }
-//     $web->DB->CompleteTrans();
-//   }
-// }
-
-// $web->smarty->assign('mensaje', $msg);
 $web->smarty->display('formulario_login.html');
