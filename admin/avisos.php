@@ -60,7 +60,29 @@ if(isset($_GET['accion'])){
             die();
         break;
         case "actualizar":
-            //codigo para actualizar msj
+            if(!isset($_POST['introduccion']) || !isset($_POST['descripcion']) || !isset($_POST['expira']) || !isset($_POST['cvemsj'])){
+                $web->simple_message('danger','Falta informacion, por favor no altere la estructura de la interfaz');
+                $web->iniClases('admin','index avisos nuevo-aviso');
+                $web->smarty->display('avisos.html');
+                die();
+            }
+            if($_POST['introduccion'] == "" || $_POST['descripcion'] == "" || $_POST['expira'] == "" || $_POST['cvemsj'] == ""){
+                $web->simple_message('danger','Falta informacion, por favor no altere la estructura de la interfaz');
+                $web->iniClases('admin','index avisos nuevo-aviso');
+                $web->smarty->display('avisos.html');
+                die();
+            }
+            $sql = "update msj set introduccion = ?, descripcion = ?, expira = ? where cvemsj = ?";
+            $parameters = array($_POST['introduccion'], $_POST['descripcion'], $_POST['expira'], $_POST['cvemsj']);
+            if(!$web->query($sql, $parameters)){
+                $web->simple_message('danger','Ocurrio un error al actualizar el aviso');
+                $web->iniClases('admin','index avisos nuevo-aviso');
+                $web->smarty->display('avisos.html');
+                die();
+            }
+            else{
+                $web->simple_message('warning','Se actualizo el aviso correctamente');
+            }
         break;
         case "insertar":
             if(!isset($_POST['introduccion']) || !isset($_POST['descripcion']) || !isset($_POST['expira'])){

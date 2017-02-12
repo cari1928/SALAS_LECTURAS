@@ -25,6 +25,7 @@
 			<th style="vertical-align:middle"><center>PROMOTOR</center></th>
 			<th style="vertical-align:middle"><center>EMAIL</center></th>
 			<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
+			<th style="vertical-align:middle"><center>ROLES</center></th>
 			{if !isset($cveperiodo)}
 				<th style="vertical-align:middle"><center>ELIMINAR</center></th>
 				<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
@@ -44,6 +45,7 @@
 					{$promotor.Especialidad}
 				{/if}
 			</center></td>
+			<td><center>{$promotor.roles}</center></td>
 			{if !isset($cveperiodo)}
 				<td><center>
 					<a class="delete" href="promotor.php?accion=delete&info1={$promotor.cveusuario}">

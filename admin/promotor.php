@@ -53,7 +53,20 @@ if (!$flag) {
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   order by u.cveusuario";
   $promotores = $web->DB->GetAll($sql);
-
+  $sql = "select cveusuario, rol.rol from usuario_rol 
+          inner join rol on rol.cverol=usuario_rol.cverol 
+          where cveusuario in
+          (select cveusuario from usuario_rol where cverol = 2)
+          order by cveusuario";
+  $roles_promotor = $web->DB->GetAll($sql);
+  for($i = 0; $i<sizeof($promotores); $i++){
+    $promotores[$i]['roles']="";
+    for($j = 0; $j<sizeof($roles_promotor); $j++){
+      if($promotores[$i]['cveusuario'] == $roles_promotor[$j]['cveusuario']){
+        $promotores[$i]['roles'].=$roles_promotor[$j]['rol']."<br>";
+      }
+    }
+  }
 } else {
   $promotores = $flag; //por si viene de historial
 }
@@ -388,8 +401,8 @@ function insert_professor($web) {
 
   $web->DB->startTrans();
 
-  $sql = "INSERT INTO usuarios values (?,?,?,?,?)";
-  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo);
+  $sql = "INSERT INTO usuarios values (?,?,?,?,?,?,?)";
+  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo, null, 'Aceptado');
   if (!$web->query($sql, $tmp)) {
     $web->simple_message('danger', 'No se pudo completar la operación');
     return false;

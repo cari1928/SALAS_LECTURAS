@@ -7,7 +7,7 @@ if ($_SESSION['roles'] != 'A') {
 
 $cveperiodo = $web->periodo();
 if ($cveperiodo == "") {
-  message("index salas", "No hay periodo actual", $web);
+  $web->simple_message('warning', "No hay periodo actual");
 }
 
 if (isset($_GET['accion'])) {

@@ -3,7 +3,7 @@
 {if isset($msg)}{include file='../mensajes.html'}{/if}
 {if !isset($aviso)}<h3>Nuevo aviso publico</h3>
 {else}<h3>Actualizando aviso</h3>{/if}
-<form name="messageform" action="avisos.php?accion=insertar" method="POST" id="messageform">
+<form name="messageform" action="avisos.php?accion={if !isset($aviso)}insertar{else}actualizar{/if}" method="POST" id="messageform">
     <div class="small-10 columns">
         <label style="color:black;"> Asunto*</label>
         <input class="span12" type="text" name="introduccion" id="subject" placeholder="Asunto" data-toggle="tooltip" title="Input Message Subject between 10 to 80" data-validation-required-message="Please enter subject" required value='{if isset($aviso)}{$aviso.introduccion}{/if}'>
@@ -16,8 +16,10 @@
               <input style="width:200px;"TYPE="date"  class="form-control" id="exampleInputEmail3" name="expira" id="producto" require value='{if isset($aviso)}{$aviso.expira}{/if}'>
     </div>
     <input type="submit" value="Send" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="Send the Message" id="_send" name="_send">&nbsp;&nbsp;
-    <input type="reset" value="Cancel" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Send the Message" id="_cancel" name="_cancel">
     <input type="hidden" name="action" id="action">
+    {if isset($aviso)}
+        <input type="hidden" name="cvemsj" value="{$aviso.cvemsj}" id="action">
+    {/if}
     <div class="small-6 columns" style="margin-top:15px;"></div>
     <div class="small-6 columns"></div>
 </form>

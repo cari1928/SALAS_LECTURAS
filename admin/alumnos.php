@@ -7,7 +7,7 @@ if ($_SESSION['roles'] != 'A') {
 
 $cveperiodo = $web->periodo();
 if ($cveperiodo == "") {
-  message("index alumnos", "No hay periodo actual", $web);
+  $web->simple_message('warning', "No hay periodo actual");
 }
 
 $flag = false; //para cuando viene de historial
@@ -88,6 +88,10 @@ $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = $web->DB->GetAll($sql, $parameters);
 $datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
 $datos = array('data' => $datos);
+
+if(!isset($datos[0])){
+  $web->simple_message('warning', 'No hay alumnos registrados');
+}
 
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
@@ -311,8 +315,8 @@ function insert_student($web)
   }
 
   //insertar en usuarios, usuario_rol y especialidad_usuario
-  $query = "insert into usuarios(cveusuario, nombre, pass, correo) values(?, ?, ?, ?)";
-  $tmp   = array($cveUsuario, $nombre, md5($contrasena), $correo);
+  $query = "insert into usuarios(cveusuario, nombre, pass, correo, validacion) values(?, ?, ?, ?, ?)";
+  $tmp   = array($cveUsuario, $nombre, md5($contrasena), $correo, 'Aceptado');
   $web->query($query, $tmp);
   $sql = "insert into usuario_rol(cveusuario, cverol) values(?, ?)";
   $web->query($sql, array($cveUsuario, 3));

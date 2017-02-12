@@ -2,12 +2,12 @@
 
 include 'sistema.php';
 
-$web->iniClases(null, "index login");
-
 $web        = new Sistema;
 $email      = '';
 $contrasena = '';
 $msg        = '';
+
+$web->iniClases(null, "index login");
 
 if (isset($_POST['datos']['contrasena'])) {
     $cveUsuario = $_POST['datos']['cveUsuario'];
@@ -65,6 +65,7 @@ if(isset($_GET['info'])) {
   }
   
   $_SESSION['logueado'] = true;
+  $_SESSION['bandera_roles'] = "true";
   switch($_GET['info']) {
     case 1: 
         $_SESSION['roles'] = 'A';

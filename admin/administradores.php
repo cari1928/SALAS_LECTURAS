@@ -177,8 +177,8 @@ function insert_admin($web) {
   $correo     = $_POST['datos']['correo'];
   
   $web->DB->startTrans(); //inicia transacción
-  $sql = "INSERT INTO usuarios values (?,?,?,null,?,null,null)";
-  $tmp = array($usuario, $nombre, md5($contrasena), $correo);
+  $sql = "INSERT INTO usuarios values (?,?,?,null,?,null, ?)";
+  $tmp = array($usuario, $nombre, md5($contrasena), $correo, 'Aceptado');
   $web->query($sql, $tmp);
 
   $sql = "INSERT INTO usuario_rol values(?, 1)";

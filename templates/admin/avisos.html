@@ -13,7 +13,6 @@
 			<th style="vertical-align:middle"><center>TIPO</center></th>
 			<th style="vertical-align:middle"><center>FECHA</center></th>
 			<th style="vertical-align:middle"><center>EXPIRA</center></th>
-			<th style="vertical-align:middle"><center>LEER</center></th>
             <th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
 			<th style="vertical-align:middle"><center>ELIMINAR</center></th>
 	{foreach $avisos as $aviso}
@@ -22,10 +21,6 @@
 			<td><center>{$aviso.descripcion}</center></td>
 			<td><center>{$aviso.fecha}</center></td>
 			<td><center>{$aviso.expira}</center></td>
-			<td><center>
-			        <a href="avisos.php?accion=ver&info1={$aviso.cvemsj}">
-						<img src="../Images/leer.png">
-					</a></center></td>
 			<td><center>
 			        <a href="avisos.php?accion=actualizar_form&info1={$aviso.cvemsj}">
 						<img src="../Images/edit.png">

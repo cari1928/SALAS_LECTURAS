@@ -306,6 +306,9 @@ class Sistema extends Conexion
    */
   public function iniClases($ubicacion, $ruta)
   {
+    if(isset($_SESSION['bandera_roles'])){
+      $this->smarty->assign('bandera_roles', $_SESSION['bandera_roles']);
+    }
     if ($ubicacion != null) {
       $nombre = $this->tipoCuenta();
       $this->smarty->assign('nombrecuenta', $nombre);
