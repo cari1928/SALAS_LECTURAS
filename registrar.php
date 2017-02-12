@@ -114,7 +114,7 @@ function registerStudent($web)
 
   for ($i = 0; $i < sizeof($correos); $i++) {
 
-    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='http://www.salas_lectura.com/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='http://www.salas_lectura.com/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='http://tigger.itc.mx/salasLectura/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='http://tigger.itc.mx/salasLectura/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
 
     $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
   }

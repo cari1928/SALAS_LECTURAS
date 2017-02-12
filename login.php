@@ -36,7 +36,7 @@ if (isset($_POST['datos']['contrasena'])) {
         $web->simple_message('danger', 'Tu registro aín no ha sido autorizado. Para mayor información comunícate con el administrador');
         break;
     }
-    // $web->smarty->display('formulario_login.html');
+    $web->smarty->display('formulario_login.html');
     die();
   }
 }
