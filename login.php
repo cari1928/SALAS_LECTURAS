@@ -10,96 +10,117 @@ $msg        = '';
 $web->iniClases(null, "index login");
 
 if (isset($_POST['datos']['contrasena'])) {
-    $cveUsuario = $_POST['datos']['cveUsuario'];
-    $contrasena = $_POST['datos']['contrasena'];
-    $usuario_clave = null;
-    $validar = null;
-    
-    if(isset($_POST['usuario_clave'])){
-        $usuario_clave = $_POST['usuario_clave'];
+  $cveUsuario    = $_POST['datos']['cveUsuario'];
+  $contrasena    = $_POST['datos']['contrasena'];
+  $usuario_clave = null;
+  $validar       = null;
+
+  if (isset($_POST['usuario_clave'])) {
+    $usuario_clave = $_POST['usuario_clave'];
+  }
+  if (isset($_POST['validar'])) {
+    $validar = $_POST['validar'];
+  }
+
+  if (!$web->login($cveUsuario, $contrasena, $usuario_clave, $validar)) {
+    switch ($web->aceptacion) {
+      case "No guardado":
+        $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
+        break;
+
+      case "Rechazado":
+        $web->simple_message('danger', 'Lo sentimos, no fue aprobado tu registro. Para mayor información comunícate con el administrador');
+        break;
+
+      case "":
+        $web->simple_message('danger', 'Tu registro aín no ha sido autorizado. Para mayor información comunícate con el administrador');
+        break;
     }
-    if(isset($_POST['validar'])){
-        $validar = $_POST['validar'];
-    }
-    
-    if (!$web->login($cveUsuario, $contrasena, $usuario_clave, $validar)) {
-        switch($web->aceptacion){
-          case "No guardado":
-            $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
-            break;
-          
-          case "Rechazado":
-            $web->simple_message('danger', 'Lo sentimos, no fue aprobado tu registro. Para mayor información comunícate con el administrador');
-            break;
-          
-          case "":
-            $web->simple_message('danger', 'Tu registro aín no ha sido autorizado. Para mayor información comunícate con el administrador');
-            break;
-        }
-        $web->smarty->display('formulario_login.html');
-        die();
-    }
+    $web->smarty->display('formulario_login.html');
+    die();
+  }
 }
 
-if(isset($_GET['info'])) {
-    
-  if(!isset($_SESSION['cveUser'])) {
+if (isset($_GET['info'])) {
+
+  if (!isset($_SESSION['cveUser'])) {
     $web->simple_message('danger', 'Inicie sesión para poder acceder');
     $web->smarty->display('formulario_login.html');
     die();
   }
-    
+
   $sql = "select * from usuario_rol where cveusuario=? and cverol=?";
   $rol = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $_GET['info']));
-  
-  if(!isset($rol[0])) {
+
+  if (!isset($rol[0])) {
     $web->iniClases(null, "index login roles");
-    
-    $sql    ="select * from usuario_rol where cveusuario=?";
-    $roles  = $this->DB->GetAll($sql, $email);
-    
+
+    $sql   = "select * from usuario_rol where cveusuario=?";
+    $roles = $this->DB->GetAll($sql, $email);
+
     $web->smarty->assign('roles', $roles);
     $web->simple_message('danger', 'No tiene permiso para acceder');
     $web->smarty->display('roles.html');
     die();
   }
-  
+
   $_SESSION['logueado'] = true;
+<<<<<<< HEAD
   $_SESSION['bandera_roles'] = "true";
   switch($_GET['info']) {
     case 1: 
         $_SESSION['roles'] = 'A';
         header('Location: admin');
         break;
+=======
+  switch ($_GET['info']) {
+    case 1:
+      $_SESSION['roles'] = 'A';
+      header('Location: admin');
+      break;
+>>>>>>> 239f7a6888015cf475f21c6d18dda1ef9d958232
     case 2:
-        $_SESSION['roles'] = 'P';
-        header('Location: promotor');
-        break;
+      $_SESSION['roles'] = 'P';
+      header('Location: promotor');
+      break;
     case 3:
-        $_SESSION['roles'] = 'U';
-        header('Location: alumno');
-        break;
+      $_SESSION['roles'] = 'U';
+      header('Location: alumno');
+      break;
   }
 }
 
 //para mensajes cuando la página es llamada principalmente por header: Location
-if(isset($_GET['m'])) {
-  switch($_GET['m']) {
-      case 1:
-        $web->simple_message('info', 'Espere que un administrador acepte su registro');
-        break;
-        
-      case 2:
-        $web->simple_message('info', 'Inicia sesión como administrador');
-        if(isset($_GET['validar'])){
-            $web->smarty->assign('validar', $_GET['validar']);   
-        }
-        if(isset($_GET['clave'])){
-            $web->smarty->assign('usuario_clave', $_GET['clave']);
-        }
-        break;
+if (isset($_GET['m'])) {
+  switch ($_GET['m']) {
+    case 1:
+      $web->simple_message('info', 'Espere que un administrador acepte su registro');
+      break;
+
+    case 2:
+      $web->simple_message('info', 'Inicia sesión como administrador');
+      if (isset($_GET['validar'])) {
+        $web->smarty->assign('validar', $_GET['validar']);
+      }
+      if (isset($_GET['clave'])) {
+        $web->smarty->assign('usuario_clave', $_GET['clave']);
+      }
+      break;
   }
 }
+
+// if (isset($_GET['accion'])) {
+//   if ($_GET['accion'] == 'especial') {
+//     $sql = $_POST['datos']['especial'];
+//     $web->DB->startTrans();
+//     $web->query($sql);
+//     if ($web->DB->HasFailedTrans()) {
+//       //si falló algo entra al if
+//       $web->simple_message('danger', 'No se pudo completar la operación');
+//     }
+//     $web->DB->CompleteTrans();
+//   }
+// }
 
 // $web->smarty->assign('mensaje', $msg);
 $web->smarty->display('formulario_login.html');

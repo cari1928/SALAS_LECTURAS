@@ -317,7 +317,7 @@ function show_form_insert($web)
 function show_form_update($web)
 {
   if (!isset($_GET['info1'])) {
-    $web->simple_message('danger', "No se especificó el promotor");
+    $web->simple_message('danger', "No se especifico el promotor");
     return false;
   }
 
@@ -371,7 +371,7 @@ function insert_professor($web) {
   }
 
   if (strlen($_POST['datos']['usuario']) != 13) {
-    errores('La longitud del RFC debe de ser de 13 caracteres', 'index promotor nuevo', null, $web);
+    errores('La longitud del usuario debe de ser de 13 caracteres', 'index promotor nuevo', null, $web);
   }
 
   if (!$web->valida($_POST['datos']['correo'])) {
@@ -399,10 +399,15 @@ function insert_professor($web) {
   $nombre     = $_POST['datos']['nombre'];
   $correo     = $_POST['datos']['correo'];
 
+<<<<<<< HEAD
   $web->DB->startTrans();
 
   $sql = "INSERT INTO usuarios values (?,?,?,?,?,?,?)";
   $tmp = array($usuario, $nombre, md5($contrasena), null, $correo, null, 'Aceptado');
+=======
+  $sql = "INSERT INTO usuarios values (?,?,?,?,?)";
+  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo);
+>>>>>>> 239f7a6888015cf475f21c6d18dda1ef9d958232
   if (!$web->query($sql, $tmp)) {
     $web->simple_message('danger', 'No se pudo completar la operación');
     return false;
@@ -423,14 +428,6 @@ function insert_professor($web) {
     $sql = "insert into especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
     $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
   }
-  
-  if($web->DB->HasFailedTrans()) { //verifica errores durante la transacción
-    //falta programar esta parte para que no muestre directamente el resultado de sql
-    $web->simple_message('danger', 'No fue posible completar el registro');
-    return false;
-  }
-  
-  $web->DB->CompleteTrans(); //termina la transacción haya sido exitosa o no
   header('Location: promotor.php');
 }
 

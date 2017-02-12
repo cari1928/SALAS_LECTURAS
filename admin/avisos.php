@@ -32,27 +32,7 @@ if(isset($_GET['accion'])){
             }
         break;
         case "actualizar_form":
-            if(!isset($_GET['info1'])){
-                $web->simple_message('danger','Falta informacion, por favor no altere la estructura de la interfaz');
-                break;
-            }
-            
-            if($_GET['info1'] == ""){
-                $web->simple_message('danger','Falta informacion, por favor no altere la estructura de la interfaz');
-                break;
-            }
-            
-            $sql = "select introduccion, descripcion, expira, cvemsj from msj where cvemsj = ?";
-            $datos_msj = $web->DB->GetAll($sql, $_GET['info1']);
-            
-            if(!isset($datos_msj[0])){
-                $web->simple_message('danger','El aviso no existe');
-                break;
-            }
-            $web->iniClases('admin','index avisos Editar-aviso');
-            $web->smarty->assign('aviso', $datos_msj[0]);
-            $web->smarty->display('form_avisos.html');
-            die();
+            //Codigo para desplegar formulario actualizar un mensaje
         break;
         case "insertar_form":
             $web->iniClases('admin','index avisos nuevo-aviso');

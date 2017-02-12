@@ -3,9 +3,12 @@
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-      
-      {if isset($msg)}{include file='../mensajes.html'}{/if}
-      
+      {if isset($msg)}
+      	<div class="alert alert-{$alert} alert-dismissible" role="alert">
+      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      	  <strong>¡Aviso!</strong> {$msg}
+      	</div>
+      {/if}
       <form action="promotor.php?accion={if isset($promotores)}update{else}insert{/if}" method="post">  
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -30,8 +33,8 @@
               <div id="carrera" class="form-group" style="display:{if $promotores.cveespecialidad ne 'O'}block{else}none{/if}">
                 {$combito}
               </div>
-              <label id="l3" style="display:{if $promotores.cveespecialidad ne 'O'}inline{else}none{/if}">Otro</label>
-              <input id="r3" type="radio" value='false' name="datos[especialidad]" style="display:{if $promotores.cveespecialidad ne 'O'}inline{else}none{/if}" onclick="otro()">
+              <label id="l3" style="display:{if $promotores.cveespecialidad ne 'O'}block{else}none{/if}">Otro</label>
+              <input id="r3" type="radio" value='false' name="datos[especialidad]" style="display:{if $promotores.cveespecialidad ne 'O'}block{else}none{/if}" onclick="otro()">
               <div id="especialidad" class="form-group" style="display:{if $promotores.cveespecialidad eq 'O'}block{else}none{/if}">
                 <label>¿Cual otro?</label>
                 <input class="form-control" placeholder="Escriba Cual" name="datos[otro]"

@@ -38,18 +38,18 @@
     </thead>
     <tfoot>
       <tr>
-        <th><center>CLAVE</center></th>
-				<th><center>ALUMNO</center></th>
-				<th><center>ESPECIALIDAD</center></th>
-				<th><center>CORREO</center></th>
-				<th><center>ESTADO  CREDITO</center></th>
-					{if !isset($bandera)}
-						<th><center>ELIMINAR</center></th>
-				    <th><center>ACTUALIZAR</center></th>
-					{else}
-						<th><center>REPORTE</center></th>
-					{/if}
-				<th><center>GRUPOS</center></th>
+        <th>CLAVE</th>
+        <th>ALUMNO</th>
+        <th>ESPECIALIDAD</th>
+        <th>CORREO</th>
+        <th>ESTADO - CREDITO</th>
+        {if !isset($bandera)}
+       		<th>ELIMINAR</th>
+	        <th>ACTUALIZAR</th>
+       	{else}
+       		<th>REPORTE</th>
+       	{/if}
+       	<th>GRUPOS</th>
       </tr>
     </tfoot>
   </table>
