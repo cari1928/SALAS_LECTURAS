@@ -314,18 +314,25 @@ function insert_student($web)
     message("index alumnos nuevo", "El correo ya existe", $web);
   }
 
+  $web->DB->startTrans();
+
   //insertar en usuarios, usuario_rol y especialidad_usuario
-  $query = "insert into usuarios(cveusuario, nombre, pass, correo, validacion) values(?, ?, ?, ?, ?)";
-  $tmp   = array($cveUsuario, $nombre, md5($contrasena), $correo, 'Aceptado');
+  $query = "insert into usuarios(cveusuario, nombre, pass, correo, validacion) 
+  values(?, ?, ?, ?, 'Aceptado')";
+  $tmp   = array($cveUsuario, $nombre, md5($contrasena), $correo);
   $web->query($query, $tmp);
   $sql = "insert into usuario_rol(cveusuario, cverol) values(?, ?)";
   $web->query($sql, array($cveUsuario, 3));
   $sql = "insert into especialidad_usuario(cveusuario, cveespecialidad) values(?, ?)";
-  if (!$web->query($sql, array($cveUsuario, $especialidad))) {
-    $web->simple_message('danger', 'No se pudo completar la operación');
+  $web->query($sql, array($cveUsuario, $especialidad));
+
+  if($web->DB->HasFailedTrans()) {
+    message("index alumnos nuevo", "No fue posible realizar la operación", $web);
+    $web->DB->CompleteTrans();
     return false;
   }
-
+  
+  $web->DB->CompleteTrans();
   header('Location: alumnos.php');
 }
 

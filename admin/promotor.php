@@ -69,7 +69,7 @@ $web->smarty->display("promotor.html");
  * @param  Class  $web        Objeto para usar las herramientas smarty
  * @return Error desplegado en una plantilla
  */
-function errores($msg, $ruta, $cveusuario = null, $web)
+function errores($msg, $ruta, $web, $cveusuario = null)
 {
   $web->simple_message('danger', $msg);
   $web->iniClases('admin', $ruta);
@@ -357,7 +357,7 @@ function insert_professor($web) {
   }
 
   if (strlen($_POST['datos']['usuario']) != 13) {
-    errores('La longitud del usuario debe de ser de 13 caracteres', 'index promotor nuevo', null, $web);
+    errores('La longitud del usuario debe de ser de 13 caracteres', 'index promotor nuevo', $web);
   }
 
   if (!$web->valida($_POST['datos']['correo'])) {
@@ -368,7 +368,7 @@ function insert_professor($web) {
     errores('Las contraseñas no coinciden', 'index promotor nuevo', $web);
   }
 
-  $sql   = "select*from usuarios where correo=?";
+  $sql   = "SELECT * FROM usuarios WHERE correo=?";
   $datos = $web->DB->GetAll($sql, $_POST['datos']['correo']);
   if (isset($datos[0])) {
     errores('El correo ya existe', 'index promotor nuevo', $web);
@@ -387,8 +387,9 @@ function insert_professor($web) {
   
   $web->DB->startTrans();
 
-  $sql = "INSERT INTO usuarios values (?,?,?,?,?)";
-  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo);
+  $sql = "INSERT INTO usuarios(cveusuario, nombre, pass, correo, validacion) 
+  values(?,?,?,?, 'Aceptado')";
+  $tmp = array($usuario, $nombre, md5($contrasena), $correo);
   $web->query($sql, $tmp);
   $sql = "INSERT INTO usuario_rol values(?, ?)";
   $web->query($sql, array($usuario, 2));
@@ -414,21 +415,21 @@ function insert_professor($web) {
   }
   $web->DB->CompleteTrans();
   
-  //Busca administradores
-  $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
-  $correos = $web->DB->GetAll($sql);
-  if (!isset($correos[0])) {
-    $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
-    return false;
-  }
+  //Para probar el envío de correos al administrador
+  // $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
+  // $correos = $web->DB->GetAll($sql);
+  // if (!isset($correos[0])) {
+  //   $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
+  //   return false;
+  // }
 
-  //envía correos a todos los administradores
-  for ($i = 0; $i < sizeof($correos); $i++) {
+  // //envía correos a todos los administradores
+  // for ($i = 0; $i < sizeof($correos); $i++) {
     
-    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+  //   $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
 
-    $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
-  }
+  //   $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
+  // }
 
   header('Location: promotor.php');
 }

@@ -33,6 +33,7 @@
             {if !isset($alumno)}
               <div class="form-group">
                 <label>Número de Control:</label>
+                <!--maxlength no funciona por el uso del type number-->
                 <input class="form-control" placeholder="8 caracteres numéricos" name="datos[usuario]" maxlength="8" required type="number">
               </div>
             {/if}

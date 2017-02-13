@@ -23,7 +23,9 @@ if (isset($_POST['datos']['contrasena'])) {
   }
 
   if (!$web->login($cveUsuario, $contrasena, $usuario_clave, $validar)) {
+    
     switch ($web->aceptacion) {
+    
       case "No guardado":
         $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
         break;

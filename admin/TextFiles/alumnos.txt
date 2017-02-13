@@ -1,1 +1,1 @@
-{"data":[]}
+{"data":[["22222222","Alumno 2","Ingenier\u00eda Ambiental","22222222@itcelaya.edu.mx","No Permitido","alumnos.php?accion=delete&info1=22222222","<center><a href='alumnos.php?accion=form_update&info2=22222222'><img src='..\/Images\/edit.png'><\/a><\/center>","<center><a href='alumnos.php?accion=show&info1=22222222'><img src='..\/Images\/mostrar.png'><\/a><\/center>"]]}

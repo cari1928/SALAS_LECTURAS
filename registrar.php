@@ -48,7 +48,7 @@ function registerStudent($web)
   $cveUsuario     = $_POST['datos']['usuario'];
   $contrasena     = $_POST['datos']['contrasena'];
   $confcontrasena = $_POST['datos']['confcontrasena'];
-  $especialidad   = $_POST['datos']['cveespecialidad'];
+  $cveespecialidad   = $_POST['datos']['cveespecialidad'];
   $correo         = $_POST['datos']['correo'];
 
   if ($contrasena != $confcontrasena) {
@@ -82,13 +82,14 @@ function registerStudent($web)
   }
 
   $sql                 = "select nombre from especialidad where cveespecialidad = ?";
-  $nombre_especialidad = $web->DB->GetAll($sql, $especialidad);
+  $nombre_especialidad = $web->DB->GetAll($sql, $cveespecialidad);
   if (!isset($nombre_especialidad[0])) {
     $web->simple_message('danger', "La especialidad seleccionada no existe");
     return false;
   }
 
   $web->DB->startTrans(); //por si falla algún query y no se realicen cambios
+  
   //inserta en usuarios, usuario_rol y especialidad_usuario
   $sql = "insert into usuarios (cveusuario, nombre, pass, correo, estado_credito)
   values (?, ?, ?, ?, 'No Permitido')";
@@ -104,9 +105,12 @@ function registerStudent($web)
     $web->DB->CompleteTrans();
     return false;
   }
+  
   $web->DB->CompleteTrans();
   
-  $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
+  //Inicia el proceso para enviar correos a los administradores
+  $sql     = "SELECT correo, nombre FROM usuarios 
+  WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
   $correos = $web->DB->GetAll($sql);
   if (!isset($correos[0])) {
     $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
@@ -115,7 +119,7 @@ function registerStudent($web)
 
   for ($i = 0; $i < sizeof($correos); $i++) {
 
-    $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+    $mensaje = "Hola " . $correos[$i]['nombre'] . "<br><br>Se solicita que apruebe un usuario para Salas Lectura.<br><br> No. Control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de clic en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted desea rechazar al usuario de clic al siguiente enlace: " . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> Gracias.";
 
     $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
   }

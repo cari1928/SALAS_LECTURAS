@@ -151,7 +151,6 @@ function showFormUpdate($web)
 
 function insertAdmin($web)
 {
-
   if (!isset($_POST['datos']['usuario']) ||
     !isset($_POST['datos']['nombre']) ||
     !isset($_POST['datos']['cveespecialidad']) ||
@@ -210,11 +209,11 @@ function insertAdmin($web)
 
   if (isset($_POST['datos']['especialidad'])) {
 
-    if ($_POST['datos']['especialidad'] != "") {
+    if ($_POST['datos']['especialidad'] == 'true') {
       $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
       $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
     } else {
-      $sql = "INSERT INTO especialidad_usuario values(?, 'O', ?)";
+      $sql = "INSERT INTO especialidad_usuario(cveusuario, cveespecialidad, otro) values(?, 'O', ?)";
       $web->query($sql, array($usuario, $_POST['datos']['otro']));
     }
   } else {
