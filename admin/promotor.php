@@ -42,23 +42,56 @@ if (isset($_GET['accion'])) {
   }
 }
 
-//si no viene de historial
-if (!$flag) {
-  $web->iniClases('admin', "index promotor");
-
+//viene de historial
+if($flag) {
+  $promotores = $flag; 
+  
+} else {
+  //no viene de historial
   $sql = "select u.cveusuario, u.nombre, u.correo, otro AS \"Otro\", e.nombre AS
   \"Especialidad\", eu.cveespecialidad  from usuarios u
   inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
   inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   order by u.cveusuario";
+  $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $promotores = $web->DB->GetAll($sql);
+}
+  
+$web->iniClases('admin', "index promotor");
 
-} else {
-  $promotores = $flag; //por si viene de historial
+if (!isset($promotores[0])) {
+  $web->simple_message('warning', 'No hay promotores registrados');
 }
 
-$web->smarty->assign('promotores', $promotores);
+$datos        = array('data' => $promotores);
+
+//contenido de las colummnas
+for ($i = 0; $i < sizeof($datos['data']); $i++) {
+  
+  if ($flag != 'historial') {
+    //eliminar
+    $datos['data'][$i][4] = "promotor.php?accion=delete&info1=" . $datos['data'][$i][0];
+    //editar
+    $datos['data'][$i][5] = "<center><a href='promotor.php?accion=form_update&info1=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
+    //mostrar_grupos
+    $datos['data'][$i][6] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+    
+  } else {
+    //mostrar grupos
+    $datos['data'][$i][4] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "&info2=".$_GET['info1']."'><img src='../Images/mostrar.png'></a></center>";
+    //reporte pdf
+    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+  }
+  
+}
+
+$web->DB->SetFetchMode(ADODB_FETCH_NUM);
+$datos = json_encode($datos);
+$file = fopen("TextFiles/promotores.txt", "w");
+fwrite($file, $datos);
+
+$web->smarty->assign('datos', $datos);
 $web->smarty->display("promotor.html");
 
 /**
@@ -265,6 +298,7 @@ function show_history($web)
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   and cveperiodo=?
   order by u.cveusuario";
+  $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $promotores = $web->DB->GetAll($sql, $_GET['info1']);
 
   if (!isset($promotores[0])) {

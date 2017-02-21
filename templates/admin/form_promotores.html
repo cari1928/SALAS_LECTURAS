@@ -3,20 +3,22 @@
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-      {if isset($msg)}
-      	<div class="alert alert-{$alert} alert-dismissible" role="alert">
-      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      	  <strong>¡Aviso!</strong> {$msg}
-      	</div>
-      {/if}
+      
+      {if isset($msg)}{include file='../mensajes.html'}{/if}
+      
       <form action="promotor.php?accion={if isset($promotores)}update{else}insert{/if}" method="post">  
         <div class="panel panel-default">
+          
           <div class="panel-heading">
             <h3 class="panel-title">
-              {if isset($promotores)} Actualizar Promotor - RFC: {$promotores.cveusuario}
-              {else} Nuevo Promotor {/if}
+              {if isset($promotores)} 
+                Actualizar Promotor - RFC: {$promotores.cveusuario}
+              {else} 
+                Nuevo Promotor 
+              {/if}
             </h3>
           </div>
+          
           <div class="panel-body">
             {if isset($promotores)}
               <input type="hidden" name="cveusuario" value="{$promotores.cveusuario}">
@@ -29,7 +31,7 @@
             <div class="form-group">
               <label>Especialidad:</label>
               <label id="l4" style="display:{if $promotores.cveespecialidad eq 'O'}block{else}none{/if}">Carrera</label>
-              <input id="r4" type="radio" class="btn btn-default" value='true' name="datos[especialidad]" style="display:{if $promotores.cveespecialidad eq 'O'}block{else}none{/if}" onclick="otro()">
+              <input id="r4" type="radio" class="btn btn-default" value='true' name="datos[especialidad]" style="display:{if $promotores.cveespecialidad eq 'O'}block{else}none{/if}" onclick="otro()" checked>
               <div id="carrera" class="form-group" style="display:{if $promotores.cveespecialidad ne 'O'}block{else}none{/if}">
                 {$combito}
               </div>
