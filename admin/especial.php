@@ -8,7 +8,11 @@ if ($_SESSION['roles'] != 'A') {
 if (isset($_POST['datos']['especial'])) {
   $sql = $_POST['datos']['especial'];
   $web->DB->startTrans();
-  $web->query($sql);
+  $datos = $web->DB->GetAll($sql);
+
+  echo "<pre>";
+  print_r($datos);
+
   if ($web->DB->HasFailedTrans()) {
     //si falló algo entra al if
     $web->simple_message('danger', 'No se pudo completar la operación');

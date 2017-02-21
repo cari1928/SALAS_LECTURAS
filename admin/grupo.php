@@ -18,6 +18,9 @@ if (isset($_GET['accion'])) {
 
   switch ($_GET['accion']) {
 
+    case 'delete_alumno':
+      delete_alumno($web);
+      break;
     case 'alumnos':
       mostrar_alumnos($web);
       break;
@@ -71,6 +74,7 @@ $web->smarty->display('grupo.html');
  * @param  String $msg   Mensaje a mostrar
  * @param  Class  $web   Para poder ocupar la herramienta smarty
  */
+
 function message($alert, $msg, $web)
 {
   $web->smarty->assign('alert', $alert);
@@ -559,4 +563,74 @@ function ver_reporte($web) {
   $web->iniClases('admin', "index alumnos reporte");
   message('info', 'FALTA PROGRAMAR ESTA SECCION, PRIMERO DEBE PROGRAMARSE QUE EL PROMOTOR O EL ADMIN PUEDAN SUBIR EL REPORTE', $web);
   return false;
+}
+
+function delete_alumno($web)
+{
+  //se valida la contraseña
+  $cveperiodo = $web->periodo();
+if ($cveperiodo == "") {
+  $web->iniClases('admin', "index alumnos grupos");
+  message('warning', 'No hay periodos actuales', $web);
+  break;
+}
+
+  switch ($web->valida_pass($_SESSION['cveUser'])) {
+    case 1:
+      $web->simple_message('danger', 'No se especificó la contraseña de seguridad');
+      return false;
+      break;
+    case 2:
+      $web->simple_message('danger', 'La contraseña de seguridad ingresada no es válida');
+      return false;
+      break;
+  }
+  
+  //verifica que se reciben los datos necesarios
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', "No se especificó el grupo");
+    return false;
+  }
+  
+  if (!isset($_GET['info1'])) {
+    $web->simple_message('danger', "No se especifico el alumno");
+    return false;
+  }
+  
+  //verifica que el promotor exista
+  $sql   = "select * from usuarios where cveusuario=?";
+  $datos = $web->DB->GetAll($sql, $_GET['info2']);
+  if (!isset($datos[0])) {
+    $web->simple_message('danger', "El alumno no existe");
+    return false;
+  }
+  
+  //verifica la existencia del grupo
+  $sql   = "select * from laboral where cveletra in (select cve from abecedario where letra = ?) and cveperiodo = ?";
+  $datos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
+  if (!isset($datos[0])) {
+    $web->simple_message('danger', "El grupo no existe");
+    return false;
+  }
+  
+  //verifica la existencia del alumno en el grupo
+  $sql   = "select * from lectura where nocontrol = ? and cveperiodo = ?";
+  $datos_alumno = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo));
+  if (!isset($datos_alumno[0])) {
+    $web->simple_message('danger', "El alumno no esta registrado en el grupo");
+    return false;
+  }
+
+  //se eliminan las listas
+      //elimina de , lista_libros y lectura
+      $sql = "delete from evaluacion where cvelectura= ?";
+      $web->query($sql, $datos_alumno[0]['cvelectura']);
+      $sql = "delete from lista_libros where cvelectura= ?";
+      $web->query($sql, $datos_alumno[0]['cvelectura']);
+      $sql = "delete from msj where receptor = ? and cveletra = ? and cveperiodo = ?";
+      $web->query($sql, array($datos_alumno[0]['nocontrol'], $datos_alumno[0]['cveletra'], $cvelectura));
+      $sql = "delete from lectura where cvelectura= ?";
+      $web->query($sql, $datos_alumno[0]['cvelectura']);
+
+  header('Location: grupos.php');
 }

@@ -88,7 +88,7 @@ function registerStudent($web)
     return false;
   }
 
-  $web->DB->startTrans(); //por si falla algún query y no se realicen cambios
+  //$web->DB->startTrans(); //por si falla algún query y no se realicen cambios
   
   //inserta en usuarios, usuario_rol y especialidad_usuario
   $sql = "insert into usuarios (cveusuario, nombre, pass, correo, estado_credito)
@@ -99,14 +99,14 @@ function registerStudent($web)
   $sql = "insert into especialidad_usuario(cveusuario, cveespecialidad) values(?, ?)";
   $web->query($sql, array($cveUsuario, $cveespecialidad));
 
-  if ($web->DB->HasFailedTrans()) {
-    //si falló algo entra al if
-    $web->simple_message('danger', 'No se pudo completar la operación');
-    $web->DB->CompleteTrans();
-    return false;
-  }
+  // if ($web->DB->HasFailedTrans()) {
+  //   //si falló algo entra al if
+  //   $web->simple_message('danger', 'No se pudo completar la operación');
+  //   $web->DB->CompleteTrans();
+  //   return false;
+  // }
   
-  $web->DB->CompleteTrans();
+  // $web->DB->CompleteTrans();
   
   //Inicia el proceso para enviar correos a los administradores
   $sql     = "SELECT correo, nombre FROM usuarios 

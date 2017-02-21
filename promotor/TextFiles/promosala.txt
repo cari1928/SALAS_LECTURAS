@@ -1,1 +1,1 @@
-{"data":[{"cvesala":"<a href='salas.php?accion=horario&info=PRU'>PRU<\/a>","ubicacion":"PRUEBA"}]}
+{"data":[{"cvesala":"<a href='salas.php?accion=horario&info=S01'>S01<\/a>","ubicacion":"Biblioteca campus 1"}]}

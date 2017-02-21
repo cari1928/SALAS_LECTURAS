@@ -87,12 +87,13 @@
     						<!--<a href="redacta.php?accion=redactarI&info={$info.letra}&receptor={$alumno.nocontrol}&periodo={$alumno.cveperiodo}">-->
     						<!--	<img src="../Images/sobre.png">-->
     						<!--</a>-->
+    						<a  class='delete' href="grupo.php?accion=delete_alumno&info1={$alumno.letra}&info2={$alumno.nocontrol}">
+              		<img src="../Images/cancelar.png">
+          			</a>
     						<a href="grupo.php?accion={if isset($bandera)}{if $bandera eq 'index_grupos_libros'}{$bandera}{else}historial{/if}{else}libros{/if}&info1={$alumno.letra}&info2={$alumno.nocontrol}&info3={$alumno.cvepromotor}">
     							<img src="../Images/libros.png">
     						</a>
-    						<a class="delete" href="#">
-              		<img src="../Images/cancelar.png">
-          			</a>
+    						
   						</center></td>
   					{/if}
   				</form>

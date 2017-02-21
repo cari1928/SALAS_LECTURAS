@@ -45,7 +45,7 @@ if (isset($_GET['accion'])) {
     case 'show':
       show_groups($web);
       break;
-      
+
     case 'historial':
       $flag = 'historial';
       break;
@@ -69,12 +69,12 @@ where lectura.cveperiodo = ?';
 $parameters_b = $cveperiodo;
 
 //si viene de historial
-if($flag == 'historial') {
-  if(!isset($_GET['info1'])) {
+if ($flag == 'historial') {
+  if (!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No es posible continuar, hacen falta datos');
   } else {
-    $sql.= " and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)";
-    $parameters = $cveperiodo = $_GET['info1'];
+    $sql .= " and usuarios.cveusuario in (select nocontrol from lectura where cveperiodo=?)";
+    $parameters   = $cveperiodo   = $_GET['info1'];
     $parameters_b = $parameters;
     $web->iniClases('admin', "index historial alumnos");
     $web->smarty->assign('bandera', 'historial');
@@ -86,25 +86,26 @@ $sql_libros .= " order by lectura.nocontrol, e.estado";
 $sql .= " order by usuarios.cveusuario";
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = $web->DB->GetAll($sql, $parameters);
-$datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
-$datos = array('data' => $datos);
 
-if(!isset($datos[0])){
+if (!isset($datos[0])) {
   $web->simple_message('warning', 'No hay alumnos registrados');
 }
 
+$datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
+$datos        = array('data' => $datos);
+
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
-  
+
   //estado-crédito
-  if($datos['data'][$i][4] ==  NULL){
+  if ($datos['data'][$i][4] == null) {
     $datos['data'][$i][4] = "<label display='color:red'> NO PERMITIDO </label>";
     // $cont=0;
     // $bandera_libros = true;
     // for($h = 0; $h < sizeof($datos_libros) && $bandera_libros == true; $h++){
     //   if($datos_libros[$h][0] == $datos['data'][$i][0] ){
     //     if($datos_libros[$h][1] == 'Terminado'){
-    //       $cont++;  
+    //       $cont++;
     //     }
     //     else{
     //       $bandera_libros = false;
@@ -120,7 +121,7 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
     //       $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "&info3=". $parameters . "'><label display='color:red'> PERMITIDO </label></a>";
     //     }
     //     else{
-    //       $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "'><label display='color:red'> PERMITIDO </label></a>"; 
+    //       $datos['data'][$i][4] = "<a href='credito_pdf.php?info2=" . $datos['data'][$i][0] . "'><label display='color:red'> PERMITIDO </label></a>";
     //     }
     //   }
     //   else{
@@ -128,24 +129,24 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
     //   }
     // }
   }
-  
+
   //$datos['data'][$i][4] = "FALTA PROGRAMAR!!!";
-  
-  if($flag != 'historial') {
+
+  if ($flag != 'historial') {
     //se preparan parametros
-    
+
     //eliminar
     $datos['data'][$i][5] = "alumnos.php?accion=delete&info1=" . $datos['data'][$i][0];
     //editar
-    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=form_update&info2=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";  
+    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=form_update&info2=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
     //mostrar_grupos
     $datos['data'][$i][7] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
-    
+
   } else {
     //reporte
-    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=alumno&info1=1&info2=".$cveperiodo."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";  
+    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=alumno&info1=1&info2=" . $cveperiodo . "&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";
     //mostrar_grupos
-    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "&info2=".$cveperiodo."'><img src='../Images/mostrar.png'></a></center>";
+    $datos['data'][$i][6] = "<center><a href='alumnos.php?accion=show&info1=" . $datos['data'][$i][0] . "&info2=" . $cveperiodo . "'><img src='../Images/mostrar.png'></a></center>";
   }
 }
 
@@ -317,21 +318,21 @@ function insert_student($web)
   $web->DB->startTrans();
 
   //insertar en usuarios, usuario_rol y especialidad_usuario
-  $query = "insert into usuarios(cveusuario, nombre, pass, correo, validacion) 
+  $query = "insert into usuarios(cveusuario, nombre, pass, correo, validacion)
   values(?, ?, ?, ?, 'Aceptado')";
-  $tmp   = array($cveUsuario, $nombre, md5($contrasena), $correo);
+  $tmp = array($cveUsuario, $nombre, md5($contrasena), $correo);
   $web->query($query, $tmp);
   $sql = "insert into usuario_rol(cveusuario, cverol) values(?, ?)";
   $web->query($sql, array($cveUsuario, 3));
   $sql = "insert into especialidad_usuario(cveusuario, cveespecialidad) values(?, ?)";
   $web->query($sql, array($cveUsuario, $especialidad));
 
-  if($web->DB->HasFailedTrans()) {
+  if ($web->DB->HasFailedTrans()) {
     message("index alumnos nuevo", "No fue posible realizar la operación", $web);
     $web->DB->CompleteTrans();
     return false;
   }
-  
+
   $web->DB->CompleteTrans();
   header('Location: alumnos.php');
 }
@@ -453,15 +454,16 @@ function form_update_student($web)
 
 /**
  * Muestra los grupos del alumno seleccionado
- * Contenido de $_GET: 
+ * Contenido de $_GET:
  * accion: show
  * info1:  cvealumno
  * @param  Class   $web  Objeto para poder hacer uso de smarty
  * @return boolean false = Mostrar mensajes de error
  */
-function show_groups($web) {
+function show_groups($web)
+{
   global $cveperiodo;
-  
+
   if (!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó el alumno');
     return false;
@@ -486,7 +488,7 @@ function show_groups($web) {
     return false;
   }
 
-  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, 
+  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial,
   horas.hora_final from laboral
   inner join dia on dia.cvedia=laboral.cvedia
   inner join abecedario on laboral.cveletra = abecedario.cve
@@ -503,18 +505,18 @@ function show_groups($web) {
       }
     }
   }
-  
+
   $web->iniClases('admin', "index alumnos grupos");
   $web->smarty->assign('bandera', 'alumnos');
-  
+
   //viene de historial
-  if(isset($_GET['info2'])) {
+  if (isset($_GET['info2'])) {
     $web->iniClases('admin', "index historial grupos");
     $web->smarty->assign('cveusuario', $_GET['info1']);
     $web->smarty->assign('cveperiodo', $_GET['info2']);
     $web->smarty->assign('bandera', 'historial');
   }
-  
+
   $web->smarty->assign('tablegrupos', $tablegrupos);
   $web->smarty->display('grupos.html');
   die();
