@@ -8,7 +8,9 @@
 		<tr class='info'>
 			<th style="vertical-align:middle"><center>GRUPO</center></th>
 			<th style="vertical-align:middle"><center>SALA</center></th>
-			{if $table eq 'grupos'}<th><center>PROMOTOR</center></th>{/if}
+			{if isset($table)}
+			  {if $table eq 'grupos'}<th><center>PROMOTOR</center></th>{/if}
+			{/if}
 			<th style="vertical-align:middle"><center>UBICACIÓN</center></th>
 			<th style="vertical-align:middle" width="150"><center>LIBRO GRUPAL</center></th>
 			<th style="vertical-align:middle" width="300"><center>HORARIO</center></th>
@@ -21,6 +23,7 @@
 		    {/if}
 		  {/if}
 		</tr>
+		
 		{foreach $tablegrupos as $grupo}
 			<tr>
 				<td style="vertical-align:middle"><center>
@@ -31,10 +34,13 @@
 				  {/if}
 			  </center></td>
 				<td style="vertical-align:middle"><center>{$grupo.nombre}</center></td>
-				{if $table eq 'grupos'}
-				  <td style="vertical-align:middle">
-				    <center>{$grupo.nombre_promotor}</center>
-			    </td>{/if}
+				{if isset($table)} 
+  				{if $table eq 'grupos'}
+  				  <td style="vertical-align:middle">
+  				    <center>{$grupo.nombre_promotor}</center>
+  			    </td>
+  			  {/if}
+				{/if}
 				<td style="vertical-align:middle"><center>{$grupo.ubicacion}</center></td>
 				<td style="vertical-align:middle"><center>{$grupo.titulo}</center></td>
 				<td style="vertical-align:middle"><center>{$grupo.horario}</center></td>

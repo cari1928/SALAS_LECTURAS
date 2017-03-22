@@ -1279,7 +1279,7 @@ COPY usuarios (cveusuario, nombre, pass, clave, correo, estado_credito, validaci
 14031486	Ameca Tapia Itzel	81dc9bdb52d04dc20036dbd8313ed055	\N	itzy.1395@gmail.com	\N	Aceptado
 14030791	Alfaro Godínez Pilar Andrea	81dc9bdb52d04dc20036dbd8313ed055	\N	cosmica_andhe@hotmail.com	\N	Aceptado
 16031330	Gonzalez Conejo Daniel Alejandro	81dc9bdb52d04dc20036dbd8313ed055	\N	man3comic@gmail.com	\N	Aceptado
-HEH5671201K16	Hernández Hernández Sandra	2d1edd8c14b810504185d21cd6c5641f	\N	dpmaar@itcelaya.edu.mx	\N	Aceptado
+HEHS671201K16	Hernández Hernández Sandra	2d1edd8c14b810504185d21cd6c5641f	\N	dpmaar@itcelaya.edu.mx	\N	Aceptado
 12030818	Jimenez Palacios Jose Alberto	f891dfe4298fbb972ded2e4e9b8e4b7a	\N	12030818@itcelaya.edu.mx	\N	Aceptado
 14030333	Salinas Castillo Rocio Iczamari	81dc9bdb52d04dc20036dbd8313ed055	\N	14030333@itcelaya.edu.mx	\N	Aceptado
 13030903	Solórzano Girón Agustín	81dc9bdb52d04dc20036dbd8313ed055	\N	13030903@itcelaya.edu.mx	\N	Aceptado

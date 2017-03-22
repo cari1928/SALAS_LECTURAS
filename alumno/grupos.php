@@ -1,7 +1,9 @@
 <?php
 include "../sistema.php";
 
-if ($_SESSION['roles'] != 'U') {$web->checklogin();}
+if ($_SESSION['roles'] != 'U') {
+  $web->checklogin();
+}
 
 $web->iniClases('usuario', "index grupos");
 $grupos = $web->grupos($_SESSION['cveUser']);

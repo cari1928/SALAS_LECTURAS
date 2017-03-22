@@ -39,8 +39,8 @@ if(isset($_GET['info'])) {
   }
   
   $web->DB->startTrans();
-  $sql = "INSERT INTO lectura(nocontrol, cveletra) values(?,?)";
-  $web->query($sql, array($_SESSION['cveUser'], $datos[0]['cveletra']));
+  $sql = "INSERT INTO lectura(nocontrol, cveletra, cveperiodo) values(?, ?, ?)";
+  $web->query($sql, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
   
   $cvelectura = $web->DB->GetAll($query, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
   
@@ -54,8 +54,7 @@ if(isset($_GET['info'])) {
   }
   
   $web->DB->CompleteTrans();
-  die(); //?
-  header('Location: vergrupos.php');
+  header('Location: grupos.php');
     
 }
 
@@ -77,7 +76,7 @@ if(sizeof($datos) == 1) {
   $datos = array('data'=>$datos);
   
   for ($i = 0; $i < sizeof($datos['data']); $i++) {
-  	 $datos['data'][$i]['letra'] = "<a href='inscripcion.php?info=".$datos['data'][$i]['letra']."'>".$datos['data'][$i]['letra']."</a>";
+     $datos['data'][$i]['letra'] = "<a href='inscripcion.php?info=".$datos['data'][$i]['letra']."'>".$datos['data'][$i]['letra']."</a>";
   }
   
   $web->DB->SetFetchMode(ADODB_FETCH_NUM); 

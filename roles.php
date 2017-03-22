@@ -38,5 +38,5 @@ if(isset($_GET['accion'])){
             break;
         }
 }
-$web->smarty->assign('cambiorol', 'cambiorol');
-$web->smarty->display('roles.html');
+// $web->smarty->assign('cambiorol', 'cambiorol');
+// $web->smarty->display('roles.html');

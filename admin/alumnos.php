@@ -18,7 +18,9 @@ if (isset($_GET['accion'])) {
     case 'form_insert':
       $web->iniClases('admin', "index alumnos nuevo");
 
-      $sql   = "select cveespecialidad, nombre from especialidad order by nombre";
+      $sql   = "select cveespecialidad, nombre from especialidad
+      where cveespecialidad <> 'O'
+      order by nombre";
       $combo = $web->combo($sql, null, '../');
 
       $web->smarty->assign('cmb_especialidad', $combo);
@@ -442,7 +444,9 @@ function form_update_student($web)
     return false;
   }
 
-  $sql   = "select * from especialidad order by nombre";
+  $sql   = "select * from especialidad
+  where cveespecialidad <> 'O'
+  order by nombre";
   $combo = $web->combo($sql, $alumno[0]['cveespecialidad']);
 
   $web->iniClases('admin', "index alumnos actualizar");
@@ -476,10 +480,11 @@ function show_groups($web)
     return false;
   }
 
-  $sql = "select distinct laboral.cveperiodo, letra, nombre, ubicacion, nocontrol from laboral
+  $sql = "select distinct laboral.cveperiodo, letra, nombre, ubicacion, nocontrol, titulo from laboral
   inner join abecedario on laboral.cveletra = abecedario.cve
   inner join lectura on lectura.cveletra = abecedario.cve
   inner join sala on laboral.cvesala = sala.cvesala
+  inner join libro on libro.cvelibro = laboral.cvelibro_grupal
   where nocontrol = ? and laboral.cveperiodo = ? and lectura.cveperiodo = ? order by letra";
   $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo, $cveperiodo));
 
@@ -518,6 +523,7 @@ function show_groups($web)
   }
 
   $web->smarty->assign('tablegrupos', $tablegrupos);
+  
   $web->smarty->display('grupos.html');
   die();
 }

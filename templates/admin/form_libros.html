@@ -24,7 +24,7 @@
               {/if}
               <div class="form-group">
                 <label> Título </label> 
-                <input class="form-control" name="titulo" placeholder="Título del Libro" maxlength="100" required
+                <input class="form-control" name="titulo" placeholder="Título del Libro" maxlength="255" required
                 {if isset($libros)} value="{$libros.titulo}" {/if}>
               </div>
               <div class="form-group">
@@ -33,13 +33,13 @@
                 {if isset($libros)} value="{$libros.autor}" {/if}>
               </div>
               <div class="form-group">
-                <label> Editorial </label> 
-                <input class="form-control" name="editorial" placeholder="Editorial del Libro" maxlength="255" required
+                <label> Clasificación </label> 
+                <input class="form-control" name="editorial" placeholder="Clasificación" maxlength="25" required
                 {if isset($libros)} value="{$libros.editorial}" {/if}>
               </div>
               <div class="form-group">
-                <label> Precio </label> 
-                <input type="number" class="form-control" name="precio" placeholder="Precio del Libro" min="0" max="999999999999999" required
+                <label> Cantidad </label> 
+                <input type="number" class="form-control" name="precio" placeholder="Cantidad" min="0" max="999999999999999" required
                 {if isset($libros)} value="{$libros.precio}" {/if}>
               </div>
             </div>

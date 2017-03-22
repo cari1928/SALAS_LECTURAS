@@ -58,7 +58,10 @@ if (isset($_GET['accion'])) {
       $sql = "INSERT INTO periodo (fechainicio, fechafinal) values(?, ?)";
       $parameters = array($_POST['datos']['fechaInicio'], $_POST['datos']['fechaFinal']);
       $error = $web->query($sql, $parameters);
-      
+      $sql = "select * from periodo where fechainicio = ? and fechafinal = ?";
+      $cveperiodoNuevo = $web->DB->GetAll($sql, $parameters);
+      if(isset($cveperiodoNuevo[0]))
+        mkdir("../periodos/" . $cveperiodoNuevo[0][2] , 0777);
       //si hubo algún problema:
       if($web->DB->HasFailedTrans()) {
         //si el msg de error contiente periodouq:
@@ -163,9 +166,11 @@ for ($i = 0; $i < sizeof($periodos['data']); $i++) {
   //editar
   $periodos['data'][$i][4] = "<center><a href='periodos.php?accion=form_update&info2=" . $periodos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>"; 
   
-  if($_GET['accion'] == 'historial') {
-    //mostrar_grupos
-    $periodos['data'][$i][3] = "<center><a href='historial.php?accion=periodo&info1=" . $periodos['data'][$i][0]."'><img src='../Images/grupo.png'></a></center>";
+  if(isset($_GET['accion'])){
+    if($_GET['accion'] == 'historial') {
+      //mostrar_grupos
+      $periodos['data'][$i][3] = "<center><a href='historial.php?accion=periodo&info1=" . $periodos['data'][$i][0]."'><img src='../Images/grupo.png'></a></center>";
+    }  
   }
 }
 

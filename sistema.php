@@ -1,11 +1,13 @@
 <?php
 session_start();
+
 include 'config.php';
+
 define('PATHLIB', PATHAPP . LIB);
 include PATHLIB . 'adodb/adodb.inc.php';
-// include PATHLIB . 'adodb/adodb-errorpear.inc.php';
 include PATHLIB . 'smarty/libs/Smarty.class.php';
 include PATHLIB . 'phpmailer/PHPMailerAutoload.php';
+
 //clases del sistema
 class Conexion
 {

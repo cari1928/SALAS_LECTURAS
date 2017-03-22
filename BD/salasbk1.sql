@@ -1,3 +1,20 @@
+[6] => Array
+(
+    [0] => 14030429
+    [cveusuario] => 14030429
+    [1] => Brenda Cecilia Cerritos Coyote
+    [nombre] => Brenda Cecilia Cerritos Coyote
+    [2] => a626402e90178cce97ecb68fd84aa278
+    [pass] => a626402e90178cce97ecb68fd84aa278
+    [3] => 
+    [clave] => 
+    [4] => cecilia81995@hotmail.com
+    [correo] => cecilia81995@hotmail.com
+    [5] => No Permitido
+    [estado_credito] => No Permitido
+    [6] => Aceptado
+    [validacion] => Aceptado
+)
 --
 -- PostgreSQL database dump
 --
@@ -26,20 +43,25 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = public, pg_catalog;
 
 --
--- Name: añadeest(); Type: FUNCTION; Schema: public; Owner: admin
+-- Name: aï¿½adeest(); Type: FUNCTION; Schema: public; Owner: admin
 --
 
-CREATE FUNCTION "añadeest"() RETURNS trigger
+CREATE FUNCTION "aï¿½adeest"() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-  BEGIN
-       update sala set numalumnos = numalumnos + 1 where cvesala = NEW.cvesala;
-       RETURN NEW;
-  END;
+    AS $$
+
+  BEGIN
+
+       update sala set numalumnos = numalumnos + 1 where cvesala = NEW.cvesala;
+
+       RETURN NEW;
+
+  END;
+
 $$;
 
 
-ALTER FUNCTION public."añadeest"() OWNER TO admin;
+ALTER FUNCTION public."aï¿½adeest"() OWNER TO admin;
 
 SET default_tablespace = '';
 
@@ -1215,7 +1237,7 @@ S04	Biblioteca Campus 1	8
 COPY tipomsj (cvetipomsj, descripcion) FROM stdin;
 G	Grupal
 I	Individual
-PU	Público
+PU	Pï¿½blico
 \.
 
 
