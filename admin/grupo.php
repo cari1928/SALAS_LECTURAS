@@ -270,16 +270,21 @@ function mostrar_libros($web, $alumno)
   $combo      = $web->combo($sql, null, '../', $parameters);
 
   //Datos de la tabla = Libros
-  $sql = "select libro.cvelibro, titulo, autor, editorial, precio, estado, lectura.cvelectura, calif_reporte from lista_libros
+  $sql = "select libro.cvelibro, titulo, estado, lectura.cvelectura, calif_reporte from lista_libros
     inner join lectura on lista_libros.cvelectura = lectura.cvelectura
     inner join libro on libro.cvelibro = lista_libros.cvelibro
     inner join estado on estado.cveestado = lista_libros.cveestado
     where nocontrol=? and lectura.cvelectura=?
     order by titulo";
-  $libros = $web->DB->GetAll($sql, array($alumno[0]['nocontrol'], $alumno[0]['cvelectura']));
+  $tmp = array($alumno[0]['nocontrol'], $alumno[0]['cvelectura']);
+  $libros = $web->DB->GetAll($sql, $tmp);
+  
+  // echo $sql;q
+  // $web->debug($tmp);
 
   if (!isset($libros[0])) {
     $web->simple_message('warning', 'No hay libros registrados');
+    
     //La agregue por que no mandaba la cvelectura si no se encontraba algun libro registrado
     $web->smarty->assign('cvelectura', $alumno[0]['cvelectura']); 
   } else {

@@ -69,19 +69,20 @@ $datos        = array('data' => $promotores);
 //contenido de las colummnas
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
   
-  if ($flag != 'historial') {
-    //eliminar
-    $datos['data'][$i][4] = "promotor.php?accion=delete&info1=" . $datos['data'][$i][0];
+  if (!isset($flag[0])) {
+    
     //editar
     $datos['data'][$i][5] = "<center><a href='promotor.php?accion=form_update&info1=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
     //mostrar_grupos
     $datos['data'][$i][6] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
     
   } else {
+    $web->smarty->assign('bandera', true);
+    
     //mostrar grupos
     $datos['data'][$i][4] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "&info2=".$_GET['info1']."'><img src='../Images/mostrar.png'></a></center>";
     //reporte pdf
-    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";
   }
   
 }

@@ -75,28 +75,22 @@ if(isset($_POST['datos'])) {
   
   if (!isset($_POST['datos']['cveeval']) ||
       !isset($_POST['datos']['comprension']) ||
-      !isset($_POST['datos']['motivacion']) ||
       !isset($_POST['datos']['participacion']) || 
       !isset($_POST['datos']['asistencia']) ||
       !isset($_POST['datos']['actividades']) ||
-      !isset($_POST['datos']['terminado']) ||
       !is_numeric($_POST['datos']['cveeval']) ||
       !is_numeric($_POST['datos']['comprension']) ||
-      !is_numeric($_POST['datos']['motivacion']) ||
       !is_numeric($_POST['datos']['participacion']) || 
       !is_numeric($_POST['datos']['asistencia']) ||
-      !is_numeric($_POST['datos']['actividades']) || 
-      !is_numeric($_POST['datos']['terminado'])) {
+      !is_numeric($_POST['datos']['actividades'])) {
         message("danger", "No alteres la estructura de la interfaz", $web);
   }
   
   if($_POST['datos']['cveeval'] < 0 ||
     $_POST['datos']['comprension'] < 0 ||
-    $_POST['datos']['motivacion'] < 0 ||
     $_POST['datos']['participacion'] < 0 || 
     $_POST['datos']['asistencia'] < 0 ||
-    $_POST['datos']['actividades'] < 0 || 
-    $_POST['datos']['terminado'] < 0) {
+    $_POST['datos']['actividades'] < 0) {
       message("danger", "Ingrese solo valores positivos", $web);
     }
   
@@ -111,16 +105,13 @@ if(isset($_POST['datos'])) {
   }
   
   $web->DB->startTrans(); //por si hay errores durante la ejecusión del query
-  $sql = "update evaluacion set comprension=?, motivacion=?, participacion=?, asistencia=?,
-  actividades=?, terminado=? 
-  where cveeval=?";
+  $sql = "update evaluacion set comprension=?, participacion=?, asistencia=?,
+  actividades=? where cveeval=?";
   $parametros = array(
     $_POST['datos']['comprension'], 
-    $_POST['datos']['motivacion'], 
     $_POST['datos']['participacion'],
     $_POST['datos']['asistencia'],
     $_POST['datos']['actividades'],
-    $_POST['datos']['terminado'],
     $_POST['datos']['cveeval']);
   $web->query($sql, $parametros);
     
@@ -143,9 +134,9 @@ $datos_rs = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo, $gru
 $web->smarty->assign('info', $datos_rs[0]);
 
 //Datos de la tabla = Alumnos
-$sql   = "select distinct usuarios.nombre, comprension, motivacion, participacion, 
-terminado, asistencia, actividades, nocontrol, cveeval, lectura.cveperiodo, lectura.cvelectura, 
-asistencia from lectura 
+$sql   = "select distinct usuarios.nombre, comprension, participacion, 
+terminado, asistencia, reporte, actividades, nocontrol, cveeval, lectura.cveperiodo, 
+lectura.cvelectura, asistencia from lectura 
 inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
 inner join abecedario on lectura.cveletra = abecedario.cve 
 inner join usuarios on lectura.nocontrol = usuarios.cveusuario 

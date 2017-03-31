@@ -11,6 +11,7 @@ include PATHLIB . 'phpmailer/PHPMailerAutoload.php';
 //clases del sistema
 class Conexion
 {
+  
   public function Conectar()
   {
     $this->server   = DB_DBMS;
@@ -108,7 +109,11 @@ class Sistema extends Conexion
   public function tipoCuenta()
   {
     $sql      = "select nombre from usuarios where cveusuario='" . $_SESSION['cveUser'] . "'";
+    $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     $datos_rs = $this->DB->GetAll($sql);
+
+    // $this->debug($datos_rs);
+
     $nombre   = $datos_rs[0]['nombre'];
     $cadena   = explode(" ", $nombre);
     if ($_SESSION['roles'] == 'A') {

@@ -44,13 +44,22 @@ if(isset($_GET['info'])) {
   
   $cvelectura = $web->DB->GetAll($query, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
   
-  $sql = "INSERT INTO evaluacion(comprension, motivacion, participacion, terminado, asistencia, actividades, cvelectura) values(0, 0, 0, 0, 0, 0, ?)";
+  $sql = "INSERT INTO evaluacion(comprension, participacion, terminado, asistencia, actividades, cvelectura) values(0, 0, 0, 0, 0, ?)";
   $web->query($sql, $cvelectura[0]['cvelectura']);
   
   if($web->DB->HasFailedTrans()) {
     $web->simple_message('danger', 'No fue posible realizar la inscripción');
     $web->smarty->display("inscripcion.html");
     die();
+  }
+  $sql = "select * from lectura where nocontrol = ? and cveperiodo = ?";
+  $lectura_folder = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
+  if(isset($lectura_folder[0])){
+      $sql = "select letra from abecedario where cve = ?";
+      $letra_folder = $web->DB->GetAll($sql, $datos[0]['cveletra']);
+      if(isset($letra_folder[0][0])){
+        mkdir("../periodos/" . $cveperiodo. "/" . $letra_folder[0][0] . "/" . $_SESSION['cveUser'] , 0777); 
+      }
   }
   
   $web->DB->CompleteTrans();

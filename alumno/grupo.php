@@ -44,12 +44,18 @@
         order by titulo";
         $combo = $web->combo($sql, null, '../', array($lectura[0]['nocontrol'], $cveperiodo, $_GET['info1']));
         
-        $sql = "select titulo, autor, editorial from lista_libros 
+        $sql = "select libro.cvelibro, titulo, estado from lista_libros 
+          inner join estado on estado.cveestado = lista_libros.cveestado
           inner join lectura on lista_libros.cvelectura = lectura.cvelectura
           inner join libro on libro.cvelibro = lista_libros.cvelibro
           where nocontrol=? and lectura.cvelectura=?
           order by titulo";
-        $libros = $web->DB->GetAll($sql, array($lectura[0]['nocontrol'], $_GET['info1']));
+        $tmp = array($lectura[0]['nocontrol'], $_GET['info1']);
+        $libros = $web->DB->GetAll($sql, $tmp);
+        
+        // echo $sql;
+        // $web->debug($tmp);
+        // $web->debug($libros);
         
         if(!isset($libros[0])) {
           $web->smarty->assign('alert', 'warning');
@@ -96,7 +102,8 @@
           message("danger", "No altere la estructura de la interfaz", $web);
         }
         
-        $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo) values (?, ?, ?)";
+        $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo, cveestado) 
+        values (?, ?, ?, 1)";
         $web->query($sql, array($cvelibro, $cvelectura, $cveperiodo));
         // header('Location: grupo.php?info1='.$lectura[0]['letra']);
         header('Location: grupo.php?accion=form_libro&info1='.$cvelectura);
@@ -143,8 +150,8 @@
 
   $tmp = array($grupo, $cveperiodo, $_SESSION['cveUser']);
   //Datos de la tabla = Alumnos
-  $sql   = "select distinct usuarios.nombre, asistencia, comprension, motivacion, reporte, tema, asistencia, 
-  actividades, participacion, terminado, nocontrol, cveeval, lectura.cveperiodo, 
+  $sql   = "select distinct usuarios.nombre, asistencia, comprension, reporte,
+  asistencia, actividades, participacion, terminado, nocontrol, cveeval, lectura.cveperiodo, 
   lectura.cvelectura from lectura
   inner join evaluacion on evaluacion.cvelectura = lectura.cvelectura 
   inner join abecedario on lectura.cveletra = abecedario.cve 
