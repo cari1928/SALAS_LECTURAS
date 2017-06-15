@@ -1,5 +1,6 @@
 {include file="header.html"}
 {$ruta}
+{if isset($msg)}{include file='../mensajes.html'}{/if}
 <link rel="stylesheet" type="text/css" href="../css/menu.css">
 <nav id="colorNav">
 	<ul>
@@ -26,6 +27,10 @@
 		</li>
 		<li  id="icon" class="green">
 		  <a href="avisos.php" ><center><img src="../Images/aviso.png"> Avisos</center></a>
+		</li>
+		<li  id="icon" class="green">
+		  <a href="formato_preguntas.php" ><center><img src="../Images/aviso.png"> 
+		  <font size=4>Formato Preguntas</font></center></a>
 		</li>
 		<li  id="icon" class="green">
 		  <a href="administradores.php"><center><img src="../Images/admin.png">

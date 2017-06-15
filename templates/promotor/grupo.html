@@ -1,6 +1,7 @@
 {include file="header.html"}
 	{$ruta} 
 	{include file='../number_style.html'}
+	{if isset($msg)}{include file='../mensajes.html'}{/if}
 
 	{if isset($info)}
 		<center><div class="form-group" style ="background-color:#f0f0f0"><label>
@@ -10,8 +11,13 @@
 			Grupo: {$info.letra}
 		</div></center>
 	{/if}
-
-	{if isset($msg)}{include file='../mensajes.html'}{/if}
+	
+	{if isset($formato_preguntas)}
+		<a href="grupo.php?accion=formato_preguntas"> 
+  	<img src="../Images/reporte.png"></a>
+	{else}
+		<img src="../Images/noexiste.png"></a>
+	{/if}
 
 	{if isset($datos)}
 		<table class='table table-striped' width='500'>
@@ -106,7 +112,7 @@
 								<img src="../Images/sobre.png">
 							</a>
 							<input type="submit" style='display: none'/>
-							<a href="grupo.php?accion=libros&info={$alumno.cvelectura}">
+							<a href="grupo.php?accion=libros&info={$alumno.cvelectura}&info2={$alumno.nocontrol}">
 								<img src="../Images/libros.png">
 							</a>
 						</td>
@@ -120,24 +126,45 @@
 		<div class="page-header">
 	    <h2>Lista de Libros del Alumno</h2>
 	  </div>
-	  <table class='table table-striped'>
+	  <table class='table table-striped' width='500'>
 	    <tr>
 	    	<th><center>CLAVE</center></th>
 				<th><center>TITULO</center></th>
 				<th><center>ESTADO</center></th>
 				<th><center>REPORTE</center></th>
-				<th><center>CALIFICACIÓN</center></th>
+				<th width='500'><center>CALIFICACIÓN</center></th>
 			</tr>
 			{foreach $libros as $libro}
-				<tr>
-					<td><center>{$libro.cvelibro}</center></td>
-					<td><center>{$libro.titulo}</center></td>
-					<td><center>{$libro.estado}</center></td>
-					<td><center>
-					  <a href="grupo.php?accion=reporte&info1={$libro.cvelibro}"> 
-					  <img src="../Images/reporte.png"></a>
-					</center></td>
-					<td><center>{$libro.calif_reporte}</center></td>
+			<tr>
+				<form class='form - inline' action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={
+				$libro.cvelectura}&info3={$libro.nocontrol}" method='post' >
+					
+						<td><center>{$libro.cvelibro}</center></td>
+						<td><center>{$libro.titulo}</center></td>
+						<td><center>{$libro.estado}</center></td>
+						<td><center>
+							{if isset($libro.archivoExiste)}
+								<a href="grupo.php?accion=reporte&info1={$libro.cvelibro}&info2={$libro.cvelectura}&info3={$libro.archivoExiste}"> 
+						  	<img src="../Images/reporte.png"></a>
+							{else}
+								<img src="../Images/noexiste.png"></a>
+							{/if}
+						</center></td>
+						
+						<td width='500'>
+							<center>
+						 	<div id="myprogress" style=" position: relative; width: 130px; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: {$libro.calif_reporte}% ;height: 100%; background-color: #4caf50;">
+						 			<div id="label"style="text-align: center; line-height: 30px; color: white;">
+						 				{$libro.calif_reporte}% 
+						 			</div>
+						 		</div>
+						 	</div>
+						 </br>
+					 		<input type="number" class="form-control" name="calificacion" required value = "{$libro.calif_reporte}" style="width:65px ; display:block; "maxlength="3" />
+					 		<input type="submit" style='display: none'/>
+					 	</center>
+						</td>
+					</form>
 				</tr>
 			{/foreach}
 		</table>

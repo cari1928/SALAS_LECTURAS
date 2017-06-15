@@ -10,7 +10,7 @@
 		</td></tr>
 	{else}
 		<tr><td colspan='4' align='right'>
-			<a class="btn btn-primary active" href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}' title='Reporte Promotores-Periodos'>
+			<a class="btn btn-primary active" id="pdf-button" href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}' title='Reporte Promotores-Periodos'>
 			  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Reporte General
 			</a>
 		</td></tr>
@@ -95,6 +95,7 @@
 	    {/if}
 	    
     } );
+    
   </script>
 {/if}
 

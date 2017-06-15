@@ -14,10 +14,61 @@
   if ($cveperiodo == "") {
     message('danger', 'No hay periodos actuales', $web);  
   }
+  
+  $nombre_fichero = "/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf";
+  if (file_exists($nombre_fichero)) {
+      $web->smarty->assign('formato_preguntas', true);
+  }
 
   if(isset($_GET['accion'])) {
     
     switch ($_GET['accion']) {
+      
+      case 'fileinput':
+        if(!isset($_GET['info1'])){
+          message('danger', 'Información incompleta', $web);
+        }
+        
+        $sql = "select letra from abecedario where cve in (select cveletra from lectura where cvelectura = ?)";
+        
+        $letra_subida = $web->DB->GetAll($sql, $_GET['info1']);
+        if(!isset($letra_subida[0])){
+          message('danger', 'No existe el grupo', $web);
+        }
+        $dir_subida ="/home/ubuntu/workspace/periodos" . "/" . $cveperiodo . "/" . $letra_subida[0][0] . "/" . $_SESSION['cveUser']."/";
+      
+        if($_FILES['datos']['size']['archivo'] > 1000000){
+          message('danger', 'El archivo es mayor a un MB.', $web);
+        }
+        if($_FILES['datos']['type']['archivo'] != 'application/pdf'){
+             message('danger', 'Solo esta permitido subir archivos de tipo .pdf', $web);
+           }
+
+        if(!isset($_POST['datos']['reporte'])){
+          message('danger', 'Información incompleta', $web);
+        }
+        
+        $sql = "select cvelibro from libro where cvelibro = ?";
+        $cvelibro_subida = $web->DB->GetAll($sql, $_POST['datos']['reporte']);
+        if(!isset($cvelibro_subida[0])){
+          message('danger', 'El libro no existe', $web);
+        }
+        //NOMBRE ARCHIVO:        $cvelibro_subida[0][0]."_".$_SESSION['cveUser']
+       $nombre = $cvelibro_subida[0][0]."_".$_SESSION['cveUser'].".pdf";
+       if (move_uploaded_file($_FILES['datos']['tmp_name']['archivo'], $dir_subida.$nombre)){
+         message('success', 'Se subio el reporte satisfactoriamente', $web);
+       }
+       else{
+         message('danger', 'Ocurrio un error mientras se subia el archivo', $web);
+       }
+        // if (move_uploaded_file($_FILES['datos']['name']['archivo'], $fichero_subido)) {
+        //     echo "El fichero es válido y se subió con éxito.\n";
+        // } else {
+        //     echo "¡Posible ataque de subida de ficheros!\n";
+        // }
+        //print_r($_FILES);
+        //die();
+        break;
       
       case 'form_libro':
         if (!isset($_GET['info1'])) {
@@ -102,11 +153,17 @@
           message("danger", "No altere la estructura de la interfaz", $web);
         }
         
-        $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo, cveestado) 
-        values (?, ?, ?, 1)";
+        $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo, cveestado, calif_reporte) 
+        values (?, ?, ?, 1, 0)";
         $web->query($sql, array($cvelibro, $cvelectura, $cveperiodo));
         // header('Location: grupo.php?info1='.$lectura[0]['letra']);
         header('Location: grupo.php?accion=form_libro&info1='.$cvelectura);
+        break;
+        
+      case 'formato_preguntas':
+        header("Content-disposition: attachment; filename=formato_preguntas.pdf");
+        header("Content-type: MIME");
+        readfile("/home/ubuntu/workspace/pdf/" .$cveperiodo. "/formato_preguntas.pdf");
         break;
       
     }

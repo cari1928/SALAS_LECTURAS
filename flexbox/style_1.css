@@ -1,0 +1,41 @@
+body 
+{
+    background: #ECF0F1;
+}
+
+.contenedor 
+{
+    width: 500px;
+    height: 200px;
+    background: #33CCCC;
+    padding: 10px;
+    border: 10px solid #2980B9;
+    margin: 20px;
+    
+    /*flexbox*/
+    display:-webkit-flex;
+    display:-ms-flexbox;
+    display: flex; /*caja en línea flexible*/
+    /*
+        establece la direccion en la que se pondrán las 'cajas'
+        opciones: row | column | row-reverse | column-reverse 
+    */
+    flex-direction: row;
+    /*
+        opciones: 
+        no-wrap : si los elementos no caben, los redimensiona para que quepan en una sola linea
+        wrap    : si los elementos no caben los pasa al siguiente renglon 
+        wrap-reverse : 
+    */
+    flex-wrap:;
+}
+
+.elemento
+{
+    color: #2C3E50;
+    margin: 5px;
+    width: 50px;
+    height: 50px; /*para que no abarquen todo el alto del contenedor*/
+    background: #F8F6F6;
+    text-align: center;
+}

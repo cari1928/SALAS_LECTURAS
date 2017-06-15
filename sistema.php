@@ -872,6 +872,26 @@ class Sistema extends Conexion
     $pageName = $this->smarty->getTemplateVars();
     $this->debug($pageName);
   }
+  
+  
+  function authentication(){
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+		    header('WWW-Authenticate: Basic realm="Mi dominio"');
+		    header('HTTP/1.0 401 Unauthorized');
+		    echo 'Se a cancelado la autenticacion';
+		    exit;
+		} else {
+		    if($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root'){
+		    	return true;
+		    }
+		    else{
+		    	echo 'Autenticacion no valida';
+		    	return false;
+		    }
+		}
+		header('Content-Type: aplication/json');
+	}
+  
 }
 
 //----------------------------------------------------------------------------------------
@@ -887,6 +907,56 @@ function recuperaid($email)
     }
     return ($id);
   }
+  
+  function authentication(){
+		if (!isset($_SERVER['PHP_AUTH_USER'])) {
+		    header('WWW-Authenticate: Basic realm="Mi dominio"');
+		    header('HTTP/1.0 401 Unauthorized');
+//		    echo 'Se a cancelado la autenticacion';
+		    exit;
+		} else {
+		    if($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root'){
+		    	return true;
+		    }
+		    else{
+//SSS		    	echo 'Autenticacion no valida';
+		    	return false;
+		    }
+		}
+		header('Content-Type: aplication/json');
+	}
+	
+	function verificar($usuario, $password, $token){
+    $sql = "select * from usuarios where cveusuario = ? and pass = ?";
+    $parameters = array($usuario, $password);
+    $usr = $this->DB->GetAll($sql, $parameters);
+    
+    if(!isset($usr[0])){
+      $this->status("Error", "No existe el usuario");
+    }
+
+    $sql = "select * from bitacora "
+          . "where cveusuario = ? and "
+          . "pass = ? and "
+          . "token = ? and "
+          . "now() between fecini and fecfin";
+    $parameters = array($usuario, $password, $token);
+    $res = $this->DB->GetAll($sql, $parameters);
+    if(!isset($res[0])){
+      $this->status("Error", "No se puede verificar el token o ya expiro");
+    }
+    return true;
+  }
+  
+  function status($status, $mensaje){
+    $message['status'] = $status;
+    $message['message'] = $mensaje;
+    $message=json_encode($message);
+    http_response_code(200);
+    echo $message;
+    die();
+  }
+  
 }
 //instanciamos web
 $web = new Sistema;

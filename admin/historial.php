@@ -50,10 +50,7 @@ header("Location: periodos.php?accion=historial");
 function message($iniClases, $msg, $alert, $web)
 {
   $web->iniClases('admin', $iniClases);
-
-  $web->smarty->assign('alert', $alert);
-  $web->smarty->assign('msg', $msg);
-
+  $web->simple_message('alert', $msg);
   $web->smarty->display('historial.html');
   die();
 }

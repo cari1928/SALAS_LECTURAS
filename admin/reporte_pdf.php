@@ -14,8 +14,8 @@ if (isset($_GET['accion'])) {
   if (!isset($_GET['info1'])) {
     header('Location: periodos.php?accion=historial&e=1');
   }
-  $tipo_archivo = $_GET['info1'];
-  $html_code    = getHeader();
+  $tipo_archivo = $_GET['info1']; 
+  $html_code    = getHeader(); //no se necesita si se va a usar jspdf
 
   switch ($_GET['accion']) {
 
@@ -95,6 +95,10 @@ $html_code .= getFooter();
 
 //para ver el código en la página web
 // echo $html_code;
+
+$web->smarty->assign('pdf', $html_code);
+// header();
+
 
 //para ver el código en pdf
 $dompdf = new Dompdf();

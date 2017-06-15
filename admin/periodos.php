@@ -61,7 +61,10 @@ if (isset($_GET['accion'])) {
       $sql = "select * from periodo where fechainicio = ? and fechafinal = ?";
       $cveperiodoNuevo = $web->DB->GetAll($sql, $parameters);
       if(isset($cveperiodoNuevo[0]))
+      {
         mkdir("../periodos/" . $cveperiodoNuevo[0][2] , 0777);
+        mkdir("../pdf/" . $cveperiodoNuevo[0][2] , 0777);
+      }
       //si hubo algún problema:
       if($web->DB->HasFailedTrans()) {
         //si el msg de error contiente periodouq:

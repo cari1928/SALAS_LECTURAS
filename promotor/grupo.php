@@ -15,6 +15,11 @@ if ($cveperiodo == "") {
   message('danger', 'No hay periodos actuales', $web);  
 }
 
+$nombre_fichero = "/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf";
+if (file_exists($nombre_fichero)) {
+    $web->smarty->assign('formato_preguntas', true);
+}
+
 if(isset($_GET['accion'])) {
   
   switch($_GET['accion']) {
@@ -37,9 +42,20 @@ if(isset($_GET['accion'])) {
         where nocontrol=? and lectura.cveperiodo=?
         order by libro.cvelibro";
       $libros = $web->DB->GetAll($sql, array($lectura[0]['nocontrol'], $cveperiodo));
+      //echo "<pre>";
+      //print_r($libros);
+      //die();
       if(!isset($libros[0])) {
         $web->simple_message('warning', 'No hay libros registrados');
       } else {
+        $sql = "select letra from abecedario where cve = ?";
+        $letra_subida = $web->DB->GetAll($sql, $libros[0]["cveletra"]);
+        for ($i = 0; $i < count($libros); $i++) {
+          $nombre_fichero = "/home/ubuntu/workspace/periodos/" . $libros[$i]["cveperiodo"] . "/" . $letra_subida[0][0] . "/" . $libros[$i]["nocontrol"]."/".$libros[$i]["cvelibro"]."_".$libros[$i]["nocontrol"].".pdf";
+          if (file_exists($nombre_fichero)) {
+              $libros[0]["archivoExiste"] = explode("/home/ubuntu/workspace/periodos/",$nombre_fichero)[1];
+          }
+        }
         $web->smarty->assign('libros', $libros);
       }
       
@@ -49,8 +65,56 @@ if(isset($_GET['accion'])) {
       break;  
     
     case 'reporte':
-      
+      header("Content-disposition: attachment; filename=". $_GET['info3']);
+      header("Content-type: MIME");
+      readfile("/home/ubuntu/workspace/periodos/" . $_GET['info3']);
       break;
+    
+    case 'calificar_reporte': //info1 = cvelista, info2 = cvelectura, info3 = nocontrol
+      
+      $cveperiodo = $web->periodo();
+      if ($cveperiodo == "") {
+        message('danger', 'No hay periodos actuales', $web);  
+      }
+         
+      if(!isset($_POST['calificacion']) || !isset($_GET['info1']) || !isset($_GET['info3']) || !isset($_GET['info3'])){
+        message('danger', 'Falta información', $web);
+      }
+      
+      $sql = "select * from lectura where cveperiodo = ? and cvelectura = ?";
+      $existencia = $web->DB->GetAll($sql, array($cveperiodo, $_GET['info2']));
+      if(!isset($existencia[0])){
+        message('danger', 'No existe la lectura', $web);
+      }
+      
+      $existencia = "";
+      $sql = "select * from usuarios where cveusuario = ?";
+      $existencia = $web->DB->GetAll($sql, array($cveperiodo, $_GET['info3']));
+      if(!isset($existencia[0])){
+        message('danger', 'No existe el alumno', $web);
+      }
+      
+      $existencia = "";
+      $sql = "select * from laboral where cveletra in (select cveletra from lectura where cvelectura = ? and cveperiodo = ?)";
+      $existencia = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo));
+      if(!isset($existencia[0])){
+        message('danger', 'No tienes permisos', $web);
+      }
+      
+      if($_POST['calificacion'] == ""){
+        message('danger', 'No se envio la calificación del reporte', $web);
+      }
+      
+      $sql = "update lista_libros set calif_reporte = ? where cvelist = ? ";
+      $web->query($sql, array($_POST['calificacion'], $_GET['info1']));
+        
+      break;
+      
+      case 'formato_preguntas':
+        header("Content-disposition: attachment; filename=formato_preguntas.pdf");
+        header("Content-type: MIME");
+        readfile("/home/ubuntu/workspace/pdf/" .$cveperiodo. "/formato_preguntas.pdf");
+        break;
   }
 }
 

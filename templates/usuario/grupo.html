@@ -1,5 +1,6 @@
 {include file="header.html"}
 	{$ruta}
+	{if isset($msg)}{include file='../mensajes.html'}{/if}
 	{if isset($info)}
 		<center>
 			<div class="form-group" style ="background-color:#f0f0f0">
@@ -13,13 +14,14 @@
 			</div>
 		</center>
 	{/if}
-	{if isset($msg)}
-		<div class="alert alert-{$alert} alert-dismissible" role="alert">
-		  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-	  		<span aria-hidden="true">&times;</span></button>
-		  <strong>¡Aviso!</strong> {$msg}
-		</div>
+	
+	{if isset($formato_preguntas)}
+		<a href="grupo.php?accion=formato_preguntas"> 
+  	<img src="../Images/reporte.png"></a>
+	{else}
+		<img src="../Images/noexiste.png"></a>
 	{/if}
+	
 	{if isset($datos)}
 		<table class='table table-striped' width='500'>
 			<tr>
