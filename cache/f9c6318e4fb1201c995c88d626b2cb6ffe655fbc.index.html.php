@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 21:52:51
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:05:50
   from "/home/ubuntu/workspace/templates/usuario/index.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_594301b3afeae4_67298144',
+  'unifunc' => 'content_594312cec3c118_16682747',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_594301b3afeae4_67298144 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594312cec3c118_16682747 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,7 +103,7 @@ function content_594301b3afeae4_67298144 (Smarty_Internal_Template $_smarty_tpl)
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Lecturas<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              No existentes     
+              <li><a href= "grupos.php">Ver todos</a></li><li><a href= "grupo.php?info1=A">A - SALA - A - SALA DE USOS MÚLTIPLES</a></li>     
           </ul>
         </li>
       </ul>

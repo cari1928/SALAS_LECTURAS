@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 22:49:49
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:28:45
   from "/home/ubuntu/workspace/templates/promotor/grupo.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_59430f0db9c6f3_76985203',
+  'unifunc' => 'content_5943182dc10b99_94321937',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'dd30dddbe76326c3f4c52577113bad4ba39ce7b6' => 
     array (
       0 => '/home/ubuntu/workspace/templates/promotor/grupo.html',
-      1 => 1497566926,
+      1 => 1497568309,
       2 => 'file',
     ),
     '246c672fe5ca3256d40504dd670153229332191f' => 
@@ -27,12 +27,6 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
       1 => 1483157581,
       2 => 'file',
     ),
-    '0b5304a616af053f0b7d16b3621a08b1f4165200' => 
-    array (
-      0 => '/home/ubuntu/workspace/templates/mensajes.html',
-      1 => 1485650237,
-      2 => 'file',
-    ),
     'a9e0edeadee9c06e616cb537b0f2f7478fb53624' => 
     array (
       0 => '/home/ubuntu/workspace/templates/promotor/footer.html',
@@ -42,7 +36,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_59430f0db9c6f3_76985203 (Smarty_Internal_Template $_smarty_tpl) {
+function content_5943182dc10b99_94321937 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -129,7 +123,7 @@ function content_59430f0db9c6f3_76985203 (Smarty_Internal_Template $_smarty_tpl)
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-	<div><label><a href="index.php">index</a></label> > <label><a href="grupos.php">grupos</a></label> > <label>grupo</label></div> 
+	<div><label><a href="index.php">index</a></label> > <label><a href="grupos.php">grupos</a></label> > <label>libros</label></div> 
 	<style>
   input[type=number]::-webkit-outer-spin-button,
   input[type=number]::-webkit-inner-spin-button {
@@ -141,17 +135,47 @@ function content_59430f0db9c6f3_76985203 (Smarty_Internal_Template $_smarty_tpl)
       -moz-appearance:textfield;
   }
 </style>
-		<div class="alert alert-danger alert-dismissible" role="alert">
-	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  		<span aria-hidden="true">&times;</span></button>
-	  <strong>¡Aviso!</strong> Información incompleta
-	</div>
-
-		
-			<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
 	
 	
+	
+			<div class="page-header">
+	    <h2>Lista de Libros del Alumno</h2>
+	  </div>
+	  <table class='table table-striped' width='500'>
+	    <tr>
+	    	<th><center>CLAVE</center></th>
+				<th><center>TITULO</center></th>
+				<th><center>ESTADO</center></th>
+				<th><center>REPORTE</center></th>
+				<th width='500'><center>CALIFICACIÓN</center></th>
+			</tr>
+						<tr>
+				<form class='form - inline' action="grupo.php?accion=calificar_reporte&info1=13&info2=24&info3=22222222" method='post' >
+					
+						<td><center>14</center></td>
+						<td><center>Alera</center></td>
+						<td><center>En Espera</center></td>
+						<td><center>
+															<a href="grupo.php?accion=reporte&info1=14&info2=24&info3=8/A/22222222/14_22222222.pdf"> 
+						  	<img src="../Images/reporte.png"></a>
+													</center></td>
+						
+						<td width='500'>
+							<center>
+						 	<div id="myprogress" style=" position: relative; width: 130px; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: 44% ;height: 100%; background-color: #4caf50;">
+						 			<div id="label"style="text-align: center; line-height: 30px; color: white;">
+						 				44% 
+						 			</div>
+						 		</div>
+						 	</div>
+						 </br>
+					 		<input type="number" class="form-control" name="calificacion" required value = "44" style="width:65px ; display:block; "maxlength="3" />
+					 		<input type="submit" style='display: none'/>
+					 	</center>
+						</td>
+					</form>
+				</tr>
+					</table>
 		</body>
 </html>
 <?php }

@@ -1,29 +1,30 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-04-28 04:46:09
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:05:56
   from "/home/ubuntu/workspace/templates/usuario/form_libro.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_5902c9110974a0_63961488',
+  'unifunc' => 'content_594312d41a5ca7_87386248',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4050d910f53c890fb27b55c0827ef16e88914da4' => 
     array (
       0 => '/home/ubuntu/workspace/templates/usuario/form_libro.html',
-      1 => 1493354690,
+      1 => 1497563702,
       2 => 'file',
     ),
   ),
   'includes' => 
   array (
     'file:header.html' => 1,
+    'file:../mensajes.html' => 1,
     'file:footer.html' => 1,
   ),
 ),false)) {
-function content_5902c9110974a0_63961488 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '12037794455902c911069eb0_31938278';
+function content_594312d41a5ca7_87386248 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '1899252550594312d4159a63_82161311';
 $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
 ?>
 
@@ -32,15 +33,11 @@ $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_s
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-      <?php if (isset($_smarty_tpl->tpl_vars['msg']->value)) {?>
-      	<div class="alert alert-<?php echo $_smarty_tpl->tpl_vars['alert']->value;?>
- alert-dismissible" role="alert">
-      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      	    <span aria-hidden="true">&times;</span></button>
-      	  <strong>¡Aviso!</strong> <?php echo $_smarty_tpl->tpl_vars['msg']->value;?>
-
-      	</div>
-      <?php }?>
+      
+      <?php if (isset($_smarty_tpl->tpl_vars['msg']->value)) {
+$_smarty_tpl->_subTemplateRender("file:../mensajes.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
+}?>
+      
       <form action="grupo.php?accion=insert" method="post">
         <div class="panel panel-default">
           <div class="panel-heading">

@@ -11,15 +11,13 @@
 			Grupo: {$info.letra}
 		</div></center>
 	{/if}
-	
-	{if isset($formato_preguntas)}
-		<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-	{else}
-		<img src="../Images/noexiste.png"></a>
-	{/if}
 
 	{if isset($datos)}
+		{if isset($formato_preguntas)}
+			<a href="grupo.php?accion=formato_preguntas"> 
+	  	<img src="../Images/reporte.png"></a>
+		{/if}
+	
 		<table class='table table-striped' width='500'>
 			<tr>
 				<th><center>ALUMNO</center></th>
@@ -136,8 +134,7 @@
 			</tr>
 			{foreach $libros as $libro}
 			<tr>
-				<form class='form - inline' action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={
-				$libro.cvelectura}&info3={$libro.nocontrol}" method='post' >
+				<form class='form - inline' action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={$libro.cvelectura}&info3={$libro.nocontrol}" method='post' >
 					
 						<td><center>{$libro.cvelibro}</center></td>
 						<td><center>{$libro.titulo}</center></td>

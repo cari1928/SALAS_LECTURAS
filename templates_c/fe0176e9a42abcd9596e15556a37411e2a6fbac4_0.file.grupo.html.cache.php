@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 22:39:19
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:05:53
   from "/home/ubuntu/workspace/templates/usuario/grupo.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_59430c97423160_26446789',
+  'unifunc' => 'content_594312d1bd7d04_89211672',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'fe0176e9a42abcd9596e15556a37411e2a6fbac4' => 
     array (
       0 => '/home/ubuntu/workspace/templates/usuario/grupo.html',
-      1 => 1497566264,
+      1 => 1497567838,
       2 => 'file',
     ),
   ),
@@ -23,8 +23,8 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:footer.html' => 1,
   ),
 ),false)) {
-function content_59430c97423160_26446789 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '99581484359430c9739be41_22266055';
+function content_594312d1bd7d04_89211672 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '443864272594312d1b44260_96415876';
 $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
 ?>
 
@@ -53,14 +53,13 @@ $_smarty_tpl->_subTemplateRender("file:../mensajes.html", $_smarty_tpl->cache_id
 		</center>
 	<?php }?>
 	
-	<?php if (isset($_smarty_tpl->tpl_vars['formato_preguntas']->value)) {?>
-		<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-	<?php } else { ?>
-		<img src="../Images/noexiste.png"></a>
-	<?php }?>
-	
 	<?php if (isset($_smarty_tpl->tpl_vars['datos']->value)) {?>
+	
+		<?php if (isset($_smarty_tpl->tpl_vars['formato_preguntas']->value)) {?>
+			<a href="grupo.php?accion=formato_preguntas"> 
+	  	<img src="../Images/reporte.png"></a>
+		<?php }?>
+	
 		<table class='table table-striped' width='500'>
 			<tr>
 				<th><center>ALUMNO</center></th>

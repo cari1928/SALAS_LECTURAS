@@ -1,24 +1,30 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 22:44:55
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:06:27
   from "/home/ubuntu/workspace/templates/usuario/grupo.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_59430de7076938_54369825',
+  'unifunc' => 'content_594312f35c6b32_09276402',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'fe0176e9a42abcd9596e15556a37411e2a6fbac4' => 
     array (
       0 => '/home/ubuntu/workspace/templates/usuario/grupo.html',
-      1 => 1497566264,
+      1 => 1497567838,
       2 => 'file',
     ),
     '678c910e570f32587eda52b0ef80f9b2d548c65a' => 
     array (
       0 => '/home/ubuntu/workspace/templates/usuario/header.html',
       1 => 1484462964,
+      2 => 'file',
+    ),
+    '45393e8ddfc32de0fd542e13f1124aa5fbbc585e' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/mensajes.html',
+      1 => 1485650237,
       2 => 'file',
     ),
     '83c6b602c2343e889e76242aef38436c885d75f2' => 
@@ -30,7 +36,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_59430de7076938_54369825 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594312f35c6b32_09276402 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,106 +118,12 @@ function content_59430de7076938_54369825 (Smarty_Internal_Template $_smarty_tpl)
   </div><!-- /.container-fluid -->
 </nav>
 	<div><label><a href="index.php">index</a></label> > <label><a href="grupos.php">grupos</a></label> > <label>grupo</label></div>
-				<center>
-			<div class="form-group" style ="background-color:#f0f0f0">
-				<label>
-					Grupo: A<br>
-					Sala: SALA - A<br>
-					Ubicación: SALA DE USOS MÚLTIPLES<br>
-					Periodo: 2017-03-22 - 2017-06-30<br>
-					Promotor: DIOS
-				</label>
-			</div>
-		</center>
+		<div class="alert alert-success alert-dismissible" role="alert">
+	  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  		<span aria-hidden="true">&times;</span></button>
+	  <strong>¡Aviso!</strong> Se subio el reporte satisfactoriamente
+	</div>
 		
-			<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-		
-			<table class='table table-striped' width='500'>
-			<tr>
-				<th><center>ALUMNO</center></th>
-				<th><center>ASISTENCIA</center></th>
-				<th><center>COMPRENSIÓN</center></th> 
-				<th><center>PARTICIPACIÓN</center></th> 
-				<th><center>REPORTE</center></th>
-				<th><center>ACTIVIDADES</center></th>
-				<th><center>TERMINADO</center></th>
-				<th><center>OPCIONES</center></th>
-			</tr>
-							<tr> 
-					 <form class='form - inline' action='grupo.php?info1=A' method='post' >
-						 <input type="hidden" name="datos[nocontrol]" value="22222222" > 
-						 <td width='500'><center>Alumno 2</center></td>
-						 
-						 <td width='500'>  
-						 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: 0% ;height: 100%; background-color: #4caf50;"> 
-						 			<div id="label"style="text-align: center; line-height: 30px; color: white;"> 
-						 				0% 
-						 			</div>
-						 		</div>
-						 	</div>
-						 </br>
-						 </td>
-						 
-						 <td width='500'>  
-						 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: 0% ;height: 100%; background-color: #4caf50;"> 
-						 			<div id="label"style="text-align: center; line-height: 30px; color: white;"> 
-						 				0% 
-						 			</div>
-						 		</div>
-						 	</div>
-						 </br>
-						 </td>
-						 
-						 <td width='500'>
-							<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
-								<div id="mybar" style="position: absolute; width: 0% ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
-										0%
-									</div>
-								</div>
-							</div>
-							</br>
-						</td>
-
-						<td width='500'>
-							<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;"> <div id="mybar" style="position: absolute; width: % ;height: 100%; background-color: #4caf50;">	<div id="label"style="text-align: center; line-height: 30px; color: white;">
-									% 
-									</div>
-								</div>
-							</div>
-							</br>
-						</td>
-						
-						<td width='500'>
-						 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	<div id="mybar" style="position: absolute; width: 0% ;height: 100%; background-color: #4caf50;">
-						 			<div id="label"style="text-align: center; line-height: 30px; color: white;">
-						 				0% 
-						 			</div>
-						 		</div>
-						 	</div>
-						</td>
-
-						<td width='500'>
-							<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">
-								<div id="mybar" style="position: absolute; width: 0% ;height: 100%; background-color: #4caf50;">
-									<div id="label"style="text-align: center; line-height: 30px; color: white;">
-										0%
-									</div>
-								</div>
-							</div>
-							</br>
-						</td>
-						<td>
-							<a href="redacta.php?accion=redactarI&info=A&receptor=22222222&grupo=A&periodo=8">
-								<img src="../Images/sobre.png">
-							</a>
-							<a href="grupo.php?accion=form_libro&info1=24">
-								<img src="../Images/libros.png" width="30">
-							</a>
-						</td>
-					</form>
-				</tr>
-					</table>
 		</body>
 </html>
 <?php }

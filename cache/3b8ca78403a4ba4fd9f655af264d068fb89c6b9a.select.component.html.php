@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 21:53:15
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:06:03
   from "/home/ubuntu/workspace/templates/select.component.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_594301cb80e6f7_41763713',
+  'unifunc' => 'content_594312db68ee49_73327151',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -18,7 +18,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_594301cb80e6f7_41763713 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594312db68ee49_73327151 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
       <select class="form-control" name="datos[cvelibro]">
         <option value="-1">Selecciona una opción</option>
@@ -35,7 +35,6 @@ function content_594301cb80e6f7_41763713 (Smarty_Internal_Template $_smarty_tpl)
               <option value="11" >Agencia Matrimonial para Ricos</option>
               <option value="12" >Ahora Descubra sus Fortalezas</option>
               <option value="13" >Al Desnudo</option>
-              <option value="14" >Alera</option>
               <option value="15" >Alma de Junglar</option>
               <option value="18" >Amigos Adiós a la Soledad</option>
               <option value="19" >Amo Luego Existo</option>

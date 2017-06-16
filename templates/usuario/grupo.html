@@ -15,14 +15,13 @@
 		</center>
 	{/if}
 	
-	{if isset($formato_preguntas)}
-		<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-	{else}
-		<img src="../Images/noexiste.png"></a>
-	{/if}
-	
 	{if isset($datos)}
+	
+		{if isset($formato_preguntas)}
+			<a href="grupo.php?accion=formato_preguntas"> 
+	  	<img src="../Images/reporte.png"></a>
+		{/if}
+	
 		<table class='table table-striped' width='500'>
 			<tr>
 				<th><center>ALUMNO</center></th>

@@ -15,11 +15,6 @@ if ($cveperiodo == "") {
   message('danger', 'No hay periodos actuales', $web);  
 }
 
-$nombre_fichero = "/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf";
-if (file_exists($nombre_fichero)) {
-    $web->smarty->assign('formato_preguntas', true);
-}
-
 if(isset($_GET['accion'])) {
   
   switch($_GET['accion']) {
@@ -89,7 +84,7 @@ if(isset($_GET['accion'])) {
       
       $existencia = "";
       $sql = "select * from usuarios where cveusuario = ?";
-      $existencia = $web->DB->GetAll($sql, array($cveperiodo, $_GET['info3']));
+      $existencia = $web->DB->GetAll($sql, $_GET['info3']);
       if(!isset($existencia[0])){
         message('danger', 'No existe el alumno', $web);
       }
@@ -105,8 +100,11 @@ if(isset($_GET['accion'])) {
         message('danger', 'No se envio la calificación del reporte', $web);
       }
       
-      $sql = "update lista_libros set calif_reporte = ? where cvelist = ? ";
+      $sql = "update lista_libros set calif_reporte = ? where cvelista = ? ";
       $web->query($sql, array($_POST['calificacion'], $_GET['info1']));
+      
+      header('Location: grupo.php?accion=libros&info='.$_GET['info2'].'&info2='.$_GET['info3']);
+      die();
         
       break;
       
@@ -156,7 +154,15 @@ if(isset($_POST['datos'])) {
     $_POST['datos']['asistencia'] < 0 ||
     $_POST['datos']['actividades'] < 0) {
       message("danger", "Ingrese solo valores positivos", $web);
-    }
+  }
+  
+  if($_POST['datos']['cveeval'] > 100 ||
+    $_POST['datos']['comprension'] > 100 ||
+    $_POST['datos']['participacion'] > 100 || 
+    $_POST['datos']['asistencia'] > 100 ||
+    $_POST['datos']['actividades'] > 100) {
+      message("danger", "Ingrese solo valores positivos", $web);
+  }
   
   $sql = "select * from evaluacion 
   inner join lectura on lectura.cvelectura = evaluacion.cvelectura
@@ -212,6 +218,11 @@ if(!isset($datos[0])) {
   $web->simple_message('warning', 'No hay alumnos inscritos');
   $web->smarty->display("grupo.html");
   die();
+}
+
+$nombre_fichero = "/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf";
+if (file_exists($nombre_fichero)) {
+    $web->smarty->assign('formato_preguntas', true);
 }
 
 $web->smarty->assign('bandera', 'true');

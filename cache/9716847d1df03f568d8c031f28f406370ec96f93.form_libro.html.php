@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 21:53:15
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:06:03
   from "/home/ubuntu/workspace/templates/usuario/form_libro.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_594301cb86a058_02498170',
+  'unifunc' => 'content_594312db6cbad3_94924463',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4050d910f53c890fb27b55c0827ef16e88914da4' => 
     array (
       0 => '/home/ubuntu/workspace/templates/usuario/form_libro.html',
-      1 => 1493354690,
+      1 => 1497563702,
       2 => 'file',
     ),
     '678c910e570f32587eda52b0ef80f9b2d548c65a' => 
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_594301cb86a058_02498170 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594312db6cbad3_94924463 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,12 +115,9 @@ function content_594301cb86a058_02498170 (Smarty_Internal_Template $_smarty_tpl)
 <div class="container-fluid">
   <div class="main row">
     <nav class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-push-3">
-            	<div class="alert alert-warning alert-dismissible" role="alert">
-      	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      	    <span aria-hidden="true">&times;</span></button>
-      	  <strong>¡Aviso!</strong> No hay libros registrados
-      	</div>
-            <form action="grupo.php?accion=insert" method="post">
+      
+            
+      <form action="grupo.php?accion=insert" method="post">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Seleccionar Libro</h3>
@@ -144,7 +141,6 @@ function content_594301cb86a058_02498170 (Smarty_Internal_Template $_smarty_tpl)
               <option value="11" >Agencia Matrimonial para Ricos</option>
               <option value="12" >Ahora Descubra sus Fortalezas</option>
               <option value="13" >Al Desnudo</option>
-              <option value="14" >Alera</option>
               <option value="15" >Alma de Junglar</option>
               <option value="18" >Amigos Adiós a la Soledad</option>
               <option value="19" >Amo Luego Existo</option>
@@ -447,6 +443,25 @@ function content_594301cb86a058_02498170 (Smarty_Internal_Template $_smarty_tpl)
     </div>
   </div>
 </div>
+          <div class="page-header">
+        <h2>Lista de Libros</h2>
+      </div>
+      <table class='table table-striped'>
+        <tr>
+          <th><center>CLAVE</center></th>
+    			<th><center>TITULO</center></th>
+    			<th><center>REPORTE</center></th>
+          <th><center>ESTADO</center></th>
+    		</tr>
+    		    			<tr>
+    			  <td><center>14</center></td>
+    				<td><center>Alera</center></td>
+            <td><center>
+              <input id="r4" type="radio" class="btn btn-default" value='14' name="datos[reporte]">
+            </center></td>
+            <td><center>En Espera</center></td>
+    			</tr>
+    		    	</table>
       </form>
 </body>
 </html><?php }

@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-05-03 17:11:34
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:24:16
   from "/home/ubuntu/workspace/templates/promotor/vergrupos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_590a0f4685c712_97602812',
+  'unifunc' => 'content_594317205f4215_09582026',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_590a0f4685c712_97602812 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594317205f4215_09582026 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +91,7 @@ function content_590a0f4685c712_97602812 (Smarty_Internal_Template $_smarty_tpl)
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color:white">Cuenta<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="datos.php">Promotor 1</a></li>   
+              <li><a href="datos.php">DIOS</a></li>   
               <li><a href="../logout.php">Logout</a></li>      
           </ul>
         </li>
@@ -101,7 +101,7 @@ function content_590a0f4685c712_97602812 (Smarty_Internal_Template $_smarty_tpl)
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color:white">Grupos<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href= "grupos.php">Ver todos</a></li><li><a href= "grupo.php?info1=A">A - SALA - A - Biblioteca campus 1</a></li>     
+              <li><a href= "grupos.php">Ver todos</a></li><li><a href= "grupo.php?info1=A">A - SALA - A - SALA DE USOS MÚLTIPLES</a></li>     
           </ul>
         </li>
       </ul>
@@ -113,7 +113,7 @@ function content_590a0f4685c712_97602812 (Smarty_Internal_Template $_smarty_tpl)
         <div class="form-group">
                   </div>
       </ul>   
-      <label class="navbar-brand"><p style="color: white">Promotor - Promotor</p></label>
+      <label class="navbar-brand"><p style="color: white">DIOS - Promotor</p></label>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
@@ -132,8 +132,8 @@ function content_590a0f4685c712_97602812 (Smarty_Internal_Template $_smarty_tpl)
 						<a href="grupo.php?info1=A">A</a></center>
 					</td>
 					<td style="vertical-align:middle"><center>SALA - A</center></td>
-					<td style="vertical-align:middle"><center>Biblioteca campus 1</center></td>
-					<td style="vertical-align:middle"><center>102 Ideas para Enriquecer tu Vida sin Gastar Dinero</center></td>
+					<td style="vertical-align:middle"><center>SALA DE USOS MÚLTIPLES</center></td>
+					<td style="vertical-align:middle"><center>Sexo de Emergencia</center></td>
 					<td style="vertical-align:middle"><center>Lunes - 07:00:00 a 08:00:00<br>Lunes - 08:00:00 a 09:00:00<br></center></td>
 					<td style="vertical-align:middle"><center><a href="grupos.php?accion=form_update&info=A"><img src="../Images/edit.png"></a></center></td>
 				</tr>

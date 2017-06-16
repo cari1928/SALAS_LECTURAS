@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 22:01:12
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:05:42
   from "/home/ubuntu/workspace/templates/admin/alumnos.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_594303a80cf0e7_56678905',
+  'unifunc' => 'content_594312c6396400_60633556',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
@@ -30,7 +30,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   ),
   'cache_lifetime' => 0,
 ),true)) {
-function content_594303a80cf0e7_56678905 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594312c6396400_60633556 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html lang="en">

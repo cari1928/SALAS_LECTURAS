@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-15 22:49:45
+/* Smarty version 3.1.30-dev/53, created on 2017-06-15 23:12:02
   from "/home/ubuntu/workspace/templates/promotor/grupo.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_59430f0981bdb2_20715023',
+  'unifunc' => 'content_594314426e7424_45774762',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'dd30dddbe76326c3f4c52577113bad4ba39ce7b6' => 
     array (
       0 => '/home/ubuntu/workspace/templates/promotor/grupo.html',
-      1 => 1497566926,
+      1 => 1497568309,
       2 => 'file',
     ),
   ),
@@ -24,8 +24,8 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:footer.html' => 1,
   ),
 ),false)) {
-function content_59430f0981bdb2_20715023 (Smarty_Internal_Template $_smarty_tpl) {
-$_smarty_tpl->compiled->nocache_hash = '179140683059430f09737436_65735691';
+function content_594314426e7424_45774762 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '1537178525943144253b653_60944366';
 $_smarty_tpl->_subTemplateRender("file:header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 9999, $_smarty_tpl->cache_lifetime, array(), 0, false);
 ?>
 
@@ -51,15 +51,13 @@ $_smarty_tpl->_subTemplateRender("file:../mensajes.html", $_smarty_tpl->cache_id
 
 		</div></center>
 	<?php }?>
-	
-	<?php if (isset($_smarty_tpl->tpl_vars['formato_preguntas']->value)) {?>
-		<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-	<?php } else { ?>
-		<img src="../Images/noexiste.png"></a>
-	<?php }?>
 
 	<?php if (isset($_smarty_tpl->tpl_vars['datos']->value)) {?>
+		<?php if (isset($_smarty_tpl->tpl_vars['formato_preguntas']->value)) {?>
+			<a href="grupo.php?accion=formato_preguntas"> 
+	  	<img src="../Images/reporte.png"></a>
+		<?php }?>
+	
 		<table class='table table-striped' width='500'>
 			<tr>
 				<th><center>ALUMNO</center></th>
@@ -214,8 +212,8 @@ $__foreach_libro_1_saved = $_smarty_tpl->tpl_vars['libro'];
 ?>
 			<tr>
 				<form class='form - inline' action="grupo.php?accion=calificar_reporte&info1=<?php echo $_smarty_tpl->tpl_vars['libro']->value['cvelista'];?>
-&info2={
-				$libro.cvelectura}&info3=<?php echo $_smarty_tpl->tpl_vars['libro']->value['nocontrol'];?>
+&info2=<?php echo $_smarty_tpl->tpl_vars['libro']->value['cvelectura'];?>
+&info3=<?php echo $_smarty_tpl->tpl_vars['libro']->value['nocontrol'];?>
 " method='post' >
 					
 						<td><center><?php echo $_smarty_tpl->tpl_vars['libro']->value['cvelibro'];?>
