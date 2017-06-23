@@ -149,6 +149,12 @@ if(isset($_GET['e'])) {
     case 2:
       $web->simple_message('danger', 'No fue posible generar el reporte, hay error con los datos seleccionados');
       break;
+    case 3:
+      $web->simple_message('danger', 'No modifique la estructura de la interfaz');
+      break;
+    case 4:
+      $web->simple_message('danger', 'No se pudieron obtener los datos del promotor');
+      break;
   }
 }
 

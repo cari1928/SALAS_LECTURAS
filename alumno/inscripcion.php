@@ -44,7 +44,7 @@ if(isset($_GET['info'])) {
   
   $cvelectura = $web->DB->GetAll($query, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
   
-  $sql = "INSERT INTO evaluacion(comprension, participacion, terminado, asistencia, actividades, cvelectura) values(0, 0, 0, 0, 0, ?)";
+  $sql = "INSERT INTO evaluacion(comprension, participacion, terminado, asistencia, actividades, cvelectura, reporte) values(0, 0, 0, 0, 0, ?, 0)";
   $web->query($sql, $cvelectura[0]['cvelectura']);
   
   if($web->DB->HasFailedTrans()) {

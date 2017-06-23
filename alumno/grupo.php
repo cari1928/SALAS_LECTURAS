@@ -109,9 +109,11 @@
         // $web->debug($libros);
         
         if(!isset($libros[0])) {
-          $web->smarty->assign('alert', 'warning');
-          $web->smarty->assign('msg', 'No hay libros registrados');
+          $web->simple_message('warning', 'No hay libros registrados');
         } else {
+          if(sizeof($libros) < 5) {
+            $web->simple_message('warning', 'Debe seleccionar mínimo 5 libros');
+          }
           $web->smarty->assign('libros', $libros);
         }
 

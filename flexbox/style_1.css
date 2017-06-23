@@ -24,12 +24,12 @@ body
 
 header
 {
-    /*background: #476D7C;*/
+    background: #476D7C;
     width: 100%;
     padding: 20px;
     /*Flex, se agrega porque header sera contenedor padre*/
     display: flex;
-    justify-content: space-between;
+    justify-content: space-round;
     align-items: center;
     flex-flow: row wrap;
 }
@@ -37,7 +37,6 @@ header
 header .logo
 {
     color: #FFF;
-    font-size: 30px; 
 }
 
 header .logo img
@@ -46,11 +45,13 @@ header .logo img
     vertical-align: top;
 }
 
-header .logo a
+nav a
 {
+    background: #254B62;
     color: #000;
     text-decoration: none;
     line-height: 80px;
+    font-size: 30px; 
 }
 
 .main

@@ -82,7 +82,8 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
     //mostrar grupos
     $datos['data'][$i][4] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "&info2=".$_GET['info1']."'><img src='../Images/mostrar.png'></a></center>";
     //reporte pdf
-    $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";
+    // $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";
+    $datos['data'][$i][5] = "<center><a href='reporte.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "' target='_blank'><img src='../Images/pdf.png'></a></center>";
   }
   
 }

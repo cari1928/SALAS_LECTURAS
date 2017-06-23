@@ -11,11 +11,17 @@ $web->smarty->assign('grupos', $grupos);
 
 $accion = "";
 $para   = "";
-$perodo = "";
 
-if (!isset($_GET['info1']) && !isset($_GET['info2'])) {
-    header('Location: grupos.php');
+$periodo = $web->periodo();
+if ($periodo == "") {
+  $web->simple_message('danger', 'No hay periodo actual');
+  $web->smarty->display('redacta.html');
+  die();
 }
+
+// if (!isset($_GET['info1']) && !isset($_GET['info2'])) {
+//     header('Location: grupos.php');
+// }
 
 if (isset($_GET['info'])) {
     $para = $_GET['info'];
@@ -35,6 +41,7 @@ switch ($accion) {
         $datos = $web->DB->GetAll("select cve from abecedario where letra='" . $para . "'");
         $letra = $datos[0]['cve'];
         $datos = $web->DB->GetAll("SELECT * FROM lectura WHERE cveperiodo = " . $periodo . " and cveletra = " . $letra . " and cvepromotor='" . $_SESSION['cveUser'] . "'");
+        
         if (isset($datos[0])) {
             $web->smarty->assign('para', $para);
             $web->smarty->assign('cveperiodo', $periodo);
@@ -48,18 +55,17 @@ switch ($accion) {
 
     case 'redactarI':
         $receptor = "";
-        if (isset($_GET['receptor'])) {
-            $receptor = $_GET['receptor'];
+        if (isset($_GET['info2'])) {
+            $receptor = $_GET['info2'];
+        } else {
+            $web->smarty->assign('msj', "Falta información");
+            $web->smarty->display('redacta.html');
+            die();
         }
 
         $grupo = "";
-        if (isset($_GET['grupo'])) {
-            $grupo = $_GET['grupo'];
-        }
-
-        $periodo = "";
-        if (isset($_GET['periodo'])) {
-            $periodo = $_GET['periodo'];
+        if (isset($_GET['info1'])) {
+            $grupo = $_GET['info1'];
         }
 
         $sql   = "select cveusuario from usuarios where cveusuario='" . $receptor . "'";
@@ -100,6 +106,7 @@ switch ($accion) {
         break;
 
     case 'enviar':
+        // $web->debug($_GET);
         $letra = "";
         $para  = "";
         if (isset($_GET['para'])) {
@@ -122,24 +129,25 @@ switch ($accion) {
         break;
 
     case 'enviarI':
+        // $web->debug($_GET);
         $receptor = "";
-        $periodo  = "";
         $cveletra = "";
         if (isset($_GET['receptor'])) {
             $receptor = $_GET['receptor'];
-        }
-
-        if (isset($_GET['periodo'])) {
-            $periodo = $_GET['periodo'];
         }
 
         if (isset($_GET['para'])) {
             $cveletra = $_GET['para'];
         }
 
-        $datos = $web->DB->GetAll("select * from lectura inner join usuarios on lectura.cvepromotor=usuarios.cveusuario where lectura.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'");
+        $sql = "select * from lectura 
+        inner join laboral on laboral.cveletra=lectura.cveletra
+        inner join usuarios on laboral.cvepromotor=usuarios.cveusuario 
+        where laboral.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'";
+        $datos = $web->DB->GetAll($sql);
 
-        // die("select * from lectura inner join usuarios on lectura.cvepromotor=usuarios.cveusuario where lectura.cvepromotor='" . $_SESSION['cveUser'] . "' and lectura.nocontrol='" . $receptor . "'");
+        // die($sql);
+        // $web->debug($datos);
         // die(print_r($_POST));
 
         if (isset($datos[0])) {
@@ -184,4 +192,4 @@ switch ($accion) {
         break;
 }
 
-header("Location: vergrupos.php");
+header("Location: grupos.php");

@@ -846,6 +846,10 @@ class Sistema extends Conexion
     print_r($array);
     die();
   }
+  
+  public function debug_line($dato) {
+    echo $dato."<br>";
+  }
 
   /**
    * Obtiene el contenido de un archivo
@@ -958,6 +962,9 @@ function recuperaid($email)
   }
   
 }
+
+include 'controllers/admin/ReporteControllers.php';
+
 //instanciamos web
 $web = new Sistema;
 $web->smarty();

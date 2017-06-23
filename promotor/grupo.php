@@ -48,10 +48,18 @@ if(isset($_GET['accion'])) {
         for ($i = 0; $i < count($libros); $i++) {
           $nombre_fichero = "/home/ubuntu/workspace/periodos/" . $libros[$i]["cveperiodo"] . "/" . $letra_subida[0][0] . "/" . $libros[$i]["nocontrol"]."/".$libros[$i]["cvelibro"]."_".$libros[$i]["nocontrol"].".pdf";
           if (file_exists($nombre_fichero)) {
-              $libros[0]["archivoExiste"] = explode("/home/ubuntu/workspace/periodos/",$nombre_fichero)[1];
+              $libros[$i]["archivoExiste"] = explode("/home/ubuntu/workspace/periodos/",$nombre_fichero)[1];
           }
         }
         $web->smarty->assign('libros', $libros);
+      }
+      
+      if (isset($_GET['aviso'])) {
+        switch($_GET['aviso']) {
+          case 1:
+            $web->simple_message('warning', 'No se pudo calcular el promedio de los reportes');
+            break;
+        }
       }
       
       $web->iniClases('promotor', "index grupos libros");
@@ -103,9 +111,13 @@ if(isset($_GET['accion'])) {
       $sql = "update lista_libros set calif_reporte = ? where cvelista = ? ";
       $web->query($sql, array($_POST['calificacion'], $_GET['info1']));
       
-      header('Location: grupo.php?accion=libros&info='.$_GET['info2'].'&info2='.$_GET['info3']);
+      if(promReporte($web) && promTerminado($web, 'cvelectura', $_GET['info2'])) {
+        header('Location: grupo.php?accion=libros&info='.$_GET['info2'].'&info2='.$_GET['info3']);  
+      } else {
+        // die('aqui');
+        header('Location: grupo.php?accion=libros&info='.$_GET['info2'].'&info2='.$_GET['info3'].'&aviso=1');  
+      }
       die();
-        
       break;
       
       case 'formato_preguntas':
@@ -184,6 +196,10 @@ if(isset($_POST['datos'])) {
     $_POST['datos']['actividades'],
     $_POST['datos']['cveeval']);
   $web->query($sql, $parametros);
+  
+  if(!promTerminado($web, 'cveeval', $_POST['datos']['cveeval'])) {
+    $web->simple_message('warning', 'No se pudo calcular el promedio final');
+  }
     
   if($web->DB->HasFailedTrans()) {
     //falta programar esta parte para que no muestre directamente el resultado de sql
@@ -241,4 +257,64 @@ function message($alert, $msg, $web) {
   $web->simple_message($alert, $msg);
   $web->smarty->display("grupo.html");
   die();
+}
+
+function promReporte($web) {
+  $cvelectura = $_GET['info2'];
+  
+  $sql = "SELECT * FROM lista_libros WHERE cvelectura=?";
+  $cali_reportes = $web->DB->GetAll($sql, $cvelectura);
+  $prom = 0;
+  for($i = 0; $i < sizeof($cali_reportes); $i++) {
+    $prom += $cali_reportes[$i]['calif_reporte'];
+  }
+  
+  if(sizeof($cali_reportes) < 5) {
+    $prom /= 5;  
+  } else {
+    $prom /= sizeof($cali_reportes);  
+  }
+  
+  $prom = round($prom);
+  $sql = "UPDATE evaluacion SET reporte=? WHERE cvelectura=?";
+  if(!$web->query($sql, array($prom, $cvelectura))) {
+    return false;
+  }
+  
+  // echo $sql."<br>";
+  // echo $prom."<br>";
+  // echo $cvelectura."<br>";
+  // die();
+  
+  return true;
+}
+
+function promTerminado($web, $campo, $valor) {
+  $sql = "SELECT * FROM evaluacion WHERE ".$campo."=?";
+  $calificaciones = $web->DB->GetAll($sql, $valor);
+  
+  // $web->debug_line($sql);
+  // $web->debug_line($campo);
+  // $web->debug_line($valor);
+  // die();
+  // $web->debug($calificaciones);
+  
+  if(!isset($calificaciones[0])) {
+    return false;
+  }
+  
+  $prom = $calificaciones[0]['asistencia'];
+  $prom += $calificaciones[0]['comprension'];
+  $prom += $calificaciones[0]['participacion'];
+  $prom += $calificaciones[0]['reporte'];
+  $prom += $calificaciones[0]['actividades'];
+  $prom /= 5;
+  $prom = round($prom);
+  $sql = "UPDATE evaluacion SET terminado=? WHERE ".$campo."=?";
+  if(!$web->query($sql, array($prom, $valor))) {
+    // die();
+    return false;
+  }
+  
+  return true;
 }
