@@ -8,16 +8,25 @@ if ($_SESSION['roles'] == 'A') {
   if ($_SESSION['cveUser'] == '9999999999999') {
     $web->smarty->assign('especial', 'especial');
   }
+
+  if (isset($_GET['e'])) {
+    switch ($_GET['e']) {
+      case 1:
+        $web->simple_message('warning', 'No modifique la estructura de la interfaz');
+        break;
+    }
+  }
+
+  if(isset($_GET['aviso'])) {
+    switch ($_GET['aviso']) {
+      case 1:
+        $web->simple_message('success', 'Se subió el reporte satisfactoriamente');
+        break;
   
-  switch($_GET['aviso']) 
-  {
-    case 1:
-      $web->simple_message('success', 'Se subio el reporte satisfactoriamente');
-      break;
-      
-    case 2:
-      $web->simple_message('warning', 'Ocurrio un error mientras se subia el archivo');
-      break;
+      case 2:
+        $web->simple_message('warning', 'Ocurrió un error mientras se subia el archivo');
+        break;
+    } 
   }
 
   $web->smarty->display('index.html');

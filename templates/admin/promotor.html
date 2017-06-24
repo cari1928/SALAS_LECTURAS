@@ -1,6 +1,5 @@
 {include file='header.html'}
 {$ruta}  
-
 {if isset($msg)} {include file='../mensajes.html'} {/if}
 
 <table class='table'>
@@ -10,7 +9,9 @@
 		</td></tr>
 	{else}
 		<tr><td colspan='4' align='right'>
-			<a class="btn btn-primary active" id="pdf-button" href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}' title='Reporte Promotores-Periodos'>
+			<a class="btn btn-primary active" title='Reporte Promotores-Periodos'
+			href='reporte_pdf.php?accion=promotores&info1=1&info2={$cveperiodo}' 			
+			target="_blank">
 			  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Reporte General
 			</a>
 		</td></tr>
@@ -22,30 +23,30 @@
   	<thead>
       <tr>
         <th style="vertical-align:middle"><center>RFC</center></th>
-				<th style="vertical-align:middle"><center>PROMOTOR</center></th>
-				<th style="vertical-align:middle"><center>EMAIL</center></th>
-				<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
-				{if !isset($cveperiodo)}
-					<th style="vertical-align:middle"><center>ELIMINAR</center></th>
-					<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
-				{/if}
-				<th style="vertical-align:middle"><center>GRUPOS</center></th>
-				{if isset($cveperiodo)}<th style="vertical-align:middle"><center>REPORTE PROMOTOR</center></th>{/if}
+		<th style="vertical-align:middle"><center>PROMOTOR</center></th>
+		<th style="vertical-align:middle"><center>EMAIL</center></th>
+		<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
+		{if !isset($cveperiodo)}
+			<th style="vertical-align:middle"><center>ELIMINAR</center></th>
+			<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
+		{/if}
+		<th style="vertical-align:middle"><center>GRUPOS</center></th>
+		{if isset($cveperiodo)}<th style="vertical-align:middle"><center>REPORTE PROMOTOR</center></th>{/if}
       </tr>
     </thead>
     
     <tfoot>
       <tr>
         <th style="vertical-align:middle"><center>RFC</center></th>
-				<th style="vertical-align:middle"><center>PROMOTOR</center></th>
-				<th style="vertical-align:middle"><center>EMAIL</center></th>
-				<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
-				{if !isset($cveperiodo)}
-					<th style="vertical-align:middle"><center>ELIMINAR</center></th>
-					<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
-				{/if}
-				<th style="vertical-align:middle"><center>GRUPOS</center></th>
-				{if isset($cveperiodo)}<th width='150'><center>REPORTE PROMOTOR</center></th>{/if}
+		<th style="vertical-align:middle"><center>PROMOTOR</center></th>
+		<th style="vertical-align:middle"><center>EMAIL</center></th>
+		<th style="vertical-align:middle"><center>ESPECIALIDAD</center></th>
+		{if !isset($cveperiodo)}
+			<th style="vertical-align:middle"><center>ELIMINAR</center></th>
+			<th style="vertical-align:middle"><center>ACTUALIZAR</center></th>
+		{/if}
+		<th style="vertical-align:middle"><center>GRUPOS</center></th>
+		{if isset($cveperiodo)}<th width='150'><center>REPORTE PROMOTOR</center></th>{/if}
       </tr>
     </tfoot>
   </table>
@@ -95,7 +96,6 @@
 	    {/if}
 	    
     } );
-    
   </script>
 {/if}
 

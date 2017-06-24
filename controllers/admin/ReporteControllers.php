@@ -62,9 +62,6 @@ class ReporteControllers extends Sistema
     }
     
     $promotor = $this->DB->GetAll($sql);
-    
-    // $this->debug($promotor);
-
     if (sizeof($promotor) == 1) {
       if($promotor[0]['especialidad_cve'] == 'O') {
         unset($promotor[0]['ESPECIALIDAD']);

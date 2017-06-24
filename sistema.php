@@ -11,7 +11,7 @@ include PATHLIB . 'phpmailer/PHPMailerAutoload.php';
 //clases del sistema
 class Conexion
 {
-  
+
   public function Conectar()
   {
     $this->server   = DB_DBMS;
@@ -108,14 +108,14 @@ class Sistema extends Conexion
 
   public function tipoCuenta()
   {
-    $sql      = "select nombre from usuarios where cveusuario='" . $_SESSION['cveUser'] . "'";
+    $sql = "select nombre from usuarios where cveusuario='" . $_SESSION['cveUser'] . "'";
     $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     $datos_rs = $this->DB->GetAll($sql);
 
     // $this->debug($datos_rs);
 
-    $nombre   = $datos_rs[0]['nombre'];
-    $cadena   = explode(" ", $nombre);
+    $nombre = $datos_rs[0]['nombre'];
+    $cadena = explode(" ", $nombre);
     if ($_SESSION['roles'] == 'A') {
       return $cadena[0] . ' - Administrador';
     }
@@ -311,7 +311,7 @@ class Sistema extends Conexion
    */
   public function iniClases($ubicacion, $ruta)
   {
-    if(isset($_SESSION['bandera_roles'])){
+    if (isset($_SESSION['bandera_roles'])) {
       $this->smarty->assign('bandera_roles', $_SESSION['bandera_roles']);
     }
     if ($ubicacion != null) {
@@ -645,7 +645,7 @@ class Sistema extends Conexion
     $con    = strtolower(md5($strnum));
     return substr($con, 0, 8);
   }
-  
+
   /**
    * Envíar correo electrónico
    * @param  String $destino Correo destino
@@ -658,7 +658,7 @@ class Sistema extends Conexion
   {
     $mail = new PHPMailer();
     $mail->IsSMTP();
-    
+
     try {
       $mail->SMTPDebug  = MAIL_SMTPDEBUG; // enables SMTP debug information (for testing)
       $mail->SMTPAuth   = MAIL_SMTPAUTH; // enable SMTP authentication
@@ -667,17 +667,17 @@ class Sistema extends Conexion
       $mail->Port       = MAIL_PORT; // set the SMTP port for the GMAIL server
       $mail->Username   = MAIL_USERNAME; // GMAIL username
       $mail->Password   = MAIL_PASS; // GMAIL password
-      
+
       $mail->AddAddress($destino, $nombre);
       $mail->SetFrom(MAIL_USERNAME, 'SalasLectura');
       $mail->Subject = $asunto;
       $mail->AltBody = $mensaje; // optional - MsgHTML will create an alternate automatically
       $mail->MsgHTML($mensaje);
-      
+
       $mail->Send();
       $this->smarty->display('templates / admin / index . html');
       echo "<center><h3>Revisa tu correo electronico</h3></center>";
-      
+
     } catch (phpmailerException $e) {
       echo $e->errorMessage(); //Pretty error messages from PHPMailer
     } catch (Exception $e) {
@@ -846,9 +846,10 @@ class Sistema extends Conexion
     print_r($array);
     die();
   }
-  
-  public function debug_line($dato) {
-    echo $dato."<br>";
+
+  public function debug_line($dato)
+  {
+    echo $dato . "<br>";
   }
 
   /**
@@ -876,26 +877,25 @@ class Sistema extends Conexion
     $pageName = $this->smarty->getTemplateVars();
     $this->debug($pageName);
   }
-  
-  
-  function authentication(){
-		if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		    header('WWW-Authenticate: Basic realm="Mi dominio"');
-		    header('HTTP/1.0 401 Unauthorized');
-		    echo 'Se a cancelado la autenticacion';
-		    exit;
-		} else {
-		    if($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root'){
-		    	return true;
-		    }
-		    else{
-		    	echo 'Autenticacion no valida';
-		    	return false;
-		    }
-		}
-		header('Content-Type: aplication/json');
-	}
-  
+
+  public function authentication()
+  {
+    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+      header('WWW-Authenticate: Basic realm="Mi dominio"');
+      header('HTTP/1.0 401 Unauthorized');
+      echo 'Se a cancelado la autenticacion';
+      exit;
+    } else {
+      if ($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root') {
+        return true;
+      } else {
+        echo 'Autenticacion no valida';
+        return false;
+      }
+    }
+    header('Content-Type: aplication/json');
+  }
+
 }
 
 //----------------------------------------------------------------------------------------
@@ -911,56 +911,58 @@ function recuperaid($email)
     }
     return ($id);
   }
-  
-  function authentication(){
-		if (!isset($_SERVER['PHP_AUTH_USER'])) {
-		    header('WWW-Authenticate: Basic realm="Mi dominio"');
-		    header('HTTP/1.0 401 Unauthorized');
-//		    echo 'Se a cancelado la autenticacion';
-		    exit;
-		} else {
-		    if($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root'){
-		    	return true;
-		    }
-		    else{
-//SSS		    	echo 'Autenticacion no valida';
-		    	return false;
-		    }
-		}
-		header('Content-Type: aplication/json');
-	}
-	
-	function verificar($usuario, $password, $token){
-    $sql = "select * from usuarios where cveusuario = ? and pass = ?";
+
+  function authentication()
+  {
+    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+      header('WWW-Authenticate: Basic realm="Mi dominio"');
+      header('HTTP/1.0 401 Unauthorized');
+//        echo 'Se a cancelado la autenticacion';
+      exit;
+    } else {
+      if ($_SERVER['PHP_AUTH_USER'] == 'root' && $_SERVER['PHP_AUTH_PW'] == 'root') {
+        return true;
+      } else {
+//SSS         echo 'Autenticacion no valida';
+        return false;
+      }
+    }
+    header('Content-Type: aplication/json');
+  }
+
+  function verificar($usuario, $password, $token)
+  {
+    $sql        = "select * from usuarios where cveusuario = ? and pass = ?";
     $parameters = array($usuario, $password);
-    $usr = $this->DB->GetAll($sql, $parameters);
-    
-    if(!isset($usr[0])){
+    $usr        = $this->DB->GetAll($sql, $parameters);
+
+    if (!isset($usr[0])) {
       $this->status("Error", "No existe el usuario");
     }
 
     $sql = "select * from bitacora "
-          . "where cveusuario = ? and "
-          . "pass = ? and "
-          . "token = ? and "
-          . "now() between fecini and fecfin";
+      . "where cveusuario = ? and "
+      . "pass = ? and "
+      . "token = ? and "
+      . "now() between fecini and fecfin";
     $parameters = array($usuario, $password, $token);
-    $res = $this->DB->GetAll($sql, $parameters);
-    if(!isset($res[0])){
+    $res        = $this->DB->GetAll($sql, $parameters);
+    if (!isset($res[0])) {
       $this->status("Error", "No se puede verificar el token o ya expiro");
     }
     return true;
   }
-  
-  function status($status, $mensaje){
-    $message['status'] = $status;
+
+  function status($status, $mensaje)
+  {
+    $message['status']  = $status;
     $message['message'] = $mensaje;
-    $message=json_encode($message);
+    $message            = json_encode($message);
     http_response_code(200);
     echo $message;
     die();
   }
-  
+
 }
 
 include 'controllers/admin/ReporteControllers.php';

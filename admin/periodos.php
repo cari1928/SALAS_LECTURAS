@@ -7,9 +7,7 @@ if ($_SESSION['roles'] != 'A') {
 
 $cveperiodo = $web->periodo();
 if ($cveperiodo == "") {
- // message("index salas", "No hay periodo actual", $web);
-  $web->smarty->assign('alert', 'warning');
-  $web->smarty->assign('msg', 'No hay periodo actual');
+  $web->simple_message('warning', 'No hay periodo actual');
 }
 
 if (isset($_GET['accion'])) {
@@ -28,7 +26,7 @@ if (isset($_GET['accion'])) {
         break;
       }
 
-      $sql      = "select * from periodo where cveperiodo=?";
+      $sql      = "SELECT * FROM periodo WHERE cveperiodo=?";
       $periodos = $web->DB->GetAll($sql, $_GET['info2']);
       if (sizeof($periodos) == 0) {
         $web->simple_message('danger', 'No existe el periodo');
@@ -53,22 +51,23 @@ if (isset($_GET['accion'])) {
         $_POST['datos']['fechaFinal'] == "") {
         message("index periodos nuevo", "Llena todos los campos", $web);
       }
-      
+
       $web->DB->startTrans();
-      $sql = "INSERT INTO periodo (fechainicio, fechafinal) values(?, ?)";
-      $parameters = array($_POST['datos']['fechaInicio'], $_POST['datos']['fechaFinal']);
-      $error = $web->query($sql, $parameters);
-      $sql = "select * from periodo where fechainicio = ? and fechafinal = ?";
+      $sql        = "INSERT INTO periodo (fechainicio, fechafinal) VALUES(?, ?)";
+      $parameters = array(
+        $_POST['datos']['fechaInicio'],
+        $_POST['datos']['fechaFinal']);
+      $error           = $web->query($sql, $parameters);
+      $sql             = "SELECT * FROM periodo WHERE fechainicio=? AND fechafinal=?";
       $cveperiodoNuevo = $web->DB->GetAll($sql, $parameters);
-      if(isset($cveperiodoNuevo[0]))
-      {
-        mkdir("../periodos/" . $cveperiodoNuevo[0][2] , 0777);
-        mkdir("../pdf/" . $cveperiodoNuevo[0][2] , 0777);
+      if (isset($cveperiodoNuevo[0])) {
+        mkdir("../periodos/" . $cveperiodoNuevo[0][2], 0777);
+        mkdir("../pdf/" . $cveperiodoNuevo[0][2], 0777);
       }
       //si hubo algún problema:
-      if($web->DB->HasFailedTrans()) {
+      if ($web->DB->HasFailedTrans()) {
         //si el msg de error contiente periodouq:
-        if(strpos($error, 'periodouq') > 0) {
+        if (strpos($error, 'periodouq') > 0) {
           message("index periodos nuevo", "Registro duplicado", $web);
         } else {
           message("index periodos nuevo", "No alteres la estructura de la interfaz", $web);
@@ -82,7 +81,7 @@ if (isset($_GET['accion'])) {
 
     case 'update':
       $web->iniClases('admin', "index periodos");
-      
+
       //verifica la existencia de los campos
       if (!isset($_POST['datos']['fechaInicio']) ||
         !isset($_POST['datos']['fechaFinal']) ||
@@ -91,14 +90,14 @@ if (isset($_GET['accion'])) {
         break;
       }
       //verifica que la cveperiodo sea válida
-      $sql = "select * from periodo where cveperiodo=?";
+      $sql     = "SELECT * FROM periodo WHERE cveperiodo=?";
       $periodo = $web->DB->GetAll($sql, $_POST['cveperiodo']);
-      if(!isset($periodo[0])) {
+      if (!isset($periodo[0])) {
         $web->simple_message('danger', 'No altere la estructura de la interfaz');
         break;
       }
       $cveperiodo = $_POST['cveperiodo'];
-      
+
       //verifica que los campos contengan algo
       if ($_POST['datos']['fechaInicio'] == "" ||
         $_POST['datos']['fechaFinal'] == "") {
@@ -106,20 +105,21 @@ if (isset($_GET['accion'])) {
       }
 
       $web->DB->startTrans();
-      $sql = "update periodo set fechainicio=?, fechafinal=? where cveperiodo=?";
+      $sql        = "UPDATE periodo SET fechainicio=?, fechafinal=? WHERE cveperiodo=?";
       $parameters = array(
         $_POST['datos']['fechaInicio'],
         $_POST['datos']['fechaFinal'],
         $_POST['cveperiodo']);
       $error = $web->query($sql, $parameters);
-      
+
       //si hubo algún problema:
-      if($web->DB->HasFailedTrans()) {
+      if ($web->DB->HasFailedTrans()) {
         //si el msg de error contiente periodouq:
-        if(strpos($error, 'periodouq') > 0) {
+        if (strpos($error, 'periodouq') > 0) {
           message("index periodos actualizar", "Registro duplicado", $web, $periodo);
         } else {
-          message("index periodos actualizar", 'No fue posible realizar el cambio', $web, $periodo);
+          message("index periodos actualizar", 'No fue posible realizar el cambio',
+            $web, $periodo);
         }
         $web->DB->CompleteTrans();
         break;
@@ -131,23 +131,25 @@ if (isset($_GET['accion'])) {
     case 'delete':
       delete_lapse($web);
       break;
-      
+
     case 'historial':
       $web->iniClases('admin', "index historial-periodos");
       $web->smarty->assign('bandera', 'historial');
   }
 } else {
-  $web->iniClases('admin', "index periodos");   
+  $web->iniClases('admin', "index periodos");
 }
 
-//para otro tipo de errores, cuando periodos.php es llamado desde algún header
-if(isset($_GET['e'])) {
+//para otro tipo de errores, cuANDo periodos.php es llamado desde algún header
+if (isset($_GET['e'])) {
   switch ($_GET['e']) {
     case 1:
-      $web->simple_message('danger', 'No fue posible generar el reporte, hacen falta datos');
+      $web->simple_message('danger',
+        'No fue posible generar el reporte, hacen falta datos');
       break;
     case 2:
-      $web->simple_message('danger', 'No fue posible generar el reporte, hay error con los datos seleccionados');
+      $web->simple_message('danger',
+        'No fue posible generar el reporte, hay error con los datos seleccionados');
       break;
     case 3:
       $web->simple_message('danger', 'No modifique la estructura de la interfaz');
@@ -158,7 +160,7 @@ if(isset($_GET['e'])) {
   }
 }
 
-$sql      = 'select cveperiodo, fechainicio, fechafinal from periodo order by cveperiodo';
+$sql = 'SELECT cveperiodo, fechainicio, fechafinal FROM periodo ORDER BY cveperiodo';
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $periodos = $web->DB->GetAll($sql);
 if (!isset($periodos[0])) {
@@ -171,15 +173,18 @@ $periodos = array('data' => $periodos);
 //se preparan los campos extra (eliminar y actualizar)
 for ($i = 0; $i < sizeof($periodos['data']); $i++) {
   //eliminar
-  $periodos['data'][$i][3] = "periodos.php?accion=delete&info1=" . $periodos['data'][$i][0];
+  $periodos['data'][$i][3] =
+    "periodos.php?accion=delete&info1=" . $periodos['data'][$i][0];
   //editar
-  $periodos['data'][$i][4] = "<center><a href='periodos.php?accion=form_update&info2=" . $periodos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>"; 
-  
-  if(isset($_GET['accion'])){
-    if($_GET['accion'] == 'historial') {
+  $periodos['data'][$i][4] = "<center><a href='periodos.php?accion=form_update&info2=" .
+    $periodos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
+
+  if (isset($_GET['accion'])) {
+    if ($_GET['accion'] == 'historial') {
       //mostrar_grupos
-      $periodos['data'][$i][3] = "<center><a href='historial.php?accion=periodo&info1=" . $periodos['data'][$i][0]."'><img src='../Images/grupo.png'></a></center>";
-    }  
+      $periodos['data'][$i][3] = "<center><a href='historial.php?accion=periodo&info1=" .
+        $periodos['data'][$i][0] . "'><img src='../Images/grupo.png'></a></center>";
+    }
   }
 }
 
@@ -193,7 +198,7 @@ $web->smarty->assign('periodos', $periodos);
 $web->smarty->display("periodos.html");
 
 /**
- * Método para mostrar el template form_alumnos cuando ocurre algún error
+ * Método para mostrar el template form_alumnos cuANDo ocurre algún error
  * @param  String $iniClases    Ruta a mostrar en links
  * @param  String $msg          Mensaje a desplegar
  * @param  $web                 Para poder aplicar las funciones de $web
@@ -221,23 +226,23 @@ function message($iniClases, $msg, $web, $periodo = null)
  */
 function delete_lapse($web)
 {
-  $web->iniClases('admin', "index periodos");   
-  switch($web->valida_pass($_SESSION['cveUser'])) {
-    case 1: 
+  $web->iniClases('admin', "index periodos");
+  switch ($web->valida_pass($_SESSION['cveUser'])) {
+    case 1:
       $web->simple_message('danger', 'No se especificó la contraseña de seguridad');
       return false;
 
-    case 2: 
+    case 2:
       $web->simple_message('danger', ' La contraseña de seguridad ingresada no es válida');
       return false;
   }
-  
-  //verifica que se haya mandado el periodo y que éste exista
+
+  //verifica que se haya mANDado el periodo y que éste exista
   if (!isset($_GET['info1'])) {
     $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó el periodo');
     return false;
   }
-  $sql     = "select * from periodo where cveperiodo=?";
+  $sql     = "SELECT * FROM periodo WHERE cveperiodo=?";
   $periodo = $web->DB->GetAll($sql, $_GET['info1']);
   if (!isset($periodo[0])) {
     $web->simple_message('danger', 'No existe el periodo');
@@ -246,35 +251,35 @@ function delete_lapse($web)
 
   $web->DB->startTrans();
   //elimina de lista_libros
-  $sql = "delete from lista_libros where cveperiodo=?";
+  $sql = "DELETE FROM lista_libros WHERE cveperiodo=?";
   $web->query($sql, $_GET['info1']);
 
   //obtener los grupos y cvelectura de ese periodo
-  $sql    = "select distinct cveletra from laboral where cveperiodo=? order by cveletra";
+  $sql    = "SELECT distinct cveletra FROM laboral WHERE cveperiodo=? ORDER BY cveletra";
   $grupos = $web->DB->GetAll($sql, $_GET['info1']);
   for ($i = 0; $i < sizeof($grupos); $i++) {
-    $sql      = "select cvelectura from lectura where cveletra=?";
+    $sql      = "SELECT cvelectura FROM lectura WHERE cveletra=?";
     $lecturas = $web->DB->GetAll($sql, $grupos[$i]['cveletra']);
 
     //elimina de evaluacion y lectura por cada cvelectura
     for ($j = 0; $j < sizeof($lecturas); $j++) {
-      $sql = "delete from evaluacion where cvelectura=?";
+      $sql = "DELETE FROM evaluacion WHERE cvelectura=?";
       $web->query($sql, $lecturas[$j]['cvelectura']);
-      $sql = "delete from lectura where cvelectura=?";
+      $sql = "DELETE FROM lectura WHERE cvelectura=?";
       $web->query($sql, $lecturas[$j]['cvelectura']);
     }
   }
 
   //elimina de laboral, msg, sala y periodo
-  $sql = "delete from laboral where cveperiodo=?";
+  $sql = "DELETE FROM laboral WHERE cveperiodo=?";
   $web->query($sql, $_GET['info1']);
-  $sql = "delete from msj where cveperiodo=?";
+  $sql = "DELETE FROM msj WHERE cveperiodo=?";
   $web->query($sql, $_GET['info1']);
-  $sql = "delete from sala where cveperiodo=?";
+  $sql = "DELETE FROM sala WHERE cveperiodo=?";
   $web->query($sql, $_GET['info1']);
-  $sql = "delete from periodo where cveperiodo=?";
+  $sql = "DELETE FROM periodo WHERE cveperiodo=?";
   $web->query($sql, $_GET['info1']);
-  
+
   if ($web->DB->HasFailedTrans()) {
     $web->simple_message('danger', 'No fue posible completar la operación');
     $web->DB->CompleteTrans();

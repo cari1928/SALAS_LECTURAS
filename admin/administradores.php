@@ -11,7 +11,7 @@ if ($cveperiodo == "") {
 }
 
 if (isset($_GET['accion'])) {
-  
+
   switch ($_GET['accion']) {
 
     case 'form_insert':
@@ -29,7 +29,7 @@ if (isset($_GET['accion'])) {
     case 'update':
       updateAdmin($web);
       break;
-      
+
     case 'delete':
       deleteAdmin($web);
       break;
@@ -47,11 +47,11 @@ $datos = $web->DB->GetAll($sql);
 
 //Modificaciones para que muestre la especialidad o el contenido de 'Otro'
 for ($i = 0; $i < sizeof($datos); $i++) {
-   if($datos[$i][2] == 'Otro') {
-     $sql = "select otro from especialidad_usuario where cveusuario=?";
-     $otro = $web->DB->GetAll($sql, $datos[$i][0]);
-     $datos[$i][2] = $otro[0][0];
-   }
+  if ($datos[$i][2] == 'Otro') {
+    $sql          = "select otro from especialidad_usuario where cveusuario=?";
+    $otro         = $web->DB->GetAll($sql, $datos[$i][0]);
+    $datos[$i][2] = $otro[0][0];
+  }
 }
 
 $datos = array('data' => $datos);
@@ -236,7 +236,7 @@ function insertAdmin($web)
 function updateAdmin($web)
 {
   global $cveperiodo;
-  
+
   // $web->debug($_POST);
 
   if (!isset($_POST['datos']['usuario']) ||
@@ -266,7 +266,7 @@ function updateAdmin($web)
   if (!isset($datos[0])) {
     errores('El administrador a actualizar no está registrado', 'index administradores actualizar', $web, $cveusuario);
   }
-  
+
   if (!$web->valida($_POST['datos']['correo'])) {
     errores('Ingrese un correo valido', 'index administradores actualizar', $web, $cveusuario);
   }
@@ -281,61 +281,61 @@ function updateAdmin($web)
       errores('El correo ingresado ya está registrado', 'index administradores actualizar', $cveusuario, $web);
     }
   }
-  
+
   $sql = "update usuarios set nombre=?, correo=?";
   $tmp = array($_POST['datos']['nombre'], $_POST['datos']['correo'], $cveusuario);
 
   //actualizar contraseña
   if ($_POST['datos']['pass'] == 'true') {
-    
+
     //si la contraseña no concuerda con la que está en la BD
     if ($datos[0]['pass'] != md5($_POST['datos']['contrasena'])) {
       errores('La contraseña ingresada es incorrecta', 'index administradores actualizar', $web, $cveusuario);
     }
-    
+
     //la nueva contraseña y su confirmación no concuerdan
     if ($_POST['datos']['confcontrasenaN'] != $_POST['datos']['contrasenaN']) {
       errores('La contraseña nueva debe coincidir con la confirmación', 'index administradores actualizar', $web, $cveusuario);
-      
+
       $sql .= ", pass=?";
       $tmp = array(
-      $_POST['datos']['nombre'],
-      $_POST['datos']['correo'],
-      md5($_POST['datos']['contrasenaN']),
-      $cveusuario);
+        $_POST['datos']['nombre'],
+        $_POST['datos']['correo'],
+        md5($_POST['datos']['contrasenaN']),
+        $cveusuario);
     }
   }
-  
+
   //llegado a este punto, $sql ya tiene todos los parámetros a modificar de la tabla usuarios
   $sql .= " where cveusuario=?";
   $web->DB->startTrans();
   $web->query($sql, $tmp);
-  
+
   //modificaciones sobre la tabla especialidad_usuario
   if (isset($_POST['datos']['especialidad'])) {
-    
+
     if ($_POST['datos']['especialidad'] == 'true') {
       $sql = "update especialidad_usuario set cveespecialidad=?, otro=null
         where cveusuario=? ";
       $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
-       
+
     } else {
       //no se llenó el campo otro
-      if($_POST['datos']['otro'] == '') {
+      if ($_POST['datos']['otro'] == '') {
         $web->DB->CompleteTrans(); //termina transición porque la función errores manda a otra página
         errores('Llene el campo correspondiente a "Otro"', 'index administradores actualizar', $web, $cveusuario);
       }
-      
+
       $sql = "update especialidad_usuario set cveespecialidad='O', otro=?
       where cveusuario=? ";
       $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
     }
-    
+
   } else {
-    
+
     $sql             = "select cveespecialidad from especialidad_usuario where cveusuario=?";
     $cveespecialidad = $web->DB->GetAll($sql, $cveusuario);
-    
+
     if ($cveespecialidad[0]['cveespecialidad'] == 'O') {
       $sql = "update especialidad_usuario set cveespecialidad='O', otro=? where cveusuario=? ";
       $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
@@ -344,9 +344,9 @@ function updateAdmin($web)
       $sql = "update especialidad_usuario set cveespecialidad=?, otro =null where cveusuario=? ";
       $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
     }
-    
+
   }
-  
+
   if ($web->DB->HasFailedTrans()) {
     //falta programar esta parte para que no muestre directamente el resultado de sql
     $web->simple_message('danger', 'No fue posible completar la operación');
@@ -362,7 +362,8 @@ function updateAdmin($web)
  * Eliminar un administrador
  * @param  Class $web Objeto para poder hacer uso de smarty
  */
-function deleteAdmin($web) {
+function deleteAdmin($web)
+{
   //se valida la contraseña
   switch ($web->valida_pass($_SESSION['cveUser'])) {
     case 1:
@@ -374,13 +375,13 @@ function deleteAdmin($web) {
       return false;
       break;
   }
-  
+
   //verifica que se reciben los datos necesarios
   if (!isset($_GET['info1'])) {
     $web->simple_message('danger', "No se especificó el administrador a eliminar");
     return false;
   }
-  
+
   //verifica que el administrador exista
   $sql   = "select * from usuarios where cveusuario=?";
   $datos = $web->DB->GetAll($sql, $_GET['info1']);
@@ -396,13 +397,13 @@ function deleteAdmin($web) {
   $web->query($sql, $_GET['info1']);
   $sql = "DELETE FROM usuarios WHERE cveusuario=?";
   $web->query($sql, $_GET['info1']);
-  
-  if($web->DB->HasFailedTrans()) {
+
+  if ($web->DB->HasFailedTrans()) {
     $web->simple_message('danger', 'No fue posible completar la operación');
     $web->DB->CompleteTrans();
     return false;
   }
-  
+
   $web->DB->CompleteTrans();
   header('Location: administradores.php');
 }

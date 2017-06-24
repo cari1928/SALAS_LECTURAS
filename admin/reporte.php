@@ -84,12 +84,13 @@ function casePromotor($web, $pdf)
 {
   /**
    * OBTENCIÓN DE LOS DATOS
+   * verifica que mande y sea válido cveperiodo y cvepromotor
    */
-  //verifica que mande y sea válido cveperiodo y cvepromotor
   $cveperiodo  = verifica_periodo($web);
   $cvepromotor = verifica_usuario($web);
   $periodo     = $web->getPeriodo($cveperiodo); //esto es para mostrarlo
 
+  // DATOS PROMOTOR
   $promotor = $web->getPromotor($cvepromotor, true);
   if ($promotor == null) {
     return 'promotor';
@@ -103,7 +104,10 @@ function casePromotor($web, $pdf)
   $web->smarty->assign('titulo', 'Listado de Alumnos');
   $web->smarty->assign('subtitulo', 'Periodo: ' . $periodo[0]['fechainicio'] . " : " . $periodo[0]['fechafinal']);
 
-  // $grupos incluye la cveletra, se necesita para obtener datos de lectura
+  /**
+   * DATOS GRUPOS
+   * $grupos incluye la cveletra, se necesita para obtener datos de lectura
+   */
   $grupos = $web->getAllGrupos($cveperiodo, $cvepromotor, true);
   if ($grupos == null) {
     $grupos = '';
@@ -112,7 +116,6 @@ function casePromotor($web, $pdf)
   $gruposHeader = array_keys($gruposHeader[0]);
 
   // se comienzan a checar los grupos para obtener los alumnos
-  $subHeader = '';
   $html      = '';
   for ($j = 0; $j < count($grupos); $j++) {
     $lecturas = $web->getAllLecturas($cveperiodo, $cvepromotor, $grupos[$j]['cveletra']);
@@ -139,10 +142,12 @@ function casePromotor($web, $pdf)
 
     } //fin else
 
+    // subHeader de grupos
     $arrGrupos = creaArray($gruposHeader, $grupos[$j]);
     $web->smarty->assign('grupo', $arrGrupos);
     $html .= (string) ($web->smarty->fetch('subHeader.html'));
 
+    // subHeader de alumnos
     if (is_array($alumnos)) {
       $alumnosHeader = getAssocArray($web, $alumnos);
       if ($alumnosHeader == null) {
@@ -158,14 +163,14 @@ function casePromotor($web, $pdf)
       $web->smarty->assign('columns', $alumnosHeader);
       $web->smarty->assign('fin', -1);
     }
-
+    
+    // DATOS TABLE
     $web->smarty->assign('columns', $alumnosHeader);
     $web->smarty->assign('rows', $alumnos[$j]);
     $html .= (string) ($web->smarty->fetch('table.html'));
   } //fin foreach
 
   $header = (string) ($web->smarty->fetch('header.html'));
-
   $html = $header . $html;
   $pdf->createPDF('Reporte', $html);
 }
