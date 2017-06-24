@@ -42,23 +42,58 @@ if (isset($_GET['accion'])) {
   }
 }
 
-//si no viene de historial
-if (!$flag) {
-  $web->iniClases('admin', "index promotor");
+//viene de historial
+if ($flag) {
+  $promotores = $flag;
 
+} else {
+  //no viene de historial
   $sql = "select u.cveusuario, u.nombre, u.correo, otro AS \"Otro\", e.nombre AS
   \"Especialidad\", eu.cveespecialidad  from usuarios u
   inner join especialidad_usuario eu on eu.cveusuario = u.cveusuario
   inner join especialidad e on e.cveespecialidad=eu.cveespecialidad
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   order by u.cveusuario";
+  $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $promotores = $web->DB->GetAll($sql);
-
-} else {
-  $promotores = $flag; //por si viene de historial
 }
 
-$web->smarty->assign('promotores', $promotores);
+$web->iniClases('admin', "index promotor");
+
+if (!isset($promotores[0])) {
+  $web->simple_message('warning', 'No hay promotores registrados');
+}
+
+$datos = array('data' => $promotores);
+
+//contenido de las colummnas
+for ($i = 0; $i < sizeof($datos['data']); $i++) {
+
+  if (!isset($flag[0])) {
+
+    //editar
+    $datos['data'][$i][5] = "<center><a href='promotor.php?accion=form_update&info1=" . $datos['data'][$i][0] . "'><img src='../Images/edit.png'></a></center>";
+    //mostrar_grupos
+    $datos['data'][$i][6] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "'><img src='../Images/mostrar.png'></a></center>";
+
+  } else {
+    $web->smarty->assign('bandera', true);
+
+    //mostrar grupos
+    $datos['data'][$i][4] = "<center><a href='promotor.php?accion=mostrar&info1=" . $datos['data'][$i][0] . "&info2=" . $_GET['info1'] . "'><img src='../Images/mostrar.png'></a></center>";
+    //reporte pdf
+    // $datos['data'][$i][5] = "<center><a href='reporte_pdf.php?accion=promotor&info1=1&info2=".$_GET['info1']."&info3=" . $datos['data'][$i][0] . "'><img src='../Images/pdf.png'></a></center>";
+    $datos['data'][$i][5] = "<center><a href='reporte.php?accion=promotor&info1=1&info2=" . $_GET['info1'] . "&info3=" . $datos['data'][$i][0] . "' target='_blank'><img src='../Images/pdf.png'></a></center>";
+  }
+
+}
+
+$web->DB->SetFetchMode(ADODB_FETCH_NUM);
+$datos = json_encode($datos);
+$file  = fopen("TextFiles/promotores.txt", "w");
+fwrite($file, $datos);
+
+$web->smarty->assign('datos', $datos);
 $web->smarty->display("promotor.html");
 
 /**
@@ -69,13 +104,12 @@ $web->smarty->display("promotor.html");
  * @param  Class  $web        Objeto para usar las herramientas smarty
  * @return Error desplegado en una plantilla
  */
-function errores($msg, $ruta, $cveusuario = null, $web)
+function errores($msg, $ruta, $web, $cveusuario = null)
 {
-  $web->smarty->assign('alert', 'danger');
-  $web->smarty->assign('msg', $msg);
+  $web->simple_message('danger', $msg);
   $web->iniClases('admin', $ruta);
 
-  $sql     = "select cveespecialidad, nombre from especialidad 
+  $sql = "select cveespecialidad, nombre from especialidad
   where cveespecialidad <> 'O'";
   $combito = $web->combo($sql, null, '../');
   $web->smarty->assign('combito', $combito);
@@ -183,7 +217,7 @@ function show_professor_groups($web)
     $web->simple_message('danger', 'No altere la estructura de la interfaz, no se especificó el promotor');
     return false;
   }
-  
+
   $web->iniClases('admin', "index promotor grupos");
   $web->smarty->assign('bandera', 'grupos');
 
@@ -214,7 +248,7 @@ function show_professor_groups($web)
   inner join abecedario on laboral.cveletra = abecedario.cve
   inner join sala on laboral.cvesala = sala.cvesala
   left join libro on laboral.cvelibro_grupal = libro.cvelibro
-  where cvepromotor=? and laboral.cveperiodo=? 
+  where cvepromotor=? and laboral.cveperiodo=?
   order by letra";
   $tablegrupos = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
 
@@ -223,12 +257,12 @@ function show_professor_groups($web)
     return false;
   }
 
-  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial, 
+  $sql = "select dia.cvedia, abecedario.letra, dia.nombre, horas.hora_inicial,
   horas.hora_final from laboral
   inner join dia on dia.cvedia=laboral.cvedia
   inner join abecedario on laboral.cveletra = abecedario.cve
   inner join horas on horas.cvehoras=laboral.cvehoras
-  where cvepromotor=? and laboral.cveperiodo=? 
+  where cvepromotor=? and laboral.cveperiodo=?
   order by letra, dia.cvedia, horas.hora_inicial";
   $horas = $web->DB->GetAll($sql, array($_GET['info1'], $cveperiodo));
 
@@ -266,6 +300,7 @@ function show_history($web)
   where u.cveusuario in (select cveusuario from usuario_rol where cverol=2)
   and cveperiodo=?
   order by u.cveusuario";
+  $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $promotores = $web->DB->GetAll($sql, $_GET['info1']);
 
   if (!isset($promotores[0])) {
@@ -337,10 +372,11 @@ function show_form_update($web)
  * @param  Class    $web Objeto para hacer uso de smarty
  * @return boolean  false = Mostrar mensaje de error
  */
-function insert_professor($web) {
+function insert_professor($web)
+{
   global $cveperiodo;
   $usuario = '';
-  
+
   if (!isset($_POST['datos']['usuario']) ||
     !isset($_POST['datos']['nombre']) ||
     !isset($_POST['datos']['correo']) ||
@@ -350,15 +386,15 @@ function insert_professor($web) {
   }
 
   if (($_POST['datos']['usuario']) == '' ||
-      ($_POST['datos']['nombre']) == '' ||
-      ($_POST['datos']['correo']) == '' ||
-      ($_POST['datos']['contrasena']) == '' ||
-      ($_POST['datos']['confcontrasena'] == '')) {
-      errores('Llene todos los campos', 'index promotor nuevo', $web);
+    ($_POST['datos']['nombre']) == '' ||
+    ($_POST['datos']['correo']) == '' ||
+    ($_POST['datos']['contrasena']) == '' ||
+    ($_POST['datos']['confcontrasena'] == '')) {
+    errores('Llene todos los campos', 'index promotor nuevo', $web);
   }
 
   if (strlen($_POST['datos']['usuario']) != 13) {
-    errores('La longitud del usuario debe de ser de 13 caracteres', 'index promotor nuevo', null, $web);
+    errores('La longitud del usuario debe de ser de 13 caracteres', 'index promotor nuevo', $web);
   }
 
   if (!$web->valida($_POST['datos']['correo'])) {
@@ -369,7 +405,7 @@ function insert_professor($web) {
     errores('Las contraseñas no coinciden', 'index promotor nuevo', $web);
   }
 
-  $sql   = "select*from usuarios where correo=?";
+  $sql   = "SELECT * FROM usuarios WHERE correo=?";
   $datos = $web->DB->GetAll($sql, $_POST['datos']['correo']);
   if (isset($datos[0])) {
     errores('El correo ya existe', 'index promotor nuevo', $web);
@@ -386,28 +422,52 @@ function insert_professor($web) {
   $nombre     = $_POST['datos']['nombre'];
   $correo     = $_POST['datos']['correo'];
 
-  $sql = "INSERT INTO usuarios values (?,?,?,?,?)";
-  $tmp = array($usuario, $nombre, md5($contrasena), null, $correo);
-  if (!$web->query($sql, $tmp)) {
-    $web->simple_message('danger', 'No se pudo completar la operación');
-    return false;
-  }
+  $web->DB->startTrans();
+
+  $sql = "INSERT INTO usuarios(cveusuario, nombre, pass, correo, validacion)
+  values(?,?,?,?, 'Aceptado')";
+  $tmp = array($usuario, $nombre, md5($contrasena), $correo);
+  $web->query($sql, $tmp);
   $sql = "INSERT INTO usuario_rol values(?, ?)";
   $web->query($sql, array($usuario, 2));
 
   if (isset($_POST['datos']['especialidad'])) {
-    
+
     if ($_POST['datos']['especialidad'] == 'true') {
-      $sql = "insert into especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
+      $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) VALUES(?, ?)";
       $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
     } else {
-      $sql = "insert into especialidad_usuario values(?, ?, ?)";
+      $sql = "INSERT INTO especialidad_usuario VALUES(?, ?, ?)";
       $web->query($sql, array($usuario, 'O', $_POST['datos']['otro']));
     }
   } else {
-    $sql = "insert into especialidad_usuario (cveusuario, cveespecialidad) values(?, ?)";
+    $sql = "INSERT INTO especialidad_usuario (cveusuario, cveespecialidad) VALUES(?, ?)";
     $web->query($sql, array($usuario, $_POST['datos']['cveespecialidad']));
   }
+
+  if ($web->DB->HasFailedTrans()) {
+    $web->simple_message('danger', 'No se pudo completar la operación');
+    $web->DB->CompleteTrans();
+    return false;
+  }
+  $web->DB->CompleteTrans();
+
+  //Para probar el envío de correos al administrador
+  // $sql     = "SELECT correo, nombre FROM usuarios WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
+  // $correos = $web->DB->GetAll($sql);
+  // if (!isset($correos[0])) {
+  //   $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
+  //   return false;
+  // }
+
+  // //envía correos a todos los administradores
+  // for ($i = 0; $i < sizeof($correos); $i++) {
+
+  //   $mensaje = "Hola " . $correos[$i]['nombre'] . "\n Se solicita que apruebe un usuario para Salas Lectura.<br><br> Numero de control: " . $cveUsuario . "<br><br>Nombre del usuario: " . $nombre . "<br><br>Especialidad: " . $nombre_especialidad[0]['nombre'] . "<br><br>Correo del usuario: " . $correo . "<br><br>Por lo tanto, para realizar dicha accion de click en el siguiente enlace: " . " <a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=aceptar&clave=" . $cveUsuario . "'>Aceptar</a>" . ".<br><br> De lo contrario, si usted Desea rechazar al usuario de click al siguiente enlace." . "<a href='https://salas-lectura-cari1928.c9users.io/admin/validar.php?accion=rechazar&clave=" . $cveUsuario . "'>Rechazar</a>" . "<br><br> ¡Gracias!";
+
+  //   $web->sendEmail($correos[$i]['correo'], $correos[$i]['nombre'], "Aprobar registro", $mensaje);
+  // }
+
   header('Location: promotor.php');
 }
 
@@ -416,19 +476,20 @@ function insert_professor($web) {
  * @param  Class    $web Objeto para hacer uso de smarty
  * @return boolean  false = Mostrar mensaje de error
  */
-function update_professor($web) {
+function update_professor($web)
+{
   global $cveperiodo;
   $cveusuario = $_POST['cveusuario'];
-  
+
   if (!isset($_POST['datos']['nombre']) ||
-      !isset($_POST['datos']['cveespecialidad']) ||
-      !isset($_POST['datos']['correo'])) {
+    !isset($_POST['datos']['cveespecialidad']) ||
+    !isset($_POST['datos']['correo'])) {
     errores('No alteres la estructura de la interfaz', 'index promotor nuevo', $cveusuario, $web);
   }
 
   if (($_POST['datos']['nombre']) == '' ||
-      ($_POST['datos']['cveespecialidad']) == '' ||
-      ($_POST['datos']['correo']) == '') {
+    ($_POST['datos']['cveespecialidad']) == '' ||
+    ($_POST['datos']['correo']) == '') {
     errores('Llene todos los campos', 'index promotor nuevo', $cveusuario, $web);
   }
 
@@ -455,16 +516,16 @@ function update_professor($web) {
   }
 
   if ($_POST['datos']['pass'] == 'true') {
-    
+
     if (!isset($_POST['datos']['contrasena']) ||
-        !isset($_POST['datos']['contrasenaN']) ||
-        !isset($_POST['datos']['confcontrasenaN'])) {
+      !isset($_POST['datos']['contrasenaN']) ||
+      !isset($_POST['datos']['confcontrasenaN'])) {
       errores('No altere la estructura de la interfaz', 'index promotor nuevo', $cveusuario, $web);
     }
 
     if (isset($_POST['datos']['contrasena']) == '' ||
-        isset($_POST['datos']['contrasenaN']) == '' ||
-        isset($_POST['datos']['confcontrasenaN']) == '') {
+      isset($_POST['datos']['contrasenaN']) == '' ||
+      isset($_POST['datos']['confcontrasenaN']) == '') {
       errores('Llene todos los campos', 'index promotor nuevo', $cveusuario, $web);
     }
 
@@ -482,7 +543,7 @@ function update_professor($web) {
       $_POST['datos']['correo'],
       md5($_POST['datos']['contrasenaN']),
       $cveusuario);
-      
+
     if (!$web->query($sql, $tmp)) {
       $web->simple_message('danger', 'No se pudo completar la operación');
       return false;
@@ -497,16 +558,16 @@ function update_professor($web) {
 
     if (isset($_POST['datos']['especialidad'])) {
       if ($_POST['datos']['especialidad'] == 'true') {
-        $sql = "update especialidad_usuario set cveespecialidad=?, otro=null 
+        $sql = "update especialidad_usuario set cveespecialidad=?, otro=null
         where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['cveespecialidad'], $cveusuario));
       } else {
-        $sql = "update especialidad_usuario set cveespecialidad='O', otro=? 
+        $sql = "update especialidad_usuario set cveespecialidad='O', otro=?
         where cveusuario=? ";
         $web->query($sql, array($_POST['datos']['otro'], $cveusuario));
       }
     } else {
-      $sql             = "select cveespecialidad from especialidad_usuario 
+      $sql = "select cveespecialidad from especialidad_usuario
       where cveusuario=?";
       $cveespecialidad = $web->DB->GetAll($sql, $cveusuario);
       if ($cveespecialidad[0]['cveespecialidad'] == 'O') {

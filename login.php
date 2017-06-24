@@ -23,18 +23,20 @@ if (isset($_POST['datos']['contrasena'])) {
   }
 
   if (!$web->login($cveUsuario, $contrasena, $usuario_clave, $validar)) {
+
     switch ($web->aceptacion) {
+
       case "No guardado":
-        $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
-        break;
+      $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
+      break;
 
       case "Rechazado":
-        $web->simple_message('danger', 'Lo sentimos, no fue aprobado tu registro. Para mayor información comunícate con el administrador');
-        break;
+      $web->simple_message('danger', 'Lo sentimos, no fue aprobado tu registro. Para mayor información comunícate con el administrador');
+      break;
 
       case "":
-        $web->simple_message('danger', 'Tu registro aín no ha sido autorizado. Para mayor información comunícate con el administrador');
-        break;
+      $web->simple_message('danger', 'Tu registro aún no ha sido autorizado. Para mayor información comunícate con el administrador');
+      break;
     }
     $web->smarty->display('formulario_login.html');
     die();
@@ -64,54 +66,42 @@ if (isset($_GET['info'])) {
     die();
   }
 
-  $_SESSION['logueado'] = true;
+  $_SESSION['logueado']      = true;
+  $_SESSION['bandera_roles'] = "true";
   switch ($_GET['info']) {
     case 1:
-      $_SESSION['roles'] = 'A';
-      header('Location: admin');
-      break;
+    $_SESSION['roles'] = 'A';
+    header('Location: admin');
+    break;
     case 2:
-      $_SESSION['roles'] = 'P';
-      header('Location: promotor');
-      break;
+    $_SESSION['roles'] = 'P';
+    header('Location: promotor');
+    break;
     case 3:
-      $_SESSION['roles'] = 'U';
-      header('Location: alumno');
-      break;
+    $_SESSION['roles'] = 'U';
+    header('Location: alumno');
+    break;
   }
 }
 
 //para mensajes cuando la página es llamada principalmente por header: Location
 if (isset($_GET['m'])) {
+
   switch ($_GET['m']) {
     case 1:
-      $web->simple_message('info', 'Espere que un administrador acepte su registro');
-      break;
+    $web->simple_message('info', 'Espere que un administrador acepte su registro');
+    break;
 
     case 2:
-      $web->simple_message('info', 'Inicia sesión como administrador');
-      if (isset($_GET['validar'])) {
-        $web->smarty->assign('validar', $_GET['validar']);
-      }
-      if (isset($_GET['clave'])) {
-        $web->smarty->assign('usuario_clave', $_GET['clave']);
-      }
-      break;
+    $web->simple_message('info', 'Inicia sesión como administrador');
+    if (isset($_GET['validar'])) {
+      $web->smarty->assign('validar', $_GET['validar']);
+    }
+    if (isset($_GET['clave'])) {
+      $web->smarty->assign('usuario_clave', $_GET['clave']);
+    }
+    break;
   }
 }
 
-// if (isset($_GET['accion'])) {
-//   if ($_GET['accion'] == 'especial') {
-//     $sql = $_POST['datos']['especial'];
-//     $web->DB->startTrans();
-//     $web->query($sql);
-//     if ($web->DB->HasFailedTrans()) {
-//       //si falló algo entra al if
-//       $web->simple_message('danger', 'No se pudo completar la operación');
-//     }
-//     $web->DB->CompleteTrans();
-//   }
-// }
-
-// $web->smarty->assign('mensaje', $msg);
 $web->smarty->display('formulario_login.html');

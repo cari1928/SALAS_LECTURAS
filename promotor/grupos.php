@@ -16,48 +16,48 @@ if ($cveperiodo == "") {
 
 if (isset($_GET['accion'])) {
 
-    switch ($_GET['accion']) {
+  switch ($_GET['accion']) {
 
-      case 'form_update':
-        if (!isset($_GET['info'])) {
-            $web->simple_message('danger', 'No se especificó el grupo');
-            break;
-        }
+    case 'form_update':
+      if (!isset($_GET['info'])) {
+        $web->simple_message('danger', 'No se especificó el grupo');
+        break;
+      }
 
-        $sql = "select * from laboral where cveletra in
+      $sql = "select * from laboral where cveletra in
           (select cve from abecedario where letra=?)";
-        $grupo = $web->DB->GetAll($sql, $_GET['info']);
+      $grupo = $web->DB->GetAll($sql, $_GET['info']);
 
-        if (!isset($grupo[0])) {
-            $web->simple_message('danger', 'No existe el grupo seleccionado');
-            break;
-        }
-
-        $web->iniClases('promotor', "index grupos actualizar");
-        $web->smarty->assign('grupos', $grupo[0]);
-        $web->smarty->display('form_vergrupos.html');
-        die();
+      if (!isset($grupo[0])) {
+        $web->simple_message('danger', 'No existe el grupo seleccionado');
         break;
+      }
 
-      case 'update':
-        if (!isset($_POST['datos']['nombre'])) {
-            $web->simple_message('danger', "No alteres la estructura de la interfaz");
-            break;
-        }
+      $web->iniClases('promotor', "index grupos actualizar");
+      $web->smarty->assign('grupos', $grupo[0]);
+      $web->smarty->display('form_vergrupos.html');
+      die();
+      break;
 
-        if ($_POST['datos']['nombre'] == "") {
-            $web->simple_message('danger', "Llena todos los campos");
-            break;
-        }
-
-        $nombre = $_POST['datos']['nombre'];
-        $cveletra = $_POST['datos']['cveletra'];
-        
-        $sql = "update laboral set nombre=? where cveletra=?";
-        $web->query($sql, array($nombre, $cveletra));
-        header('Location: grupos.php');
+    case 'update':
+      if (!isset($_POST['datos']['nombre'])) {
+        $web->simple_message('danger', "No alteres la estructura de la interfaz");
         break;
-    }
+      }
+
+      if ($_POST['datos']['nombre'] == "") {
+        $web->simple_message('danger', "Llena todos los campos");
+        break;
+      }
+
+      $nombre = $_POST['datos']['nombre'];
+      $cveletra = $_POST['datos']['cveletra'];
+
+      $sql = "update laboral set nombre=? where cveletra=?";
+      $web->query($sql, array($nombre, $cveletra));
+      header('Location: grupos.php');
+      break;
+  }
 }
 
 $sql = "select distinct letra, nombre, ubicacion, titulo from laboral
@@ -83,9 +83,9 @@ $horas = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
 
 for($i=0; $i<sizeof($tablegrupos); $i++){
   $tablegrupos[$i]['horario']="";
-  
+
   for($j=0; $j<sizeof($horas); $j++){
-    
+
     if($tablegrupos[$i]['letra'] == $horas[$j]['letra']){
       $tablegrupos[$i]['horario'] .= $horas[$j]['nombre'] . ' - ' . $horas[$j]['hora_inicial'] . ' a ' . $horas[$j]['hora_final'] . "<br>";    
     }  

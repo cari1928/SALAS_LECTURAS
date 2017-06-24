@@ -23,11 +23,13 @@ if(isset($_GET['accion'])) {
 }
 
 //su nombre es nocontrol para que funcione en grupos.html
-$sql = "select distinct abecedario.letra, usuarios.cveusuario AS \"nocontrol\", usuarios.nombre AS 
-\"nombre_promotor\", laboral.nombre, sala.ubicacion, laboral.cvepromotor from laboral
+$sql = "select distinct abecedario.letra, usuarios.cveusuario AS \"nocontrol\", 
+usuarios.nombre AS \"nombre_promotor\", laboral.nombre, sala.ubicacion, laboral.cvepromotor, 
+titulo from laboral
 inner join sala on sala.cvesala = laboral.cvesala
 inner join abecedario on abecedario.cve = laboral.cveletra
 inner join usuarios on usuarios.cveusuario = laboral.cvepromotor
+inner join libro on laboral.cvelibro_grupal = libro.cvelibro
 where laboral.cveperiodo = ? order by abecedario.letra";
 $grupos = $web->DB->GetAll($sql, $cveperiodo);
 

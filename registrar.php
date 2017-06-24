@@ -13,12 +13,13 @@ if (isset($_POST['datos'])) {
   registerStudent($web);
 }
 
-// $web->getSmartyAssigns();
-
 $web->smarty->display('registrar.html');
 
-/*
- * Para ahorrar espacio y poder usar la opción de return para poder mostrar los mensajes
+/**
+ * Ingresa un usuario en la BD
+ * Se envía un correo y desde ahí se completa el registro
+ * @param  Class $web Objeto para hacer uso de Smarty
+ * @return boolean    En caso de algún error
  */
 function registerStudent($web)
 {
@@ -47,7 +48,7 @@ function registerStudent($web)
   $cveUsuario     = $_POST['datos']['usuario'];
   $contrasena     = $_POST['datos']['contrasena'];
   $confcontrasena = $_POST['datos']['confcontrasena'];
-  $especialidad   = $_POST['datos']['cveespecialidad'];
+  $cveespecialidad   = $_POST['datos']['cveespecialidad'];
   $correo         = $_POST['datos']['correo'];
 
   if ($contrasena != $confcontrasena) {
@@ -81,13 +82,14 @@ function registerStudent($web)
   }
 
   $sql                 = "select nombre from especialidad where cveespecialidad = ?";
-  $nombre_especialidad = $web->DB->GetAll($sql, $especialidad);
+  $nombre_especialidad = $web->DB->GetAll($sql, $cveespecialidad);
   if (!isset($nombre_especialidad[0])) {
     $web->simple_message('danger', "La especialidad seleccionada no existe");
     return false;
   }
 
-  $web->DB->startTrans(); //por si falla algún query y no se realicen cambios
+  //$web->DB->startTrans(); //por si falla algún query y no se realicen cambios
+  
   //inserta en usuarios, usuario_rol y especialidad_usuario
   $sql = "insert into usuarios (cveusuario, nombre, pass, correo, estado_credito)
   values (?, ?, ?, ?, 'No Permitido')";
@@ -97,16 +99,19 @@ function registerStudent($web)
   $sql = "insert into especialidad_usuario(cveusuario, cveespecialidad) values(?, ?)";
   $web->query($sql, array($cveUsuario, $cveespecialidad));
 
-  if ($web->DB->HasFailedTrans()) {
-    //si falló algo entra al if
-    $web->simple_message('danger', 'No se pudo completar la operación');
-    return false;
-  }
-
-  $web->DB->CompleteTrans();
-  $sql     = "select correo, nombre from usuarios where cveusuario in (select cveusuario from usuario_rol where cverol=1)";
+  // if ($web->DB->HasFailedTrans()) {
+  //   //si falló algo entra al if
+  //   $web->simple_message('danger', 'No se pudo completar la operación');
+  //   $web->DB->CompleteTrans();
+  //   return false;
+  // }
+  
+  // $web->DB->CompleteTrans();
+  
+  //Inicia el proceso para enviar correos a los administradores
+  $sql     = "SELECT correo, nombre FROM usuarios 
+  WHERE cveusuario in (SELECT cveusuario FROM usuario_rol WHERE cverol=1)";
   $correos = $web->DB->GetAll($sql);
-
   if (!isset($correos[0])) {
     $web->simple_message('danger', 'No existe un administrador que apruebe tu registro');
     return false;

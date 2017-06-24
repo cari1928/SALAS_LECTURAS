@@ -1,6 +1,5 @@
 {include file='header.html'}
 {$ruta}
-
 {if isset($msg)} {include file='../mensajes.html'} {/if}
 
 <table class='table'>
@@ -12,6 +11,7 @@
 		</td>
 	</tr> 
 </table>
+
 {if isset($datos)}
 	<table id="example" class="display" cellspacing="0" width="100%">
 		<thead>
@@ -19,8 +19,8 @@
         <th>CLAVE</th>
         <th>AUTOR</th>
         <th>TITULO</th>
-        <th>EDITORIAL</th>
-        <th>PRECIO</th>
+        <th>CLASIFICACION</th>
+        <th>CANTIDAD</th>
         <th>ELIMINAR</th>
         <th>ACTUALIZAR</th>
       </tr>
@@ -30,8 +30,8 @@
         <th>CLAVE</th>
         <th>AUTOR</th>
         <th>TITULO</th>
-        <th>EDITORIAL</th>
-        <th>PRECIO</th>
+        <th>CLASIFICACION</th>
+        <th>CANTIDAD</th>
         <th>ELIMINAR</th>
         <th>ACTUALIZAR</th>
       </tr>

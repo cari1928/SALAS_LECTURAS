@@ -41,7 +41,7 @@
             <div class="form-group">
               <label>Especialidad:</label>
               <label id="l4" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}">Carrera</label>
-              <input id="r4" type="radio" class="btn btn-default" value='true' name="datos[especialidad]" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}" onclick="otro()">
+              <input id="r4" type="radio" class="btn btn-default" value='true' name="datos[especialidad]" style="display:{if $administrador.cveespecialidad eq 'O'}block{else}none{/if}" onclick="otro()" checked>
               <div id="carrera" class="form-group" style="display:{if $administrador.cveespecialidad ne 'O'}block{else}none{/if}">
                 {$cmb_especialidad}
               </div>
