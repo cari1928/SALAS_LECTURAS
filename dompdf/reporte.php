@@ -5,6 +5,7 @@ use Dompdf\Dompdf;
 
 $table = '
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
 <head>
   <title>Reporte</title>
@@ -49,6 +50,87 @@ $table = '
   </table>
 </div>
 
+=======
+<html>
+<head>
+    <title>Reporte</title> 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <!--<link rel="stylesheet" href="style_2.css" type="text/css" />-->
+    
+    <style type="text/css">
+        *
+        {
+            padding-bottom: 5px;
+        }
+    
+        div#cap 
+        {
+            /*background-color: green;*/
+            text-align: left;
+            padding: 10px;
+        }
+        
+        div#cap h1 
+        {
+            float: right;
+            margin-right: 150px;
+        }
+        
+        .usuario
+        {
+            float: right;
+        }
+        
+        .grupo
+        {
+            text-align: left;
+        }
+        
+        .container
+        {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+<div id="cap">
+    <h1>Salas de Lectura</h1>
+    <img src="../Images/logo.jpg" width="200" height="90" alt=""></img>
+</div>
+
+<div class="logoHeader">
+    <div class="info" align="left">
+        <b>Instituto Tecnológico de Celaya</b><br>
+        <b>Telefono:</b><br>
+        <b>Correo:</b>
+    </div>
+</div>
+
+<div class="subHeader">
+    <div class="usuario">
+    	<b>Promotor: </b>Promotor 1<br>
+    	<b>RFC: </b>777777777777<br>
+    	<b>Especialidad: </b>Centro de Información<br>
+    	<b>Correo: </b>7777777777777@hotmail.com
+    </div>
+    
+    <div class="grupo">
+    	<b>Promotor: </b>Promotor 1<br>
+    	<b>RFC: </b>777777777777<br>
+    	<b>Especialidad: </b>Centro de Información<br>
+    	<b>Correo: </b>7777777777777@hotmail.com
+    </div>
+</div>
+
+<div class="container">
+    <center>
+        <label style="font-size: 16px">Periodo 43232 : 4324312</label><br>
+        <label style="font-size: 16px">Listado de ...</label>
+    </center>
+</div>
+ 
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
 </body>
 </html>
 ';

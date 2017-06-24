@@ -14,7 +14,11 @@ if (!(isset($_GET['info2']))) {
 }
 
 if (isset($_GET['info1'])) {
+<<<<<<< HEAD
   $sql = "select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura  inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cveletra in (select cve from abecedario where letra ='" . $_GET['info1'] . "') and lectura.cveperiodo='" . $_GET['info2'] . "' and lectura.cvepromotor='" . $_GET['info'] . "'";
+=======
+  $sql = "select distinct sala.cvesala,ubicacion,sala.horario,fechainicio,fechafinal from lectura inner join sala on sala.cvesala=lectura.cvesala and lectura.horario=sala.horario inner join periodo on periodo.cveperiodo = lectura.cveperiodo where cveletra in (select cve from abecedario where letra ='" . $_GET['info1'] . "') and lectura.cveperiodo='" . $_GET['info2'] . "' and lectura.cvepromotor='" . $_GET['info'] . "'";
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
   echo $sql . "<br>";
   $datos_rs = $web->DB->GetAll($sql);
 

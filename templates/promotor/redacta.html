@@ -31,7 +31,7 @@
     {/if}
 {/if}
 {if isset($accion)}
-    <form name="messageform" action="redacta.php?accion=enviarI&para={if isset($grupo)}{$grupo}{/if}&periodo={if isset($cveperiodo)}{$cveperiodo}{/if}&receptor={if isset($receptor)}{$receptor}{/if}" method="POST" id="messageform">
+    <form name="messageform" action="redacta.php?accion=enviarI&para={if isset($grupo)}{$grupo}{/if}&receptor={if isset($receptor)}{$receptor}{/if}" method="POST" id="messageform">
         <div class="small-10 columns">
             <label style="color:black;"> Asunto*</label>
             <input class="span12" type="text" name="introduccion" id="subject" placeholder="Asunto" data-toggle="tooltip" title="Input Message Subject between 10 to 80" data-validation-required-message="Please enter subject" required value='{if isset($mensaje)}{$mensaje[0].introduccion}{/if}' {if isset($mensaje)}readonly{/if}>

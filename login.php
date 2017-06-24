@@ -23,9 +23,15 @@ if (isset($_POST['datos']['contrasena'])) {
   }
 
   if (!$web->login($cveUsuario, $contrasena, $usuario_clave, $validar)) {
+<<<<<<< HEAD
 
     switch ($web->aceptacion) {
 
+=======
+    
+    switch ($web->aceptacion) {
+    
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
       case "No guardado":
       $web->simple_message('danger', 'La contraseña y/o usuario son incorrectos');
       break;
@@ -35,8 +41,13 @@ if (isset($_POST['datos']['contrasena'])) {
       break;
 
       case "":
+<<<<<<< HEAD
       $web->simple_message('danger', 'Tu registro aún no ha sido autorizado. Para mayor información comunícate con el administrador');
       break;
+=======
+        $web->simple_message('danger', 'Tu registro aún no ha sido autorizado. Para mayor información comunícate con el administrador');
+        break;
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
     }
     $web->smarty->display('formulario_login.html');
     die();
@@ -66,6 +77,7 @@ if (isset($_GET['info'])) {
     die();
   }
 
+<<<<<<< HEAD
   $_SESSION['logueado']      = true;
   $_SESSION['bandera_roles'] = "true";
   switch ($_GET['info']) {
@@ -73,6 +85,15 @@ if (isset($_GET['info'])) {
     $_SESSION['roles'] = 'A';
     header('Location: admin');
     break;
+=======
+  $_SESSION['logueado'] = true;
+  $_SESSION['bandera_roles'] = "true";
+  switch($_GET['info']) {
+    case 1: 
+        $_SESSION['roles'] = 'A';
+        header('Location: admin');
+        break;
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
     case 2:
     $_SESSION['roles'] = 'P';
     header('Location: promotor');
@@ -86,7 +107,11 @@ if (isset($_GET['info'])) {
 
 //para mensajes cuando la página es llamada principalmente por header: Location
 if (isset($_GET['m'])) {
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
   switch ($_GET['m']) {
     case 1:
     $web->simple_message('info', 'Espere que un administrador acepte su registro');

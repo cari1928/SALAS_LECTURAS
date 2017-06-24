@@ -161,11 +161,19 @@ function verificaciones($op, $web, $elementos = null)
             $sql        = "INSERT INTO laboral(cveperiodo, cvehoras, cvedia, cvesala, cveletra, nombre, cvepromotor, cvelibro_grupal) values(?, ?, ?, ?, ?, ?, ?, ?)";
             $parametros = array($elementos['cveperiodo'], $_POST['datos']['horas' . $i . '_' . $j], $i, $_POST['datos']['cvesala'], $elementos['grupo'], $elementos['nombre'], $_SESSION['cveUser'], $elementos['cvelibro_grupal']);
             $web->query($sql, $parametros);
+<<<<<<< HEAD
             $sql   = "select letra from abecedario where cve=?";
             $letra = $web->DB->GetAll($sql, $elementos['grupo']);
             mkdir("../periodos/" . $elementos['cveperiodo'] . "/" . $letra[0]['letra'], 0777);
             if ($web->DB->HasFailedTrans()) {
               $web->simple_message('danger', 'No fue posible registrar el grupo, contacte al administrador');
+=======
+          	$sql    = "select letra from abecedario where cve=?";
+  					$letra  = $web->DB->GetAll($sql, $elementos['grupo']);
+            mkdir("../periodos/" . $elementos['cveperiodo'] . "/" . $letra[0]['letra'] , 0777);
+            if($web->DB->HasFailedTrans()) {
+            	$web->simple_message('danger', 'No fue posible registrar el grupo, contacte al administrador');
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
               return false;
             }
             $web->DB->CompleteTrans();

@@ -41,9 +41,15 @@ if (isset($_GET['info'])) {
   $web->DB->startTrans();
   $sql = "INSERT INTO lectura(nocontrol, cveletra, cveperiodo) values(?, ?, ?)";
   $web->query($sql, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
+<<<<<<< HEAD
 
   $cvelectura = $web->DB->GetAll($query, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
 
+=======
+  
+  $cvelectura = $web->DB->GetAll($query, array($_SESSION['cveUser'], $datos[0]['cveletra'], $cveperiodo));
+  
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
   $sql = "INSERT INTO evaluacion(comprension, participacion, terminado, asistencia, actividades, cvelectura, reporte) values(0, 0, 0, 0, 0, ?, 0)";
   $web->query($sql, $cvelectura[0]['cvelectura']);
 
@@ -52,6 +58,7 @@ if (isset($_GET['info'])) {
     $web->smarty->display("inscripcion.html");
     die();
   }
+<<<<<<< HEAD
   $sql            = "select * from lectura where nocontrol = ? and cveperiodo = ?";
   $lectura_folder = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
   if (isset($lectura_folder[0])) {
@@ -65,6 +72,21 @@ if (isset($_GET['info'])) {
   $web->DB->CompleteTrans();
   header('Location: grupos.php');
 
+=======
+  $sql = "select * from lectura where nocontrol = ? and cveperiodo = ?";
+  $lectura_folder = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
+  if(isset($lectura_folder[0])){
+      $sql = "select letra from abecedario where cve = ?";
+      $letra_folder = $web->DB->GetAll($sql, $datos[0]['cveletra']);
+      if(isset($letra_folder[0][0])){
+        mkdir("../periodos/" . $cveperiodo. "/" . $letra_folder[0][0] . "/" . $_SESSION['cveUser'] , 0777); 
+      }
+  }
+  
+  $web->DB->CompleteTrans();
+  header('Location: grupos.php');
+    
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
 }
 
 //se verifica si el alumno ya está inscrito a algún grupo
@@ -85,7 +107,11 @@ if (sizeof($datos) == 1) {
   $datos = array('data' => $datos);
 
   for ($i = 0; $i < sizeof($datos['data']); $i++) {
+<<<<<<< HEAD
     $datos['data'][$i]['letra'] = "<a href='inscripcion.php?info=" . $datos['data'][$i]['letra'] . "'>" . $datos['data'][$i]['letra'] . "</a>";
+=======
+     $datos['data'][$i]['letra'] = "<a href='inscripcion.php?info=".$datos['data'][$i]['letra']."'>".$datos['data'][$i]['letra']."</a>";
+>>>>>>> 965cd2c32b1820efbbd26ff3e0464a166d40fec9
   }
 
   $web->DB->SetFetchMode(ADODB_FETCH_NUM);
