@@ -318,7 +318,6 @@ class Sistema extends Conexion
       $nombre = $this->tipoCuenta();
       $this->smarty->assign('nombrecuenta', $nombre);
       $this->smarty->assign('usuario', $_SESSION['nombre']);
-
       $this->smarty->setTemplateDir('../templates/' . $ubicacion . '/');
     }
 

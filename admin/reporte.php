@@ -15,7 +15,7 @@ if (!isset($_GET['accion']) && !isset($_GET['info1']) && !isset($_GET['info2']))
  * Los e=1 e=2 estan en verificar_periodo y verificar_promotor
  */
 switch ($_GET['accion']) {
-  
+
   case 'promotor':
     // para mensajes de error
     switch (casePromotor($web, $pdf)) {
@@ -98,6 +98,7 @@ function casePromotor($web, $pdf)
   //Assign correspondiente
   $arrPromo = creaArray($promotorHeader, $promotor[0]);
   $web->smarty->assign('usuario', $arrPromo);
+  $web->smarty->assign('table', 'alumnos');
 
   /**
    * DATOS GRUPOS
@@ -111,7 +112,7 @@ function casePromotor($web, $pdf)
   $gruposHeader = array_keys($gruposHeader[0]);
 
   // se comienzan a checar los grupos para obtener los alumnos
-  $html      = '';
+  $html = '';
   for ($j = 0; $j < count($grupos); $j++) {
     $lecturas = $web->getAllLecturas($cveperiodo, $cvepromotor, $grupos[$j]['cveletra']);
 
@@ -120,7 +121,7 @@ function casePromotor($web, $pdf)
 
     } else {
       // Obtiene todos los alumnos de un grupo
-      $tmpAlumno = array();
+      $tmpAlumno  = array();
       $tmpAluInfo = array();
 
       for ($i = 0; $i < count($lecturas); $i++) {
@@ -130,13 +131,15 @@ function casePromotor($web, $pdf)
           $lecturas[$i]['cveletra'],
           $lecturas[$i]['cvelectura']
         );
-        $datos[$j][0][4] = $datos[$j][0]['TERMINADO'];
-        $tmpAlumno       = array_merge($tmpAlumno, $datos[0]);
-        
+        $datos[$j][0][4]              = $datos[$j][0]['TERMINADO'];
+        $datos[$j][0][2]              = $web->getEspecialidad($datos[$j][0][2]);
+        $datos[$j][0]['ESPECIALIDAD'] = $datos[$j][0][2];
+        $tmpAlumno                    = array_merge($tmpAlumno, $datos[0]);
+
         // para la segunda tabla
         $evaluacion = $web->getEvaluation($lecturas[$i]['cvelectura']);
         $tmpAluInfo = array_merge($tmpAluInfo, $evaluacion);
-        
+
       } //fin for
       $alumnos[$j] = $tmpAlumno;
       $aluInfo[$j] = $tmpAluInfo;
@@ -163,22 +166,22 @@ function casePromotor($web, $pdf)
       $web->smarty->assign('columns', $alumnosHeader);
       $web->smarty->assign('fin', -1);
     }
-    
+
     // DATOS TABLE PRINCIPAL
     $web->smarty->assign('titulo', 'Listado de Alumnos');
     $web->smarty->assign('subtitulo', 'Periodo: ' . $periodo[0]['fechainicio'] . " : " . $periodo[0]['fechafinal']);
     $web->smarty->assign('columns', $alumnosHeader);
     $web->smarty->assign('rows', $alumnos[$j]);
     $html .= (string) ($web->smarty->fetch('table.html'));
-    
+
     // INFORMACION ALUMNOS TABLE
     $usersHeader = getAssocArray($web, $aluInfo);
     if ($usersHeader == null) {
-        $usersHeader = 'No hay alumnos en este grupo'; //no hay alumnos disponibles
-      }
+      $usersHeader = 'No hay alumnos en este grupo'; //no hay alumnos disponibles
+    }
     $users = getAssocArray($web, $aluInfo, true);
     if ($users == null) {
-        $users = 'No hay alumnos';
+      $users = 'No hay alumnos';
     }
     $web->smarty->assign('fin', (sizeof($aluInfo[$j][0]) / 2 - 1));
     $web->smarty->assign('titulo', 'Información específica');
@@ -186,11 +189,11 @@ function casePromotor($web, $pdf)
     $web->smarty->assign('columns', $usersHeader);
     $web->smarty->assign('rows', $users[$j]);
     $html .= (string) ($web->smarty->fetch('table.html'));
-    
+
   } //fin foreach
-  
+
   $header = (string) ($web->smarty->fetch('header.html'));
-  $html = $header . $html;
+  $html   = $header . $html;
   // echo $html;
   $pdf->createPDF('Reporte', $html);
 }

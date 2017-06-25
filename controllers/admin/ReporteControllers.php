@@ -38,7 +38,7 @@ class ReporteControllers extends Sistema
   /**
    * PROMOTOR
    */
-  public function getPromotor($promotorId, $bandera=false)
+  public function getPromotor($promotorId, $bandera = false)
   {
     $sql = "SELECT
     usuarios.cveusuario AS \"RFC\",
@@ -54,23 +54,23 @@ class ReporteControllers extends Sistema
     AND usuarios.cveusuario='" . $promotorId . "'
     ORDER BY usuarios.nombre";
 
-    if(!$bandera) {
+    if (!$bandera) {
       // solo los encabezados
-      $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);  
+      $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
     } else {
-      $this->DB->SetFetchMode(ADODB_FETCH_BOTH);  
+      $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     }
-    
+
     $promotor = $this->DB->GetAll($sql);
     if (sizeof($promotor) == 1) {
-      if($promotor[0]['especialidad_cve'] == 'O') {
+      if ($promotor[0]['especialidad_cve'] == 'O') {
         unset($promotor[0]['ESPECIALIDAD']);
         unset($promotor[0]['especialidad_cve']);
-        $promotor[0]['ESPECIALIDAD'] = $promotor[0][5];
+        $promotor[0]['ESPECIALIDAD'] = $promotor[0]['otro'];
         unset($promotor[0]['otro']);
         unset($promotor[0][4]);
         unset($promotor[0][5]);
-        if($bandera) {
+        if ($bandera) {
           $promotor[0][2] = $promotor[0]['CORREO'];
           $promotor[0][3] = $promotor[0]['ESPECIALIDAD'];
         }
@@ -78,7 +78,7 @@ class ReporteControllers extends Sistema
         unset($promotor[0]['especialidad_cve']);
         unset($promotor[0]['otro']);
       }
-      
+
       return $promotor;
     } else {
       //el query no regresó nada
@@ -108,12 +108,12 @@ class ReporteControllers extends Sistema
    * @param  $cvepromotor
    * @param  $bandera, true==quiere todos los campos ; false==solo quiere encabezados
    */
-  public function getAllGrupos($cveperiodo, $cvepromotor, $bandera=false)
+  public function getAllGrupos($cveperiodo, $cvepromotor, $bandera = false)
   {
-    $sql = "SELECT DISTINCT 
+    $sql = "SELECT DISTINCT
     letra AS \"GRUPO\",
-    cvesala AS \"SALA\", 
-    nombre AS \"NOMBRE\", 
+    cvesala AS \"SALA\",
+    nombre AS \"NOMBRE\",
     titulo AS \"LIBRO_GRUPAL\",
     laboral.cveletra
     FROM laboral
@@ -122,23 +122,23 @@ class ReporteControllers extends Sistema
     WHERE cveperiodo=? AND cvepromotor=?
     ORDER BY letra";
 
-    if(!$bandera) {
+    if (!$bandera) {
       // solo los encabezados
-      $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);  
+      $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
     } else {
-      $this->DB->SetFetchMode(ADODB_FETCH_BOTH);  
+      $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     }
-    
+
     $grupos = $this->DB->GetAll($sql, array($cveperiodo, $cvepromotor));
-    if(isset($grupos[0])) {
-      if(!$bandera) {
+    if (isset($grupos[0])) {
+      if (!$bandera) {
         for ($i = 0; $i < count($grupos); $i++) {
-           unset($grupos[$i]['cveletra']);
+          unset($grupos[$i]['cveletra']);
         }
       }
       return $grupos;
-    } 
-    
+    }
+
     return null;
   }
 
@@ -189,7 +189,7 @@ class ReporteControllers extends Sistema
     AND cveletra=?";
 
     $parameters = array($nocontrol, $cveperiodo, $cveletra);
-    $this->DB->SetFetchMode(ADODB_FETCH_BOTH);  
+    $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     $alumno = $this->DB->GetAll($sql, $parameters);
 
     $evaluacion             = $this->getEvaluacion($cvelectura);
@@ -231,21 +231,80 @@ class ReporteControllers extends Sistema
    */
   public function getEvaluation($cvelectura)
   {
-    $sql = "SELECT 
+    $sql = "SELECT
     nocontrol AS \"NOCONTROL\",
     nombre AS \"NOMBRE\",
-    comprension AS \"COMP\", 
-    participacion AS \"PART\", 
-    asistencia AS \"ASIS\", 
-    actividades AS \"ACTV\", 
+    comprension AS \"COMP\",
+    participacion AS \"PART\",
+    asistencia AS \"ASIS\",
+    actividades AS \"ACTV\",
     reporte AS \"REP\",
     terminado AS \"TERMINADO\"
     FROM evaluacion
     INNER JOIN lectura ON lectura.cvelectura = evaluacion.cvelectura
     INNER JOIN usuarios ON lectura.nocontrol = usuarios.cveusuario
     WHERE evaluacion.cvelectura=?";
-    // $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
-    return $this->DB->GetAll($sql, $cvelectura);
+    $evaluacion = $this->DB->GetAll($sql, $cvelectura);
+
+    if (isset($evaluacion[0])) {
+      if ($evaluacion[0][7] == 0) {
+        $evaluacion[0][7] = 'No';
+      } else {
+        $evaluacion[0][7] = 'Si';
+      }
+      $evaluacion[0]['TERMINADO'] = $evaluacion[0][7];
+    }
+
+    return $evaluacion;
   }
-  
+
+  public function getEspecialidad($opcion)
+  {
+    switch ($opcion) {
+      case 'IA':
+        return 'Ambiental';
+        break;
+
+      case 'IB':
+        return 'Bioquímica';
+        break;
+
+      case 'IE':
+        return 'Electrónica';
+        break;
+
+      case 'IGE':
+        return 'Gestión';
+        break;
+
+      case 'II':
+        return 'Informática';
+        break;
+
+      case 'IIN':
+        return 'Industrial';
+        break;
+
+      case 'IM':
+        return 'Mecatrónica';
+        break;
+
+      case 'IME':
+        return 'Mecánica';
+        break;
+
+      case 'IQ':
+        return 'Química';
+        break;
+
+      case 'ISC':
+        return 'Sistemas';
+        break;
+
+      case 'LAE':
+        return 'Administración';
+        break;
+    }
+  }
+
 }
