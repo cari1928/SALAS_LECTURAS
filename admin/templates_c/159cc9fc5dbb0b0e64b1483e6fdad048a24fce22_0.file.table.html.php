@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.30-dev/53, created on 2017-06-22 21:58:11
+/* Smarty version 3.1.30-dev/53, created on 2017-06-25 01:05:30
   from "/home/ubuntu/workspace/templates/admin/pdf/table.html" */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.30-dev/53',
-  'unifunc' => 'content_594c3d734b3de8_31152744',
+  'unifunc' => 'content_594f0c5a93d0f0_81594949',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '159cc9fc5dbb0b0e64b1483e6fdad048a24fce22' => 
     array (
       0 => '/home/ubuntu/workspace/templates/admin/pdf/table.html',
-      1 => 1498168549,
+      1 => 1498352729,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_594c3d734b3de8_31152744 (Smarty_Internal_Template $_smarty_tpl) {
+function content_594f0c5a93d0f0_81594949 (Smarty_Internal_Template $_smarty_tpl) {
 ?>
 <div class="table_container">
   <div class="table_header">
@@ -30,7 +30,7 @@ function content_594c3d734b3de8_31152744 (Smarty_Internal_Template $_smarty_tpl)
 </center>
   </div>
 
-  <table class="table">
+  <table class="table table-bordered">
     <thead class="thead-default">
       <tr>
         <?php
@@ -39,8 +39,13 @@ foreach ($_from as $_smarty_tpl->tpl_vars['column']->value) {
 $_smarty_tpl->tpl_vars['column']->_loop = true;
 $__foreach_column_0_saved = $_smarty_tpl->tpl_vars['column'];
 ?>
-          <th style="text-align:center"><?php echo $_smarty_tpl->tpl_vars['column']->value;?>
+          <?php if ($_smarty_tpl->tpl_vars['column']->value == "NOMBRE") {?>
+            <th style="text-align:center" width="80"><?php echo $_smarty_tpl->tpl_vars['column']->value;?>
 </th>
+          <?php } else { ?>
+            <th style="text-align:center"><?php echo $_smarty_tpl->tpl_vars['column']->value;?>
+</th>
+          <?php }?>
         <?php
 $_smarty_tpl->tpl_vars['column'] = $__foreach_column_0_saved;
 }
@@ -62,7 +67,8 @@ $_smarty_tpl->tpl_vars['i'] = new Smarty_Variable(null, $_smarty_tpl->isRenderin
 if ($_smarty_tpl->tpl_vars['i']->total > 0) {
 for ($_smarty_tpl->tpl_vars['i']->value = 0, $_smarty_tpl->tpl_vars['i']->iteration = 1;$_smarty_tpl->tpl_vars['i']->iteration <= $_smarty_tpl->tpl_vars['i']->total;$_smarty_tpl->tpl_vars['i']->value += $_smarty_tpl->tpl_vars['i']->step, $_smarty_tpl->tpl_vars['i']->iteration++) {
 $_smarty_tpl->tpl_vars['i']->first = $_smarty_tpl->tpl_vars['i']->iteration == 1;$_smarty_tpl->tpl_vars['i']->last = $_smarty_tpl->tpl_vars['i']->iteration == $_smarty_tpl->tpl_vars['i']->total;?>
-            <td style="text-align:center"><?php ob_start();
+              <td style="text-align; font-size:13px; vertical-align:middle" 
+                valign="middle" align="center" <?php if ($_smarty_tpl->tpl_vars['i']->value == 1 && $_smarty_tpl->tpl_vars['table']->value == "alumnos") {?>width="80"<?php }?>><?php ob_start();
 echo $_smarty_tpl->tpl_vars['i']->value;
 $_prefixVariable1=ob_get_clean();
 echo $_smarty_tpl->tpl_vars['row']->value[$_prefixVariable1];?>

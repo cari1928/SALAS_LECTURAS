@@ -4,11 +4,15 @@
     <center>{$subtitulo}</center>
   </div>
 
-  <table class="table">
+  <table class="table table-bordered">
     <thead class="thead-default">
       <tr>
         {foreach $columns as $column}
-          <th style="text-align:center">{$column}</th>
+          {if $column eq "NOMBRE"}
+            <th style="text-align:center" width="80">{$column}</th>
+          {else}
+            <th style="text-align:center">{$column}</th>
+          {/if}
         {/foreach}
       </tr>
     </thead>
@@ -17,7 +21,8 @@
       {foreach $rows as $row}
         <tr>
           {for $i=0 to $fin}
-            <td style="text-align:center">{$row[{$i}]}</td>
+              <td style="text-align; font-size:13px; vertical-align:middle" 
+                valign="middle" align="center" {if $i == 1 && $table eq "alumnos"}width="80"{/if}>{$row[{$i}]}</td>
           {/for}
         </tr>
       {/foreach}

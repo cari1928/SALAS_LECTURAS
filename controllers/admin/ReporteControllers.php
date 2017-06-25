@@ -207,6 +207,9 @@ class ReporteControllers extends Sistema
     return $this->DB->GetAll($sql, $cvelectura);
   }
 
+  /**
+   * Situación del alumno
+   */
   public function isTerminado($evaluacion)
   {
     if (!isset($evaluacion[0])) {
@@ -223,4 +226,26 @@ class ReporteControllers extends Sistema
     }
   }
 
+  /**
+   * EVALUACION 2
+   */
+  public function getEvaluation($cvelectura)
+  {
+    $sql = "SELECT 
+    nocontrol AS \"NOCONTROL\",
+    nombre AS \"NOMBRE\",
+    comprension AS \"COMP\", 
+    participacion AS \"PART\", 
+    asistencia AS \"ASIS\", 
+    actividades AS \"ACTV\", 
+    reporte AS \"REP\",
+    terminado AS \"TERMINADO\"
+    FROM evaluacion
+    INNER JOIN lectura ON lectura.cvelectura = evaluacion.cvelectura
+    INNER JOIN usuarios ON lectura.nocontrol = usuarios.cveusuario
+    WHERE evaluacion.cvelectura=?";
+    // $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
+    return $this->DB->GetAll($sql, $cvelectura);
+  }
+  
 }
