@@ -1,3 +1,37 @@
+<?php
+/* Smarty version 3.1.30-dev/53, created on 2017-06-25 22:50:50
+  from "/home/ubuntu/workspace/templates/usuario/msj.html" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.30-dev/53',
+  'unifunc' => 'content_59503e4ab89c73_89638882',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    'efd754b863809e30df0705a765660dc743919ae3' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/msj.html',
+      1 => 1498431049,
+      2 => 'file',
+    ),
+    '678c910e570f32587eda52b0ef80f9b2d548c65a' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/header.html',
+      1 => 1484462964,
+      2 => 'file',
+    ),
+    '83c6b602c2343e889e76242aef38436c885d75f2' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/footer.html',
+      1 => 1482852538,
+      2 => 'file',
+    ),
+  ),
+  'cache_lifetime' => 0,
+),true)) {
+function content_59503e4ab89c73_89638882 (Smarty_Internal_Template $_smarty_tpl) {
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +48,7 @@
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+  <script type="text/javascript" src="../js/script.js"></script><!--Para la camara web -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -58,7 +93,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Cuenta<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="datos.php">{$usuario}</a></li>   
+              <li><a href="datos.php">Alumno 2</a></li>   
               <li><a href="../logout.php">Logout</a></li>      
           </ul>
         </li>
@@ -68,11 +103,36 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Lecturas<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              {$grupos}     
+              <li><a href= "grupos.php">Ver todos</a></li><li><a href= "grupo.php?info1=A">A - SALA - A - SALA DE USOS MÚLTIPLES</a></li>     
           </ul>
         </li>
       </ul>
-      <label class="navbar-brand"><p style="color: white">{$nombrecuenta}</p></label>
+      <label class="navbar-brand"><p style="color: white">Alumno - Alumno</p></label>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
-</nav>
+</nav> 
+<div><label><a href="index.php">index</a></label> > <label><a href="grupos.php">grupos</a></label> > <label>grupo</label></div>
+
+  <table class='table table-striped display' cellspacing="0" width="100%">
+		<tr>    
+      <th><center>ASUNTO</center></th>
+      <th><center>TIPO</center></th>
+      <th><center>FECHA</center></th>
+      <th><center>EXPIRA</center></th>
+      <th><center>VISUALIZAR</center></th>
+    </tr>
+        <tr>
+      <td><center>Menso!!</center></td>
+      <td><center>Individual</center></td>
+      <td><center>2017-06-25</center></td>
+      <td><center>2017-06-30</center></td>
+      <td><center><a href="msj.php?accion=leer&info=6">
+        <img src="../Images/leer.png">
+      </a></center></td>
+    </tr>
+  	</table>
+
+
+</body>
+</html><?php }
+}

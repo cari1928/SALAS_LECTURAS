@@ -24,6 +24,15 @@ switch ($_GET['accion']) {
         break;
     }
     break;
+    
+  case 'alumno':
+    // para mensajes de error
+    switch (caseAlumno($web, $pdf)) {
+      case 'alumno':
+        // header('periodos.php?accion=historial&e=4'); //no se obtuvo info del promotor
+        break;
+    }
+    break;
 
   default:
     header('periodos.php?accion=historial&e=3'); //no modifique la estructura de la interfaz
@@ -246,4 +255,12 @@ function getAssocArray($web, $array, $numeric = false)
       return null;
     }
   } //end for i
+}
+
+function caseAlumno($web, $pdf) {
+  $cveperiodo  = verifica_periodo($web);
+  $cvepromotor = verifica_usuario($web);
+  $periodo     = $web->getPeriodo($cveperiodo); //esto es para mostrarlo 
+  
+  // PENDIENTE
 }

@@ -25,10 +25,9 @@ $sql = "select distinct letra, nombre, ubicacion from laboral
 $tablegrupos = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo));
 
 if (isset($tablegrupos[0])) {
-    $web->smarty->assign('tablegrupos', $tablegrupos);
+  $web->smarty->assign('tablegrupos', $tablegrupos);
 } else {
-  $web->smarty->assign('alert', 'danger');
-  $web->smarty->assign('msg', 'No ha registrado algún grupo');
+  $web->simple_message('danger', 'No ha registrado algún grupo');
 }
 
 $web->smarty->display('vergrupos.html');

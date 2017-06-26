@@ -1,18 +1,49 @@
+<?php
+/* Smarty version 3.1.30-dev/53, created on 2017-06-26 19:39:02
+  from "/home/ubuntu/workspace/templates/usuario/header.html" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.30-dev/53',
+  'unifunc' => 'content_595162d60733a3_66167681',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    '678c910e570f32587eda52b0ef80f9b2d548c65a' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/header.html',
+      1 => 1498491147,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+  ),
+),false)) {
+function content_595162d60733a3_66167681 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->compiled->nocache_hash = '632578183595162d5eed7e4_60321752';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <!--Mostrar logo-->
   <link rel="shortcut icon" type="image/x-icon" href="Images/logo.ico">
   
-  <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
-  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <?php echo '<script'; ?>
+ src="//code.jquery.com/jquery-1.12.0.min.js"><?php echo '</script'; ?>
+>
+  <?php echo '<script'; ?>
+ src="//code.jquery.com/jquery-migrate-1.2.1.min.js"><?php echo '</script'; ?>
+>
   
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
   <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <?php echo '<script'; ?>
+ src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"><?php echo '</script'; ?>
+>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -21,8 +52,12 @@
   <link rel="stylesheet" type="text/css" href="../css/main.css">
   
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"/>
-  <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <?php echo '<script'; ?>
+ type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"><?php echo '</script'; ?>
+>
+  <?php echo '<script'; ?>
+ type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"><?php echo '</script'; ?>
+>
 
   <title>Salas Lectura</title>
 </head>
@@ -58,7 +93,8 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Cuenta<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="datos.php">{$usuario}</a></li>   
+              <li><a href="datos.php"><?php echo $_smarty_tpl->tpl_vars['usuario']->value;?>
+</a></li>   
               <li><a href="../logout.php">Logout</a></li>      
           </ul>
         </li>
@@ -68,11 +104,14 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Lecturas<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              {$grupos}     
+              <?php echo $_smarty_tpl->tpl_vars['grupos']->value;?>
+     
           </ul>
         </li>
       </ul>
-      <label class="navbar-brand"><p style="color: white">{$nombrecuenta}</p></label>
+      <label class="navbar-brand"><p style="color: white"><?php echo $_smarty_tpl->tpl_vars['nombrecuenta']->value;?>
+</p></label>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
-</nav>
+</nav><?php }
+}

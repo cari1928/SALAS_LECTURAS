@@ -1,3 +1,37 @@
+<?php
+/* Smarty version 3.1.30-dev/53, created on 2017-06-26 19:39:02
+  from "/home/ubuntu/workspace/templates/usuario/index.html" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.30-dev/53',
+  'unifunc' => 'content_595162d607f0e1_60047280',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    'a1243bf04a498ec570551390659a3708e90bdca3' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/index.html',
+      1 => 1482852538,
+      2 => 'file',
+    ),
+    '678c910e570f32587eda52b0ef80f9b2d548c65a' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/header.html',
+      1 => 1498491147,
+      2 => 'file',
+    ),
+    '83c6b602c2343e889e76242aef38436c885d75f2' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/usuario/footer.html',
+      1 => 1482852538,
+      2 => 'file',
+    ),
+  ),
+  'cache_lifetime' => 0,
+),true)) {
+function content_595162d607f0e1_60047280 (Smarty_Internal_Template $_smarty_tpl) {
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +92,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Cuenta<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              <li><a href="datos.php">{$usuario}</a></li>   
+              <li><a href="datos.php">Alumno 2</a></li>   
               <li><a href="../logout.php">Logout</a></li>      
           </ul>
         </li>
@@ -68,11 +102,15 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color: white">Lecturas<span class="caret"></span></a>
           <ul class="dropdown-menu">
-              {$grupos}     
+              <li><a href= "grupos.php">Ver todos</a></li><li><a href= "grupo.php?info1=A">A - SALA - A - SALA DE USOS MÚLTIPLES</a></li>     
           </ul>
         </li>
       </ul>
-      <label class="navbar-brand"><p style="color: white">{$nombrecuenta}</p></label>
+      <label class="navbar-brand"><p style="color: white">Alumno - Alumno</p></label>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
+<div><label>index</label></div>
+</body>
+</html><?php }
+}
