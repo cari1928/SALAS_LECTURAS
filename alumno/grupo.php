@@ -30,7 +30,6 @@
         }
         
         $sql = "select letra from abecedario where cve in (select cveletra from lectura where cvelectura = ?)";
-        
         $letra_subida = $web->DB->GetAll($sql, $_GET['info1']);
         if(!isset($letra_subida[0])){
           message('danger', 'No existe el grupo', $web);
@@ -53,22 +52,14 @@
         if(!isset($cvelibro_subida[0])){
           message('danger', 'El libro no existe', $web);
         }
-        //NOMBRE ARCHIVO:        $cvelibro_subida[0][0]."_".$_SESSION['cveUser']
+
        $nombre = $cvelibro_subida[0][0]."_".$_SESSION['cveUser'].".pdf";
        if (move_uploaded_file($_FILES['datos']['tmp_name']['archivo'], $dir_subida.$nombre)){
          message('success', 'Se subio el reporte satisfactoriamente', $web);
-       }
-       else{
+       } else{
          message('danger', 'Ocurrio un error mientras se subia el archivo', $web);
        }
-        // if (move_uploaded_file($_FILES['datos']['name']['archivo'], $fichero_subido)) {
-        //     echo "El fichero es válido y se subió con éxito.\n";
-        // } else {
-        //     echo "¡Posible ataque de subida de ficheros!\n";
-        // }
-        //print_r($_FILES);
-        //die();
-        break;
+      break;
       
       case 'form_libro':
         if (!isset($_GET['info1'])) {
@@ -103,11 +94,6 @@
           order by titulo";
         $tmp = array($lectura[0]['nocontrol'], $_GET['info1']);
         $libros = $web->DB->GetAll($sql, $tmp);
-        
-        // echo $sql;
-        // $web->debug($tmp);
-        // $web->debug($libros);
-        
         if(!isset($libros[0])) {
           $web->simple_message('warning', 'No hay libros registrados');
         } else {
@@ -158,7 +144,6 @@
         $sql = "insert into lista_libros(cvelibro, cvelectura, cveperiodo, cveestado, calif_reporte) 
         values (?, ?, ?, 1, 0)";
         $web->query($sql, array($cvelibro, $cvelectura, $cveperiodo));
-        // header('Location: grupo.php?info1='.$lectura[0]['letra']);
         header('Location: grupo.php?accion=form_libro&info1='.$cvelectura);
         break;
         
@@ -167,7 +152,6 @@
         header("Content-type: MIME");
         readfile("/home/ubuntu/workspace/pdf/" .$cveperiodo. "/formato_preguntas.pdf");
         break;
-      
     }
     
   }
@@ -184,12 +168,6 @@
       where laboral.cveletra in (select cve from abecedario where letra=?) 
           and laboral.cveperiodo=? and nocontrol=?";
   $grupo_promotor = $web->DB->GetAll($sql, array($grupo, $cveperiodo, $_SESSION['cveUser']));
-
-  // echo $sql;
-  // echo $grupo."<br>";
-  // echo $cveperiodo."<br>";
-  // echo $_SESSION['cveUser'];
-  // $web->debug($grupo_promotor);
 
   if(!isset($grupo_promotor[0])) {
     message('danger', 'No existe el grupo en este periodo y/o no tiene permiso para acceder', $web);
@@ -208,6 +186,7 @@
   $web->smarty->assign('info', $datos_rs[0]);
 
   $tmp = array($grupo, $cveperiodo, $_SESSION['cveUser']);
+  
   //Datos de la tabla = Alumnos
   $sql   = "select distinct usuarios.nombre, asistencia, comprension, reporte,
   asistencia, actividades, participacion, terminado, nocontrol, cveeval, lectura.cveperiodo, 
@@ -219,28 +198,18 @@
   where letra=? and lectura.cveperiodo=? and nocontrol=?
   order by usuarios.nombre";
   $datos = $web->DB->GetAll($sql, array($grupo, $cveperiodo, $_SESSION['cveUser']));
-
-  // echo $sql."<br>";
-  // print_r($tmp);
-   //$web->debug($datos);
-
   if(!isset($datos[0])) {
-    $web->simple_message('warning', 'No hay alumnos inscritos');
-    $web->smarty->display("grupo.html");
-    die();
+    message('warning', 'No hay alumnos inscritos', $web);
   }
 
-  // $web->smarty->assign('para', $_GET['info1']);
   $web->smarty->assign('bandera', 'true');
   $web->smarty->assign('cveperiodo', $cveperiodo);
   $web->smarty->assign('datos', $datos);
   $web->smarty->assign('grupo', $grupo);
   $web->smarty->display("grupo.html");
 
-  /**/
   function message($alert, $msg, $web) {
-      $web->smarty->assign('alert', $alert);
-      $web->smarty->assign('msg', $msg);
-      $web->smarty->display("grupo.html");
-      die();
+    $web->simple_message($alert, $msg);
+    $web->smarty->display("grupo.html");
+    die();
   }

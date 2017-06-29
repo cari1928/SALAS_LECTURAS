@@ -33,7 +33,7 @@ class Sistema extends Conexion
   public $rol        = "";
   public $smarty;
 
-  public function combo($query, $selected = null, $ruta = "", $parameters = array())
+  public function combo($query, $selected = null, $ruta = "", $parameters = array(), $redireccion = null)
   {
     $datosList = $this->DB->GetAll($query, $parameters);
     if (!isset($datosList[0])) {
@@ -45,6 +45,11 @@ class Sistema extends Conexion
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
     $this->smarty->assign('nombrescolumnas', $nombrescolumnas);
     $this->smarty->assign('datos', $datosList);
+    
+    if($redireccion != null){
+        $this->smarty->assign('redireccion', $redireccion);
+    }
+    
     return $this->smarty->fetch($ruta . 'select.component.html');
   }
 
