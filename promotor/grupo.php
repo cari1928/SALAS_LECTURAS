@@ -422,6 +422,12 @@ function m_Observaciones() {
      !isset($_POST['observacion'])) {
     message('warning', 'Falta información');
   }
+  // obtiene la letra porque se usa para los header-location
+  $sql = "SELECT DISTINCT letra FROM abecedario WHERE cve=?";
+  $letra = $web->DB->GetAll($sql, $_GET['info']);
+  if(!isset($letra[0])) {
+    message('danger', 'No existe el grupo');
+  }
   
   $sql = "INSERT INTO observacion(observacion, cveletra, cveperiodo, cvepromotor) 
   VALUES(?, ?, ?, ?)";
@@ -431,13 +437,6 @@ function m_Observaciones() {
     $cveperiodo,
     $_SESSION['cveUser']
   );
-  
-  // obtiene la letra porque se usa para los header-location
-  $sql = "SELECT DISTINCT letra FROM abecedario WHERE cve=?";
-  $letra = $web->DB->GetAll($sql, $_GET['info']);
-  if(!isset($letra[0])) {
-    message('danger', 'No existe el grupo');
-  }
   
   if(!$web->query($sql, $parameters)) {
     header('Location: grupo.php?info1='. $letra[0]['letra'] . "&e=guardar");
