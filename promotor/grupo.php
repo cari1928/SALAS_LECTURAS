@@ -20,8 +20,18 @@ if (isset($_GET['accion'])) {
   switch ($_GET['accion']) {
 
     case 'estado':
+      if(!isset($_GET['estado'])) {
+        message('warning', 'Hace falta información', $web);
+      }
       
-      $sql = "SELECT cveestado FROM lista_libros WHERE cvelectura = ? and cvelectura in (SELECT cvelectura FROM lectura WHERE nocontrol = ?)";
+      if($_GET['estado'] == -1) {
+        message('warning', 'Selecciona una opción válida', $web);
+      }
+      
+      $sql = "SELECT cveestado 
+      FROM lista_libros 
+      WHERE cvelectura=? 
+      AND cvelectura in (SELECT cvelectura FROM lectura WHERE nocontrol=?)";
       $estados = $web->DB->GetAll($sql, array($_GET['info'], $_GET['info2']));
       
       if(!isset($estados[0])){
@@ -56,8 +66,6 @@ if (isset($_GET['accion'])) {
         header('Location: grupo.php?accion=libros&info=' . $_GET['info'] . '&info2=' . $_GET['info2']);
         die();
       }
-      
-      
       break;
 
     case 'libros':
@@ -98,14 +106,15 @@ if (isset($_GET['accion'])) {
           }
           $sqlEstado = "SELECT * FROM estado";
           $estados = $web->DB->GetAll($sqlEstado);
+          
           $selected = $libros[$i]['cveestado'];
           $redireccion['accion'] = "?accion=estado";
           $redireccion['nombre'] = "&estado";
           $redireccion['pagina'] = "grupo.php";
           $redireccion['get'] = "&info=".$_GET['info']."&info2=".$_GET['info2']."&info3=".$libros[$i]['cvelista'];
-          $combo = "";
-          $combo .= '<select class="form-control" name="cveestado" onchange="location = this.value">';
-          $combo .= '<option value="-1">Selecciona una opción</option>';
+          
+          $combo = '<select class="form-control" name="cveestado" onchange="location=this.value">';
+          $combo .= '<option value="'.$redireccion['pagina'].$redireccion['accion'].$redireccion['nombre'].'=-1">Selecciona una opción</option>';
           for($j = 0; $j < sizeof($estados); $j++){
             $combo .= '<option value="'.$redireccion['pagina'].$redireccion['accion'].$redireccion['nombre'].'='.$estados[$j]['cveestado'].$redireccion['get'].'"'; 
             if($selected == $estados[$j]['cveestado']){
@@ -116,11 +125,8 @@ if (isset($_GET['accion'])) {
             }
           }
           $combo .= "</select>";
-          //$combo = $web->combo($sqlEstado, $selected, '../', array(),$redireccion);
           $libros[$i]['combo'] = $combo;
-          //$web->debug_line($combo); 
         }
-        //$web->debug($libros);
         $web->smarty->assign('libros', $libros);
       }
 
@@ -168,7 +174,8 @@ if (isset($_GET['accion'])) {
       }
 
       $existencia = "";
-      $sql        = "SELECT * FROM laboral WHERE cveletra in (SELECT cveletra FROM lectura WHERE cvelectura = ? and cveperiodo = ?)";
+      $sql        = "SELECT * FROM laboral 
+      WHERE cveletra in (SELECT cveletra FROM lectura WHERE cvelectura=? and cveperiodo=?)";
       $existencia = $web->DB->GetAll($sql, array($_GET['info2'], $cveperiodo));
       if (!isset($existencia[0])) {
         message('danger', 'No tienes permisos', $web);
@@ -184,7 +191,6 @@ if (isset($_GET['accion'])) {
       if (promReporte($web) && promTerminado($web, 'cvelectura', $_GET['info2'])) {
         header('Location: grupo.php?accion=libros&info=' . $_GET['info2'] . '&info2=' . $_GET['info3']);
       } else {
-        // die('aqui');
         header('Location: grupo.php?accion=libros&info=' . $_GET['info2'] . '&info2=' . $_GET['info3'] . '&aviso=1');
       }
       die();
@@ -194,6 +200,14 @@ if (isset($_GET['accion'])) {
       header("Content-disposition: attachment; filename=formato_preguntas.pdf");
       header("Content-type: MIME");
       readfile("/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf");
+      break;
+      
+    case 'form_observaciones':
+      m_formObservaciones();
+      break;
+      
+    case 'observacion':
+      m_Observaciones();
       break;
   }
 }
@@ -301,9 +315,7 @@ WHERE letra=? and lectura.cveperiodo=?
 ORDER BY usuarios.nombre";
 $datos = $web->DB->GetAll($sql, array($grupo, $cveperiodo));
 if (!isset($datos[0])) {
-  $web->simple_message('warning', 'No hay alumnos inscritos');
-  $web->smarty->display("grupo.html");
-  die();
+  message('warning', 'No hay alumnos inscritos');
 }
 
 $nombre_fichero = "/home/ubuntu/workspace/pdf/" . $cveperiodo . "/formato_preguntas.pdf";
@@ -311,12 +323,17 @@ if (file_exists($nombre_fichero)) {
   $web->smarty->assign('formato_preguntas', true);
 }
 
+showMessage(); //mensajes de error o avisos
+
 $web->smarty->assign('bandera', 'true');
 $web->smarty->assign('cveperiodo', $cveperiodo);
 $web->smarty->assign('datos', $datos);
 $web->smarty->assign('grupo', $grupo);
 $web->smarty->display("grupo.html");
 
+/****************************************************************************************************
+ * FUNCIONES
+ ****************************************************************************************************/
 /**
  * Ahorro de código para mostrar mensajes al usuario
  * @param  String $alert warning | danger principalmente
@@ -372,9 +389,79 @@ function promTerminado($web, $campo, $valor)
   $prom = round($prom);
   $sql  = "UPDATE evaluacion SET terminado=? WHERE " . $campo . "=?";
   if (!$web->query($sql, array($prom, $valor))) {
-    // die();
     return false;
   }
 
   return true;
+}
+
+function m_formObservaciones() {
+  global $web;  
+  
+  if(!isset($_GET['info'])) {
+    message('warning', 'Falta información');
+  }
+  $sql = "SELECT DISTINCT laboral.cveletra FROM laboral 
+  INNER JOIN abecedario a ON a.cve = laboral.cveletra
+  WHERE letra=?";
+  $cveletra = $web->DB->GetAll($sql, $_GET['info']);
+  if(!isset($cveletra[0])) {
+    message('danger', 'No existe el grupo');
+  }
+  
+  $web->smarty->assign('cveletra', $cveletra[0]['cveletra']);
+  $web->smarty->display('form_observaciones.html');
+  die(); 
+}
+
+function m_Observaciones() {
+  global $web;
+  global $cveperiodo;
+  
+  if(!isset($_GET['info']) ||
+     !isset($_POST['observacion'])) {
+    message('warning', 'Falta información');
+  }
+  
+  $sql = "INSERT INTO observacion(observacion, cveletra, cveperiodo, cvepromotor) 
+  VALUES(?, ?, ?, ?)";
+  $parameters = array(
+    $_POST['observacion'],
+    $_GET['info'],
+    $cveperiodo,
+    $_SESSION['cveUser']
+  );
+  
+  // obtiene la letra porque se usa para los header-location
+  $sql = "SELECT DISTINCT letra FROM abecedario WHERE cve=?";
+  $letra = $web->DB->GetAll($sql, $_GET['info']);
+  if(!isset($letra[0])) {
+    message('danger', 'No existe el grupo');
+  }
+  
+  if(!$web->query($sql, $parameters)) {
+    header('Location: grupo.php?info1='. $letra[0]['letra'] . "&e=guardar");
+  }
+  header('Location: grupo.php?info1='. $letra[0]['letra'] . "&m=guardar");
+}
+
+function showMessage() {
+  global $web;
+  
+  // Mensajes de error
+  if(isset($_GET['e'])) {
+    switch ($_GET['e']) {
+      case 'guardar':
+        $web->simple_message('danger', 'No fue posible guardar la información');
+        break;
+    }
+  }
+  // Mensajes de éxito
+  if(isset($_GET['m'])) {
+    switch ($_GET['m']) {
+      case 'guardar':
+        $web->simple_message('info', 'Datos guardados');
+        break;
+    }
+  }
 }
