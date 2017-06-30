@@ -14,6 +14,26 @@ if ($cveperiodo == "") {
   die();
 }
 
+if(isset($_GET['aviso'])) {
+  switch ($_GET['aviso']) {
+    case 1:
+      $web->simple_message('success', 'Ya existe un archivo con el mismo nombre');
+      break;
+  
+    case 2:
+      $web->simple_message('warning', 'Se envío el mensaje satisfactoriamente');
+      break;
+      
+    case 3:
+      $web->simple_message('warning', 'Ocurrió un error mientras se enviaba el mensaje');
+      break;
+    
+    case 4:
+      $web->simple_message('warning', 'No existe el destinatario o no tienes permiso para mandar este mensaje');
+      break;
+  } 
+}
+
 if (isset($_GET['accion'])) {
 
     switch ($_GET['accion']) {
