@@ -117,10 +117,11 @@ class Sistema extends Conexion
     $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
     $datos_rs = $this->DB->GetAll($sql);
 
-    // $this->debug($datos_rs);
-
     $nombre = $datos_rs[0]['nombre'];
     $cadena = explode(" ", $nombre);
+    
+    $this->smarty->assign('usuario', $cadena[0]);
+    
     if ($_SESSION['roles'] == 'A') {
       return $cadena[0] . ' - Administrador';
     }
@@ -322,7 +323,7 @@ class Sistema extends Conexion
     if ($ubicacion != null) {
       $nombre = $this->tipoCuenta();
       $this->smarty->assign('nombrecuenta', $nombre);
-      $this->smarty->assign('usuario', $_SESSION['nombre']);
+      // $this->smarty->assign('usuario', $_SESSION['nombre']);
       $this->smarty->setTemplateDir('../templates/' . $ubicacion . '/');
     }
 
