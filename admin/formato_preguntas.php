@@ -16,7 +16,7 @@ if (isset($_GET['accion'])) {
   switch ($_GET['accion']) {
       
       case 'fileinput':
-        $dir_subida ="/home/ubuntu/workspace/pdf" . "/" . $cveperiodo . "/";
+        $dir_subida ="/home/ubuntu/workspace/archivos/pdf" . "/" . $cveperiodo . "/";
       
         if($_FILES['datos']['size']['archivo'] > 1000000){
           message('danger', 'El archivo es mayor a un MB.', $web);

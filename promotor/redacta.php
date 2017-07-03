@@ -166,7 +166,7 @@ switch ($accion) {
         $max_size = 2000000;
         if ($_FILES['archivo']['size'] > 0) {
           if($_FILES['archivo']['size'] <= $max_size){
-            $dir_subida ="/home/ubuntu/workspace/archivos_msj/". $periodo . "/";
+            $dir_subida ="/home/ubuntu/workspace/archivos/msj/". $periodo . "/";
             $nombre = $_FILES['archivo']['name'];
             
             if (file_exists($dir_subida.$nombre)) {

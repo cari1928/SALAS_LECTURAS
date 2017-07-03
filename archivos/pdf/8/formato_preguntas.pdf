@@ -175,6 +175,3 @@ startxref
 <br />
 <b>Fatal error</b>:  Uncaught  --&gt; Smarty: Unable to load template file 'grupo.html' &lt;-- 
   thrown in <b>/home/slslctr/lib/smarty/libs/sysplugins/smarty_internal_template.php</b> on line <b>148</b><br />
-<br />
-<b>Fatal error</b>:  Uncaught  --&gt; Smarty: Unable to load template file 'grupo.html' &lt;-- 
-  thrown in <b>/home/slslctr/lib/smarty/libs/sysplugins/smarty_internal_template.php</b> on line <b>148</b><br />
