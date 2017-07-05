@@ -25,10 +25,16 @@
 				</a>
 				
 				{if isset($info)}
-					<a style="text-decoration:none; color:black" 
+					<a style="text-decoration:none; color:black; padding-right:10px" 
 						href="grupo.php?accion=form_observaciones&info={$info.letra}">
 						<img src="../Images/notas.png"> Observaciones
 					</a>
+					
+				<a style="text-decoration:none; color:black; padding-right:20px" 
+					href="redacta.php?accion=redactar&info={$info.letra}">
+					<img src="../Images/sobre.png"> Mensaje Grupal
+				</a>
+					
 				{/if}
 			</div>
 		{/if}
