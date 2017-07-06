@@ -208,6 +208,10 @@ if (isset($_GET['accion'])) {
     case 'observacion':
       m_Observaciones();
       break;
+      
+    case 'lista_asistencia':
+      mListaAsistencia();
+      break;
   }
 }
 
@@ -467,4 +471,14 @@ function showMessage()
         break;
     }
   }
+}
+
+function mListaAsistencia() {
+  require_once '../controllers/pdf.class.php';
+  global $web;
+  $pdf = new PDF; 
+  $web->smarty->setTemplateDir('../templates/admin/pdf/');
+  $web->smarty->setCompileDir('../templates_c'); //para que no aparezca la carpeta admin/templates_c
+  
+  $data = promoSubHeader();
 }

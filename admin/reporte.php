@@ -1,7 +1,7 @@
 <?php
 
 require_once '../sistema.php';
-require_once '../controllers/admin/pdf.class.php';
+require_once '../controllers/pdf.class.php';
 
 $web = new ReporteControllers;
 $pdf = new PDF;
