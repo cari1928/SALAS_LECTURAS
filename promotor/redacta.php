@@ -272,12 +272,12 @@ switch ($accion) {
         INNER JOIN abecedario ON msj.cveletra = abecedario.cve
         WHERE msj.tipo='G' AND abecedario.letra=? AND msj.cveperiodo=? AND emisor=?
           AND expira >='" . date('Y-m-j') . "'";
-      $web->debug_line($sql);
+      //$web->debug_line($sql);
       $parameters = array(
         $grupo,
         $periodo,
         $_SESSION['cveUser']);
-      $web->debug($parameters);
+      //$web->debug($parameters);
       $datos = $web->DB->GetAll($sql, $parameters);
       $web->smarty->assign('datos', $datos);
 
