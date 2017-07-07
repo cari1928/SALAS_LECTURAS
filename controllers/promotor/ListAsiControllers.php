@@ -1,33 +1,24 @@
 <?php
 
 class ListAsiControllers extends Sistema {
- 
-  public function verifica_periodo() {
-    if (!isset($_GET['info2'])) {
-      return 'e1'; //mensaje error 1
-    }
-    $cveperiodo = $_GET['info2'];
   
-    //verifica que exista el periodo
-    $sql     = "SELECT * FROM periodo WHERE cveperiodo=?";
-    $periodo = $web->DB->GetAll($sql, $cveperiodo);
-    if (!isset($periodo[0])) {
-      return 'e2';
-    }
-    return $cveperiodo;
-  }
+  /**
+   * Obtiene Header y Footer
+   */
+  public function headerFooter()
+  {
+    $this->smarty->assign('asis_list', true);
+    $this->smarty->assign('phrase', 'El que lee y camina mucho, sabe y conoce mucho (MIGUEL DE CERVANTES SAAVEDRA)');
+    $this->smarty->assign('page_title', 'Lista de Asistencia');
   
-  public function verifica_promotor() {
-    if (!isset($_GET['info3'])) {
-      return 'e3';
-    }
-    $cveusuario = $_GET['info3'];
-    $sql        = "SELECT * FROM usuarios WHERE cveusuario=?";
-    $usuario    = $web->DB->GetAll($sql, $cveusuario);
-    if (!isset($usuario[0])) {
-      return 'e4';
-    }
-    return $cveusuario;
+    $header = (string) ($this->smarty->fetch('header.html'));
+    // $footer = (string) ($web->smarty->fetch('footer.html'));
+    $footer = '';
+  
+    return $data = array(
+      'header' => $header,
+      'footer' => $footer,
+    );
   }
   
   /**
@@ -35,9 +26,12 @@ class ListAsiControllers extends Sistema {
    */
   public function promoSubHeader()
   {
-    $cveperiodo  = $this->verifica_periodo();
-    $cvepromotor = $this->verifica_usuario();
+    $cveperiodo  = $this->periodo();
     $periodo     = $this->getPeriodo($cveperiodo); //esto es para mostrarlo
+    if ($cveperiodo == "" || !isset($periodo[0])) {
+      return 'e1'; //no hay periodo actual
+    }
+    $cvepromotor = $_SESSION['cveUser'];
   
     // DATOS PROMOTOR
     $promotor = $this->getPromotor($cvepromotor, true);
@@ -48,9 +42,9 @@ class ListAsiControllers extends Sistema {
     $promotorHeader = array_keys($promotorHeader[0]);
   
     //prepara el array a mandar por smarty
-    $arrPromo = creaArray($promotorHeader, $promotor[0]);
-    $web->smarty->assign('usuario', $arrPromo);
-    $web->smarty->assign('table', 'alumnos'); //para definir un ancho a las columnas de la tabla
+    $arrPromo = $this->creaArray($promotorHeader, $promotor[0]);
+    $this->smarty->assign('usuario', $arrPromo);
+    $this->smarty->assign('table', 'alumnos'); //para definir un ancho a las columnas de la tabla
   
     return $data = array(
       'cvepromotor' => $cvepromotor,
@@ -67,8 +61,8 @@ class ListAsiControllers extends Sistema {
     $sql = "SELECT
     usuarios.cveusuario AS \"RFC\",
     usuarios.nombre AS \"PROMOTOR\",
-    especialidad.nombre AS \"ESPECIALIDAD\",
     correo AS \"CORREO\",
+    especialidad.nombre AS \"ESPECIALIDAD\",
     especialidad.cveespecialidad AS \"especialidad_cve\",
     otro
     FROM usuarios
@@ -101,12 +95,140 @@ class ListAsiControllers extends Sistema {
         unset($promotor[0]['especialidad_cve']);
         unset($promotor[0]['otro']);
       }
-
       return $promotor;
+      
     } else {
       return null; //el query no regresó nada
     }
 
+  }
+  
+  /**
+   * Crea un array para ser utilizado en los tamplates: admin/pdf
+   */
+  public function creaArray($header, $body)
+  {
+    for ($i = 0; $i < sizeof($header); $i++) {
+      $res[$i]['titulo'] = $header[$i];
+      $res[$i]['nombre'] = $body[$i];
+    }
+    return $res;
+  }
+  
+  /**
+   * PERIODOS
+   */
+  public function getPeriodo($cveperiodo)
+  {
+    $sql = "SELECT * FROM periodo WHERE cveperiodo=?";
+    return $this->DB->GetAll($sql, $cveperiodo);
+  }
+  
+  /**
+   * Estructura el SubHeader-Grupo
+   */
+  public function grupoSubHeader($data)
+  {
+    if (isset($data['cveperiodo']) && isset($data['cvepromotor'])) {
+      // $grupos incluye la cveletra, se necesita para obtener datos de lectura
+      $grupos = $this->getGrupo($data['cveperiodo'], $data['cvepromotor'], true);
+      if ($grupos == null) {
+        return 'grupos';
+      }
+      $gruposHeader = $this->getGrupo($data['cveperiodo'], $data['cvepromotor']);
+      $gruposHeader = array_keys($gruposHeader[0]);
+  
+      return $data = array(
+        'grupos'       => $grupos,
+        'gruposHeader' => $gruposHeader,
+      );
+  
+    } elseif (isset($data['grupos']) && isset($data['gruposHeader']) && isset($data['position'])) {
+      $grupos   = $data['grupos'];
+      $position = $data['position'];
+  
+      $arrGrupos = $this->creaArray($data['gruposHeader'], $grupos[$position]);
+      $web->smarty->assign('grupo', $arrGrupos);
+      $html = (string) ($this->smarty->fetch('subHeader.html'));
+      return $html;
+  
+    } else {
+      // checa la sintaxis de este código!!
+      return null;
+    }
+  }
+  
+  /**
+   * GRUPOS
+   * @param  $cveperiodo
+   * @param  $cvepromotor
+   * @param  $bandera, true==quiere todos los campos ; false==solo quiere encabezados
+   */
+  public function getGrupo($cveperiodo, $cvepromotor, $bandera = false)
+  {
+    $sql = "SELECT DISTINCT
+    letra AS \"GRUPO\",
+    cvesala AS \"SALA\",
+    nombre AS \"NOMBRE\",
+    titulo AS \"LIBRO_GRUPAL\",
+    laboral.cveletra
+    FROM laboral
+    INNER JOIN abecedario ON laboral.cveletra = abecedario.cve
+    LEFT JOIN libro ON laboral.cvelibro_grupal = libro.cvelibro
+    WHERE cveperiodo=? AND cvepromotor=? AND letra=?
+    ORDER BY letra";
+
+    if (!$bandera) {
+      // solo los encabezados
+      $this->DB->SetFetchMode(ADODB_FETCH_ASSOC);
+    } else {
+      $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
+    }
+
+    $grupos = $this->DB->GetAll($sql, array($cveperiodo, $cvepromotor, $_GET['info']));
+    if (isset($grupos[0])) {
+      if (!$bandera) {
+        for ($i = 0; $i < count($grupos); $i++) {
+          unset($grupos[$i]['cveletra']);
+        }
+      }
+      return $grupos;
+    }
+
+    return null;
+  }
+  
+  /**
+   * EVALUACION 
+   */
+  public function getEvaluation($cvelectura)
+  {
+    $sql = "SELECT
+    nocontrol AS \"NOCONTROL\",
+    nombre AS \"NOMBRE\",
+    comprension AS \"COMP\",
+    participacion AS \"PART\",
+    asistencia AS \"ASIS\",
+    actividades AS \"ACTV\",
+    reporte AS \"REP\",
+    terminado AS \"TERMINADO\"
+    FROM evaluacion
+    INNER JOIN lectura ON lectura.cvelectura = evaluacion.cvelectura
+    INNER JOIN usuarios ON lectura.nocontrol = usuarios.cveusuario
+    WHERE evaluacion.cvelectura=?";
+    $this->DB->SetFetchMode(ADODB_FETCH_BOTH);
+    $evaluacion = $this->DB->GetAll($sql, $cvelectura);
+
+    if (isset($evaluacion[0])) {
+      if ($evaluacion[0][7] >= 70) {
+        $evaluacion[0][7] = 'Si';
+      } else {
+        $evaluacion[0][7] = 'No';
+      }
+      $evaluacion[0]['TERMINADO'] = $evaluacion[0][7];
+    }
+
+    return $evaluacion;
   }
 
 }

@@ -31,6 +31,9 @@ if(isset($_GET['aviso'])) {
     case 4:
       $web->simple_message('warning', 'No existe el destinatario o no tienes permiso para mandar este mensaje');
       break;
+    case 5:
+      $web->simple_message('warning', 'El archivo no existe o fue eliminado');
+      break;
   } 
 }
 

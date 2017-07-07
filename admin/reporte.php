@@ -361,6 +361,7 @@ function headerFooter($size)
   global $web;
 
   $web->smarty->assign('size', $size);
+  $web->smarty->assign('page_title', 'Reporte');
 
   $header = (string) ($web->smarty->fetch('header.html'));
   // $footer = (string) ($web->smarty->fetch('footer.html'));

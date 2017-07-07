@@ -476,9 +476,89 @@ function showMessage()
 function mListaAsistencia() {
   require_once '../controllers/pdf.class.php';
   global $web;
+  
+  $web = new ListAsiControllers;
   $pdf = new PDF; 
   $web->smarty->setTemplateDir('../templates/admin/pdf/');
   $web->smarty->setCompileDir('../templates_c'); //para que no aparezca la carpeta admin/templates_c
   
-  $data = promoSubHeader();
+  // OBTIENE HEADER
+  $data = $web->headerFooter();
+  $header = $data['header'];
+  
+  if(!isset($_GET['info'])) {
+    mSetMessage($pdf, $header, 'e2');
+  }
+  
+  // OBTIENE INFO DE PROMOTOR PARA SUBHEADER
+  $data = $web->promoSubHeader();
+  if (!isset($data['cveperiodo'])) {
+    mSetMessage($pdf, $header, $data);
+  }
+  $cveperiodo  = $data['cveperiodo'];
+  $cvepromotor = $data['cvepromotor'];
+  $periodo     = $data['periodo'];
+  
+  $data         = $web->grupoSubHeader(array('cveperiodo' => $cveperiodo, 'cvepromotor' => $cvepromotor));
+  if(!isset($data['grupos'])) {
+    mSetMessage($pdf, $header, $data);
+  }
+  $grupos       = $data['grupos'];
+  $gruposHeader = $data['gruposHeader'];
+
+  // se comienza a checar el grupo para obtener los alumnos
+  $lecturas = $web->getAllLecturas($cveperiodo, $cvepromotor, $grupos[$j]['cveletra']);
+  if (!isset($lecturas[0])) {
+    mSetMessage($pdf, $header, 'e3'); //no hay alumnos en este grupo
+
+  } else {
+    // Obtiene todos los alumnos de un grupo
+    $tmpAluInfo = array();
+    for ($i = 0; $i < count($lecturas); $i++) {
+      $evaluacion = $web->getEvaluation($lecturas[$i]['cvelectura']);
+      $tmpAluInfo = array_merge($tmpAluInfo, $evaluacion);
+    } //end for
+    $aluInfo[$j] = $tmpAluInfo;
+  } //end else
+  
+  // FULL SUBHEADER
+  $html = grupoSubHeader(array('grupos' => $grupos, 'gruposHeader' => $gruposHeader, 'position' => $j));
+  
+  // PENDIENTE
+  
+}
+
+/*
+ * Muestra mensajes de error y de éxito
+ * Usar solo para casos de despliege de PDF
+ */
+function mSetMessage($pdf, $header, $msg) {
+  switch ($msg) {
+    case 'e1':
+      $msg = 'No hay periodo actual';
+      break;
+      
+    case 'promotor':
+      $msg = 'Ocurrió un error al intentar identificar a este promotor';
+      break;
+      
+    case 'grupos':
+      $msg = 'Ocurrió un error al intentar identificar a este grupo';
+      break;
+      
+    case 'e2':
+      $msg = 'Hacen falta datos para continuar';
+      break;
+      
+    case 'e3':
+      $msg = 'No hay alumnos en este grupo';
+      break;
+      
+    default:
+      echo 'No option';
+      die();
+  }
+  
+  $pdf->createPDF('Lista-Asistencia', $header.$msg, 'landscape');
+  die();
 }

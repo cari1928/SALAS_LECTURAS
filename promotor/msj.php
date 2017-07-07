@@ -1,13 +1,20 @@
 <?php
 include "../sistema.php";
 
-if ($_SESSION['roles'] == 'P') {
-  $web->iniClases('promotor', "index vergrupos mesnajes");
-  $grupos = $web->grupos($_SESSION['cveUser']);
-  $web->smarty->assign('grupos', $grupos);
-  $accion = "";
+if ($_SESSION['roles'] != 'P') {
+  $web->checklogin();
+}
 
-  if (!isset($_GET['cvemsj'])) {
+$web->iniClases('promotor', "index vergrupos mesnajes");
+$grupos = $web->grupos($_SESSION['cveUser']);
+$web->smarty->assign('grupos', $grupos);
+$cveperiodo = $web->periodo();
+if ($cveperiodo == "") {
+  message('danger', 'No hay periodos actuales', $web);
+}
+  $accion = "";
+  
+  if (!isset($_GET['cvemsj']) && !isset($_GET['info'])) {
     header('location: index.php');
   }
 
@@ -30,7 +37,7 @@ if ($_SESSION['roles'] == 'P') {
       //$web->debug($mensaje);
       if($mensaje[0]['archivo'] != ''){
         $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/".$mensaje[0]['archivo'];
-        if (file_exists($nombre_fichero)) {
+        if (!file_exists($nombre_fichero)) {
           $mensaje[0]['archivo'] = "El archivo " . $mensaje[0]['archivo'] . " ha sido eliminado";
           $web->smarty->assign('eliminado', true);
         }
@@ -62,7 +69,12 @@ if ($_SESSION['roles'] == 'P') {
       break;
       
     case 'archivo':
-      
+      $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info'];
+      if (!file_exists($nombre_fichero)) {
+        header('Location: grupos.php?aviso=5'); //El archivo no existe
+      }
+      header("Content-disposition: attachment; filename=" . $_GET['info']);
+      header("Content-type: MIME");
+      readfile("/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info']);
       break;
   }
-}

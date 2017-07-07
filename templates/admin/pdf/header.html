@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reporte</title> 
+    <title>{$page_title}</title> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    
     <!--BOOTSTRAP-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -21,11 +22,13 @@
         padding: 10px;
       }
       
-      div#cap h1 
-      {
-        float: right;
-        margin-right: {$size}px;
-      }
+      {if !isset($asis_list)}
+        div#cap h1 
+        {
+          float: right;
+          margin-right: {$size}px;
+        }
+      {/if}
       
       .usuario
       {
@@ -62,6 +65,13 @@
 <body>
     
 <div id="cap">
-    <h1>Salas de Lectura</h1>
-    <img src="../Images/logo.jpg" width="200" height="90" alt=""></img>
+    {if !isset($asis_list)}
+      <h1>Salas de Lectura</h1>
+      <img src="../Images/logo.jpg" width="200" height="90" alt=""></img>
+    {else}
+      <center>
+        <h1>Salas de Lectura</h1>
+        <span>{$phrase}</span>
+      </center>
+    {/if}
 </div>
