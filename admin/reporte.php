@@ -272,6 +272,7 @@ function casePromotorCalif()
   // se comienzan a checar los grupos para obtener los alumnos
   $html = '';
   for ($j = 0; $j < count($grupos); $j++) {
+    $aluInfo  = null;
     $lecturas = $web->getAllLecturas($cveperiodo, $cvepromotor, $grupos[$j]['cveletra']);
 
     if (!isset($lecturas[0])) {
@@ -302,18 +303,24 @@ function casePromotorCalif()
 
     page_break($j, $grupos);
 
-    $web->smarty->assign('fin', (sizeof($aluInfo[$j][0]) / 2 - 1));
-    $web->smarty->assign('titulo', 'Información específica');
-    $web->smarty->assign('subtitulo', 'Alumnos');
-    $web->smarty->assign('columns', $usersHeader);
-    $web->smarty->assign('rows', $users[$j]);
+    if (is_array($aluInfo)) {
+      $fin = (sizeof($aluInfo[0][0]) / 2 - 1);
+    } else {
+      $fin = -1;
+    }
 
     // OBSERVACIONES
     $obs = observaciones(array(
-      'cveletra'    => $lecturas[0]['cveletra'],
+      'cveletra'    => $grupos[$j]['cveletra'],
       'cveperiodo'  => $cveperiodo,
       'cvepromotor' => $cvepromotor,
     ));
+
+    $web->smarty->assign('fin', $fin);
+    $web->smarty->assign('titulo', 'Información específica');
+    $web->smarty->assign('subtitulo', 'Alumnos');
+    $web->smarty->assign('columns', $usersHeader);
+    $web->smarty->assign('rows', $users[0]);
 
     $html .= (string) ($web->smarty->fetch('table.html'));
   } //end for
@@ -361,7 +368,6 @@ function headerFooter($size)
   global $web;
 
   $web->smarty->assign('size', $size);
-  $web->smarty->assign('page_title', 'Reporte');
 
   $header = (string) ($web->smarty->fetch('header.html'));
   // $footer = (string) ($web->smarty->fetch('footer.html'));

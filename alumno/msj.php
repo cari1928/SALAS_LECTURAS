@@ -60,8 +60,8 @@ if (isset($_GET['accion'])) {
       $web->smarty->assign('mensaje', $mensaje);
       $web->smarty->assign('accion', $accion);
       //$web->debug($mensaje);
-      if($mensaje[0]['archivo'] != ''){
-        $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/".$mensaje[0]['archivo'];
+      if ($mensaje[0]['archivo'] != '') {
+        $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $mensaje[0]['archivo'];
         if (!file_exists($nombre_fichero)) {
           $mensaje[0]['archivo'] = "El archivo " . $mensaje[0]['archivo'] . " ha sido eliminado";
           $web->smarty->assign('eliminado', true);
@@ -71,7 +71,7 @@ if (isset($_GET['accion'])) {
       $web->smarty->display('msj.html');
       exit();
       break;
-      
+
     case 'archivo':
       $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info'];
       if (!file_exists($nombre_fichero)) {
@@ -88,7 +88,6 @@ if (isset($_GET['accion'])) {
 /*************************************************************************************************
  * FUNCIONES
  *************************************************************************************************/
-
 function deadMessage($web, $type, $msg)
 {
   $web->simple_message($type, $msg);

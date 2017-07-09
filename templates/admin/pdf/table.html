@@ -1,7 +1,7 @@
 <div class="table_container">
   <div class="table_header">
-    <center>{$titulo}</center>
-    <center>{$subtitulo}</center>
+    <center><b>{$titulo}</b></center>
+    <center><b>{$subtitulo}</b></center>
   </div>
 
   <table class="table table-bordered">
@@ -9,9 +9,9 @@
       <tr>
         {foreach $columns as $column}
           {if $column eq "NOMBRE"}
-            <th style="text-align:center" width="80">{$column}</th>
+            <th width="80">{$column}</th>
           {else}
-            <th style="text-align:center">{$column}</th>
+            <th>{$column}</th>
           {/if}
         {/foreach}
       </tr>
@@ -21,9 +21,7 @@
       {foreach $rows as $row}
         <tr>
           {for $i=0 to $fin}
-              <td style="text-align; font-size:13px; vertical-align:middle" 
-                valign="middle" align="center" 
-                {if $i == 1 && $table eq "alumnos"}width="80"{/if}>
+              <td valign="middle" align="center"{if $i == 1 && $table eq "alumnos"}width="80"{/if}>
                 {$row[{$i}]}
               </td>
           {/for}

@@ -45,11 +45,11 @@ class Sistema extends Conexion
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
     $this->smarty->assign('nombrescolumnas', $nombrescolumnas);
     $this->smarty->assign('datos', $datosList);
-    
-    if($redireccion != null){
-        $this->smarty->assign('redireccion', $redireccion);
+
+    if ($redireccion != null) {
+      $this->smarty->assign('redireccion', $redireccion);
     }
-    
+
     return $this->smarty->fetch($ruta . 'select.component.html');
   }
 
@@ -119,9 +119,9 @@ class Sistema extends Conexion
 
     $nombre = $datos_rs[0]['nombre'];
     $cadena = explode(" ", $nombre);
-    
+
     $this->smarty->assign('usuario', $cadena[0]);
-    
+
     if ($_SESSION['roles'] == 'A') {
       return $cadena[0] . ' - Administrador';
     }
