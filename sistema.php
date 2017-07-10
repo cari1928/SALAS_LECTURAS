@@ -65,7 +65,7 @@ class Sistema extends Conexion
     $nombrescolumnas = array_keys($datos[0]);
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
     $this->smarty->assign('msj', $datos);
-    
+
     $sql = "SELECT nombre FROM usuarios WHERE cveusuario=?";
     $this->smarty->assign('promotor', $this->DB->GetAll($sql, $datos[0][4]));
     return $this->smarty->fetch('componentmsj.html');
@@ -276,8 +276,8 @@ class Sistema extends Conexion
   }
 
   /*
-  MUESTRA LOS MENSAJES PUBLICOS
-  SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
+   * MUESTRA LOS MENSAJES PUBLICOS
+   * SOLO ES PRUEBA LO QUITARE Y LO MANDARE A index.php NIVEL PUBLICO
    */
   public function muestraMSJ($query, $tipo)
   {
