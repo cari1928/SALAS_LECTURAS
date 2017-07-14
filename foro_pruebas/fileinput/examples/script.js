@@ -1,0 +1,22 @@
+$("#archivos").fileinput({
+    uploadUrl: 'upload.php',
+    dropZoneEnabled: false, 
+    previewFileType: "image",
+    allowedFileExtensions: ["jpg", "gif", "png"] ,        
+    browseClass: "btn btn-primary",
+    browseLabel: "Selecciona",
+    browseTitle: "Selecciona una imagen",
+    browseIcon: "<i class=\"glyphicon glyphicon-picture\"></i> ",
+    removeClass: "btn btn-danger",
+    removeLabel: "Borrar",
+    removeTitle: "Anula foto seleccionada",        
+    removeIcon: "<i class=\"glyphicon glyphicon-trash\"></i> ",
+    uploadClass: "btn btn-info",
+    uploadLabel: "Subir",
+    uploadTitle: "Subir imagen seleccionada",        
+    uploadIcon: "<i class=\"glyphicon glyphicon-upload\"></i> ",
+    previewClass: "bg-default",
+    initialCaption: "Selecciona la foto",
+    minFileCount: 1,
+    maxFileCount: 1
+});
