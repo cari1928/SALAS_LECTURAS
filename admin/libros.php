@@ -196,6 +196,7 @@ function delete_book()
 function mInsertBook()
 {
   global $web;
+  
   //verifica existencia de todos los campos
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
@@ -215,9 +216,11 @@ function mInsertBook()
   $sql = "INSERT INTO libro (autor, titulo, editorial, cantidad) VALUES (?, ?, ?, ?)";
   $tmp = array($_POST['autor'], $_POST['titulo'], $_POST['editorial'], $_POST['cantidad']);
   if (!$web->query($sql, $tmp)) {
-    $web->simple_message('danger', 'No se pudo completar la operación');
+    message("index libros insertar", 'danger', "No fue posible guardar el libro", $_GET['accion']);
     break;
   }
+  
+  
 
   header('Location: libros.php');
 }

@@ -24,7 +24,7 @@ if (isset($_GET['accion'])) {
 
     case 'upload':
       //$web->debug($_FILES);
-      $dir_subida = "/home/ubuntu/workspace/archivos/fotos/";
+      $dir_subida = "/home/ubuntu/workspace/fotos/";
       if ($_FILES['foto']['size'] > 1000000) {
         $web->simple_message('danger', 'El archivo es mayor a un MB.');
         $bandera_mensaje = true;

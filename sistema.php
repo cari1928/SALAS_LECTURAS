@@ -832,7 +832,7 @@ class Sistema extends Conexion
     $image   = base64_decode($encoded);
     $sql     = "update usuarios set foto = ? where cveusuario = ?";
     $this->query($sql, array($_SESSION['cveUser'] . ".jpg", $_SESSION['cveUser']));
-    file_put_contents("/home/ubuntu/workspace/archivos/fotos/" . $_SESSION['cveUser'] . ".jpg", $image);
+    file_put_contents("/home/ubuntu/workspace/fotos/" . $_SESSION['cveUser'] . ".jpg", $image);
     //para mysql
     //$image = mysql_escape_string($image);
     //par postgres
