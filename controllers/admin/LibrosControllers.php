@@ -20,17 +20,13 @@ class LibrosControllers extends Sistema
     return $ext[($size - 1)];
   }
   
-  public function checkPortada() {
-    $cvelibro = $this->getLastCveLibro()[0][0];
-    foreach (glob($this->$route.$cvelibro.".*") as $nombre_fichero) {
-      return true;
-    }
-    return false;
+  /**
+   * Recomendation: Use with INSERT Libro
+   * Search and delete banner with a name similar to the last cvelibro
+   */
+  public function deleteOldBanner($cvelibro) {
+    // delete all files in a directory matching a pattern in one line of code
+    array_map('unlink', glob($this->route.$cvelibro.".*"));
   }  
   
-  // PENSAR BIEN ESTO!!!
-  public function deleteOldPortada() {
-    $cvelibro = $this->getLastCveLibro()[0][0];
-    array_map('unlink', glob($this->route.$cvelibro.".*"));
-  }
 }

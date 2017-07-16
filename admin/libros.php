@@ -111,15 +111,45 @@ $datos = json_encode($datos);
 $file = fopen("TextFiles/libros.txt", "w");
 fwrite($file, $datos);
 
+// mostrar posibles mensajes
+showMessage();
+
 $web->smarty->assign('datos', $datos);
 $web->smarty->display("libros.html");
+
+/************************************************************************************
+ * FUNCIONES
+ ************************************************************************************/
+/**
+ * Show info and error messages
+ */
+function showMessage() {
+  global $web;
+  
+  if(isset($_GET['msg'])) {
+    switch ($_GET['msg']) {
+      
+      case 1:
+        $web->simple_message('info', 'Libro guardado correctamente');
+        break;
+        
+      case 2:
+        $web->simple_message('info', 'Libro actualizado correctamente');
+        break;
+        
+      case 3:
+        $web->simple_message('danger', 'Ocurrió un error al intentar guardar la portada (banner)');
+        break;
+    }
+  }
+}
 
 /**
  * Método para mostrar el template form_alumnos cuando ocurre algún error
  * @param  String $iniClases Ruta a mostrar en links
  * @param  String $alert     Tipo de mensaje
  * @param  String $msg       Mensaje a desplegar
- * @param  String $cveusuario   Usado en caso de que se trate de un formulario de actualización
+ * @param  String $cveusuario  Usado en caso de que se trate de un formulario de actualización
  */
 function message($iniClases, $alert, $msg, $cvelibro = null)
 {
@@ -201,7 +231,9 @@ function mInsertBook()
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
-    !isset($_POST['cantidad'])) {
+    !isset($_POST['cantidad']) || 
+    !isset($_POST['sinopsis']) ||
+    !isset($_FILES['portada'])) {
     message("index libros nuevo", 'warning', "No alteres la estructura de la interfaz");
   }
 
@@ -209,45 +241,34 @@ function mInsertBook()
   if ($_POST['autor'] == "" ||
     $_POST['titulo'] == "" ||
     $_POST['editorial'] == "" ||
+    $_POST['cantidad'] == "" ||
     $_POST['cantidad'] == "") {
     message("index libros nuevo", 'warning', "Llena todos los campos");
   }
 
-  $sql = "INSERT INTO libro (autor, titulo, editorial, cantidad) VALUES (?, ?, ?, ?)";
-  $tmp = array($_POST['autor'], $_POST['titulo'], $_POST['editorial'], $_POST['cantidad']);
+  $sql = "INSERT INTO libro (autor, titulo, editorial, cantidad, sinopsis) VALUES (?, ?, ?, ?, ?)";
+  $tmp = array($_POST['autor'], $_POST['titulo'], $_POST['editorial'], $_POST['cantidad'], $_POST['sinopsis']);
   if (!$web->query($sql, $tmp)) {
     message("index libros insertar", 'danger', "No fue posible guardar el libro", $_GET['accion']);
     break;
   }
   
-  
-
-  header('Location: libros.php');
+  mUploadFile(($web->getLastCveLibro()[0][0] - 1), 1);
 }
 
-function mUploadFile()
+/**
+ * @param $type 1 == INSERT | 2 == UPDATE
+ */
+function mUploadFile($cvelibro, $typeMessage)
 {
   global $web;
-
-  if (!$web->checkPortada()) {
-    $web->simple_message('warning', 'Agregue una imagen');
+  $web->deleteOldBanner($cvelibro);
+  $extension      = $web->getExtension($_FILES['portada']['name']);
+  $nombreTemporal = $_FILES['portada']['tmp_name'];
+  $rutaArchivo    = $web->route . ($cvelibro + 1) . "." . $extension;
+  if (move_uploaded_file($nombreTemporal, $rutaArchivo)) {
+    header('Location: libros.php?msg='.$typeMessage);
+  } else {
+    header('Location: libros.php?msg=3');
   }
-
-  $cvelibro = $web->getLastCveLibro();
-  $carpeta  = "/home/ubuntu/workspace/Images/portadas/";
-  $imagenes = count($_FILES['portadas']['name']);
-
-  for ($i = 0; $i < $imagenes; $i++) {
-    $extension      = $web->getExtension($_FILES['portadas']['name'][$i]);
-    $nombreTemporal = $_FILES['portadas']['tmp_name'][$i];
-    $rutaArchivo    = $carpeta . ($cvelibro[0][0] + 1) . "." . $extension;
-    // move_uploaded_file($nombreTemporal, $rutaArchivo);
-
-    if (move_uploaded_file($nombreTemporal, $rutaArchivo)) {
-      header('Location: libros.php');
-    } else {
-      header('Location: ' . $rutaArchivo);
-    }
-  }
-  echo json_encode("");
 }

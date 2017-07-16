@@ -16,7 +16,7 @@ class ForoControllers extends Sistema
       return 'no_disponible.jpg';
     }
 
-    $route = "/home/slslctr/Images/portadas/";
+    $route = "/home/ubuntu/workspace/Images/portadas/";
     foreach (glob($route . $cvelibro . ".*") as $nombre_fichero) {
       return $nombre_fichero;
     }
