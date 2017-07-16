@@ -10,12 +10,13 @@ $pages       = ceil($totalLibros / $per_page);
 $tmp         = array();
 
 for ($i = 0; $i < $totalLibros; $i++) {
-  $sinopsis = $libros[$i]['sinopsis'];
-  $libros[$i]['intro'] = (strlen($sinopsis) > 255) ? substr($sinopsis, 0, 254) : $sinopsis;
-  
-  $portada = explode("/", $web->checkPortada($libros[$i]['cvelibro']));
-  $libros[$i]['portada'] = (count($portada) > 1) ? $portada[6] : $portada[0];
-  
+  $sinopsis            = $libros[$i]['sinopsis'];
+  $libros[$i]['intro'] = (strlen($sinopsis) > 255) ? substr($sinopsis, 0, 254) . "[..]" : $sinopsis;
+
+  $portada               = explode("/", $web->checkPortada($libros[$i]['cvelibro']));
+  $numElements           = count($portada);
+  $libros[$i]['portada'] = ($numElements > 1) ? $portada[($numElements - 1)] : $portada[0];
+
   $web->smarty->assign('libro', $libros[$i]);
   $tmp[$i] = $web->smarty->fetch('foro.component.html');
 }

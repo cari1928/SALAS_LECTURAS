@@ -18,6 +18,7 @@ if (isset($_GET['accion'])) {
     case 'form_insert':
       $web->iniClases('admin', "index libros nuevo");
       $web->smarty->assign('upload_libros', true);
+      $web->smarty->assign('portada', 'no_disponible.jpg');
       $web->smarty->display('form_libros.html');
       die();
       break;
@@ -35,13 +36,11 @@ if (isset($_GET['accion'])) {
         break;
       }
 
-      $sql                   = "SELECT * FROM libro WHERE cvelibro=?";
-      $libros                = $web->DB->GetAll($sql, $_GET['info2']);
-      $libros[0]['cantidad'] = substr($libros[0]['cantidad'], 1);
-
+      $libros[0]['portada'] = (empty($libros[0]['portada'])) ? "no_disponible.jpg" : $libros[0]['portada'];
       $web->iniClases('admin', "index libros actualizar");
       $web->smarty->assign('libros', $libros[0]);
       $web->smarty->assign('upload_libros', true);
+      $web->smarty->assign('portada', $libros[0]['portada']);
       $web->smarty->display('form_libros.html');
       die();
       break;
@@ -51,34 +50,7 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'update':
-      //verifica existencia de todos los campos
-      if (!isset($_POST['autor']) ||
-        !isset($_POST['titulo']) ||
-        !isset($_POST['editorial']) ||
-        !isset($_POST['cantidad'])) {
-        message("index libros actualizar", 'warning', "No alteres la estructura de la interfaz", $_GET['accion']);
-      }
-
-      //verifica que los campos contengan algo
-      if ($_POST['autor'] == "" ||
-        $_POST['titulo'] == "" ||
-        $_POST['editorial'] == "" ||
-        $_POST['cantidad'] == "") {
-        message("index libros actualizar", 'warning', "Llena todos los campos", $_GET['accion']);
-      }
-
-      $sql = "UPDATE libro SET autor=?, titulo=?, editorial=?, cantidad=? WHERE cvelibro=?";
-      $tmp = array(
-        $_POST['autor'],
-        $_POST['titulo'],
-        $_POST['editorial'],
-        $_POST['cantidad'],
-        $_POST['cvelibro']);
-      if (!$web->query($sql, $tmp)) {
-        $web->simple_message('danger', 'No se pudo completar la operación');
-        break;
-      }
-      header('Location: libros.php');
+      mUpdateBook();
       break;
 
     case 'delete':
@@ -123,22 +95,23 @@ $web->smarty->display("libros.html");
 /**
  * Show info and error messages
  */
-function showMessage() {
+function showMessage()
+{
   global $web;
-  
-  if(isset($_GET['msg'])) {
+
+  if (isset($_GET['msg'])) {
     switch ($_GET['msg']) {
-      
+
       case 1:
         $web->simple_message('info', 'Libro guardado correctamente');
         break;
-        
+
       case 2:
         $web->simple_message('info', 'Libro actualizado correctamente');
         break;
-        
+
       case 3:
-        $web->simple_message('danger', 'Ocurrió un error al intentar guardar la portada (banner)');
+        $web->simple_message('danger', 'Ocurrió un error al intentar guardar o actualizar la portada');
         break;
     }
   }
@@ -226,34 +199,34 @@ function delete_book()
 function mInsertBook()
 {
   global $web;
-  
-  //verifica existencia de todos los campos
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
-    !isset($_POST['cantidad']) || 
+    !isset($_POST['cantidad']) ||
     !isset($_POST['sinopsis']) ||
     !isset($_FILES['portada'])) {
     message("index libros nuevo", 'warning', "No alteres la estructura de la interfaz");
   }
-
-  //verifica que los campos contengan algo
   if ($_POST['autor'] == "" ||
     $_POST['titulo'] == "" ||
     $_POST['editorial'] == "" ||
     $_POST['cantidad'] == "" ||
-    $_POST['cantidad'] == "") {
+    $_POST['sinopsis'] == "") {
     message("index libros nuevo", 'warning', "Llena todos los campos");
   }
 
   $sql = "INSERT INTO libro (autor, titulo, editorial, cantidad, sinopsis) VALUES (?, ?, ?, ?, ?)";
-  $tmp = array($_POST['autor'], $_POST['titulo'], $_POST['editorial'], $_POST['cantidad'], $_POST['sinopsis']);
+  $tmp = array($_POST['autor'],
+    $_POST['titulo'],
+    $_POST['editorial'],
+    $_POST['cantidad'],
+    $_POST['sinopsis']);
   if (!$web->query($sql, $tmp)) {
-    message("index libros insertar", 'danger', "No fue posible guardar el libro", $_GET['accion']);
+    message("index libros insertar", 'danger', "No fue posible guardar el libro");
     break;
   }
-  
-  mUploadFile(($web->getLastCveLibro()[0][0] - 1), 1);
+
+  mUploadFile($web->getLastCveLibro()[0][0], 1);
 }
 
 /**
@@ -265,10 +238,50 @@ function mUploadFile($cvelibro, $typeMessage)
   $web->deleteOldBanner($cvelibro);
   $extension      = $web->getExtension($_FILES['portada']['name']);
   $nombreTemporal = $_FILES['portada']['tmp_name'];
-  $rutaArchivo    = $web->route . ($cvelibro + 1) . "." . $extension;
+  $rutaArchivo    = $web->route . $cvelibro . "." . $extension;
   if (move_uploaded_file($nombreTemporal, $rutaArchivo)) {
-    header('Location: libros.php?msg='.$typeMessage);
+    $sql = "UPDATE libro SET portada=? WHERE cvelibro=?";
+    $web->query($sql, array(($cvelibro . "." . $extension), $cvelibro));
+    header('Location: libros.php?msg=' . $typeMessage);
   } else {
     header('Location: libros.php?msg=3');
   }
+}
+
+/**
+ * Update book information
+ */
+function mUpdateBook()
+{
+  global $web;
+  if (!isset($_POST['autor']) ||
+    !isset($_POST['titulo']) ||
+    !isset($_POST['editorial']) ||
+    !isset($_POST['cantidad']) ||
+    !isset($_POST['sinopsis']) ||
+    !isset($_FILES['portada'])) {
+    message("index libros actualizar", 'warning', "No alteres la estructura de la interfaz", $_POST['cvelibro']);
+  }
+  if ($_POST['autor'] == "" ||
+    $_POST['titulo'] == "" ||
+    $_POST['editorial'] == "" ||
+    $_POST['cantidad'] == "" ||
+    $_POST['sinopsis'] == "") {
+    message("index libros actualizar", 'warning', "Llena todos los campos", $_POST['cvelibro']);
+  }
+
+  $sql = "UPDATE libro SET autor=?, titulo=?, editorial=?, cantidad=?, sinopsis=? WHERE cvelibro=?";
+  $tmp = array(
+    $_POST['autor'],
+    $_POST['titulo'],
+    $_POST['editorial'],
+    $_POST['cantidad'],
+    $_POST['sinopsis'],
+    $_POST['cvelibro']);
+  if (!$web->query($sql, $tmp)) {
+    message("index libros actualizar", 'danger', "No fue posible actualizar el libro", $_POST['cvelibro']);
+    break;
+  }
+
+  mUploadFile($_POST['cvelibro'], 2);
 }
