@@ -4,7 +4,6 @@ include 'sistema.php';
 $web = new ForoControllers;
 
 $libros      = $web->getAllLibros();
-
 $totalLibros = count($libros);
 $per_page    = 3;
 $pages       = ceil($totalLibros / $per_page);
@@ -35,9 +34,14 @@ for ($i = 0; $i < $pages; $i++) {
   $libros[$i] = $html;
 }
 
+// $web->debug($libros);
+
 $web->smarty->assign('fin', $pages - 1);
 $web->smarty->assign('pages', $pages);
 $web->smarty->assign('per_page', $per_page);
+
+// $web->getSmartyAssigns();
+
 $web->smarty->assign('libros', $libros);
 $web->smarty->display('foros.html');
 

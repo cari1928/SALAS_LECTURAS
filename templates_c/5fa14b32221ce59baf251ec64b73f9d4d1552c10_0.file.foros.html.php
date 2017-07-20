@@ -1,4 +1,30 @@
-{include file='foro_header.html'}
+<?php
+/* Smarty version 3.1.30-dev/53, created on 2017-07-20 01:39:04
+  from "/home/ubuntu/workspace/templates/foros.html" */
+
+/* @var Smarty_Internal_Template $_smarty_tpl */
+if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
+  'version' => '3.1.30-dev/53',
+  'unifunc' => 'content_597009b83a4e03_41693418',
+  'has_nocache_code' => false,
+  'file_dependency' => 
+  array (
+    '5fa14b32221ce59baf251ec64b73f9d4d1552c10' => 
+    array (
+      0 => '/home/ubuntu/workspace/templates/foros.html',
+      1 => 1500514742,
+      2 => 'file',
+    ),
+  ),
+  'includes' => 
+  array (
+    'file:foro_header.html' => 1,
+  ),
+),false)) {
+function content_597009b83a4e03_41693418 (Smarty_Internal_Template $_smarty_tpl) {
+$_smarty_tpl->_subTemplateRender("file:foro_header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
+?>
+
 
 <section id="blog" class="padding-top">
   <div class="container">
@@ -98,24 +124,40 @@
 </section>
 <!--/#blog-->
 
-<script type="text/javascript">
+<?php echo '<script'; ?>
+ type="text/javascript">
   var pages = [];
   
-  {for $i=0 to $fin}
-    pages[{$i}] = '{$libros[{$i}]}';
-  {/for}
+  <?php
+$_smarty_tpl->tpl_vars['i'] = new Smarty_Variable(null, $_smarty_tpl->isRenderingCache);$_smarty_tpl->tpl_vars['i']->step = 1;$_smarty_tpl->tpl_vars['i']->total = (int) ceil(($_smarty_tpl->tpl_vars['i']->step > 0 ? $_smarty_tpl->tpl_vars['fin']->value+1 - (0) : 0-($_smarty_tpl->tpl_vars['fin']->value)+1)/abs($_smarty_tpl->tpl_vars['i']->step));
+if ($_smarty_tpl->tpl_vars['i']->total > 0) {
+for ($_smarty_tpl->tpl_vars['i']->value = 0, $_smarty_tpl->tpl_vars['i']->iteration = 1;$_smarty_tpl->tpl_vars['i']->iteration <= $_smarty_tpl->tpl_vars['i']->total;$_smarty_tpl->tpl_vars['i']->value += $_smarty_tpl->tpl_vars['i']->step, $_smarty_tpl->tpl_vars['i']->iteration++) {
+$_smarty_tpl->tpl_vars['i']->first = $_smarty_tpl->tpl_vars['i']->iteration == 1;$_smarty_tpl->tpl_vars['i']->last = $_smarty_tpl->tpl_vars['i']->iteration == $_smarty_tpl->tpl_vars['i']->total;?>
+    pages[<?php echo $_smarty_tpl->tpl_vars['i']->value;?>
+] = '<?php ob_start();
+echo $_smarty_tpl->tpl_vars['i']->value;
+$_prefixVariable1=ob_get_clean();
+echo $_smarty_tpl->tpl_vars['libros']->value[$_prefixVariable1];?>
+';
+  <?php }
+}
+?>
+
 
   $('#pagination-demo').twbsPagination(
-    {literal}{{/literal} 
-    totalPages: {$pages},
+    { 
+    totalPages: <?php echo $_smarty_tpl->tpl_vars['pages']->value;?>
+,
     visiblePages: 5,
     next: 'Siguiente',
     prev: 'Anterior',
     onPageClick: function (event, page) 
-    {literal}{{/literal} 
+    { 
       //fetch content and render here
       $('#page-content').html(pages[(page-1)]);
-    {literal}}{/literal} 
-  {literal}}{/literal} 
+    } 
+  } 
   );
-</script>
+<?php echo '</script'; ?>
+><?php }
+}
