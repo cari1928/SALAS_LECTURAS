@@ -4,6 +4,7 @@ include 'sistema.php';
 $web = new ForoControllers;
 
 $libros      = $web->getAllLibros();
+
 $totalLibros = count($libros);
 $per_page    = 3;
 $pages       = ceil($totalLibros / $per_page);
