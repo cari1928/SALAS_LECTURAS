@@ -9,6 +9,9 @@ if(isset($_GET['m'])) {
     case 1:
       $web->simple_message('info', 'No se a iniciado sesión');
       break;
+    case 2:
+      $web->simple_message('info', 'falta informacion del foro');
+      break;
   }
 }
 

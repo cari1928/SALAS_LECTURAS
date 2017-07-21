@@ -41,6 +41,9 @@ if (isset($_GET['accion'])) {
       $web->smarty->assign('libros', $libros[0]);
       $web->smarty->assign('upload_libros', true);
       $web->smarty->assign('portada', $libros[0]['portada']);
+      
+      // $web->getSmartyAssigns();
+      
       $web->smarty->display('form_libros.html');
       die();
       break;
@@ -58,7 +61,7 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'upload_file':
-      mUploadFile();
+      mUploadNewFile();
       break;
   }
 }
@@ -199,11 +202,17 @@ function delete_book()
 function mInsertBook()
 {
   global $web;
+  
+  // echo "<pre>";
+  // print_r($_POST);
+  // $web->debug($_FILES);
+  
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
     !isset($_POST['cantidad']) ||
     !isset($_POST['sinopsis']) ||
+    !isset($_POST['portada']) ||
     !isset($_FILES['portada'])) {
     message("index libros nuevo", 'warning', "No alteres la estructura de la interfaz");
   }
@@ -211,6 +220,7 @@ function mInsertBook()
     $_POST['titulo'] == "" ||
     $_POST['editorial'] == "" ||
     $_POST['cantidad'] == "" ||
+    $_POST['portada'] == "" ||
     $_POST['sinopsis'] == "") {
     message("index libros nuevo", 'warning', "Llena todos los campos");
   }
@@ -223,19 +233,22 @@ function mInsertBook()
     $_POST['sinopsis']);
   if (!$web->query($sql, $tmp)) {
     message("index libros insertar", 'danger', "No fue posible guardar el libro");
-    break;
   }
-
-  mUploadFile($web->getLastCveLibro()[0][0], 1);
+  
+  if(!empty($_FILES['portada']['name'])) {
+    mUploadNewFile($web->getLastCveLibro()[0][0], 1); 
+  } else {
+    header('Location: libros.php?msg=1');
+  }
 }
 
 /**
  * @param $type 1 == INSERT | 2 == UPDATE
  */
-function mUploadFile($cvelibro, $typeMessage)
+function mUploadNewFile($cvelibro, $typeMessage)
 {
   global $web;
-  $web->deleteOldBanner($cvelibro);
+  $web->deleteOldBanner($cvelibro);  
   $extension      = $web->getExtension($_FILES['portada']['name']);
   $nombreTemporal = $_FILES['portada']['tmp_name'];
   $rutaArchivo    = $web->route . $cvelibro . "." . $extension;
@@ -254,11 +267,17 @@ function mUploadFile($cvelibro, $typeMessage)
 function mUpdateBook()
 {
   global $web;
+  
+  // echo "<pre>";
+  // print_r($_POST);
+  // $web->debug($_FILES);
+  
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
     !isset($_POST['cantidad']) ||
     !isset($_POST['sinopsis']) ||
+    !isset($_POST['portada']) ||
     !isset($_FILES['portada'])) {
     message("index libros actualizar", 'warning', "No alteres la estructura de la interfaz", $_POST['cvelibro']);
   }
@@ -266,6 +285,7 @@ function mUpdateBook()
     $_POST['titulo'] == "" ||
     $_POST['editorial'] == "" ||
     $_POST['cantidad'] == "" ||
+    $_POST['portada'] == "" ||
     $_POST['sinopsis'] == "") {
     message("index libros actualizar", 'warning', "Llena todos los campos", $_POST['cvelibro']);
   }
@@ -280,8 +300,11 @@ function mUpdateBook()
     $_POST['cvelibro']);
   if (!$web->query($sql, $tmp)) {
     message("index libros actualizar", 'danger', "No fue posible actualizar el libro", $_POST['cvelibro']);
-    break;
   }
 
-  mUploadFile($_POST['cvelibro'], 2);
-}
+  if(!empty($_FILES['portada']['name'])) {
+    mUploadNewFile($_POST['cvelibro'], 2);
+  } else {
+    header('Location: libros.php?msg=2');
+  }
+} 
