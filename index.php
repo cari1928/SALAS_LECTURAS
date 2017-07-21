@@ -1,24 +1,23 @@
 <?php
 include 'sistema.php';
 
-$date = getdate();
+$date  = getdate();
 $fecha = date('Y-m-j');
 
-if(isset($_GET['m'])) {
-  switch($_GET['m']) {
+if (isset($_GET['m'])) {
+  switch ($_GET['m']) {
     case 1:
-      $web->simple_message('info', 'No se a iniciado sesión');
+      $web->simple_message('warinig', 'No se ha iniciado sesión');
       break;
     case 2:
-      $web->simple_message('info', 'falta informacion del foro');
+      $web->simple_message('warning', 'Falta información del foro');
       break;
   }
 }
 
-$sql="SELECT introduccion, cvemsj FROM msj 
+$sql = "SELECT introduccion, cvemsj FROM msj
 WHERE tipo='PU' AND expira >= ?
 ORDER BY fecha";
 $mensajes = $web->muestraMSJ($sql, $fecha);
-
 $web->smarty->assign('mensaje', $mensajes);
 $web->smarty->display('index.html');

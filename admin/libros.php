@@ -17,7 +17,7 @@ if (isset($_GET['accion'])) {
 
     case 'form_insert':
       $web->iniClases('admin', "index libros nuevo");
-      $web->smarty->assign('upload_libros', true);
+      $web->smarty->assign('upload_libros', 'INSERT');
       $web->smarty->assign('portada', 'no_disponible.jpg');
       $web->smarty->display('form_libros.html');
       die();
@@ -39,11 +39,8 @@ if (isset($_GET['accion'])) {
       $libros[0]['portada'] = (empty($libros[0]['portada'])) ? "no_disponible.jpg" : $libros[0]['portada'];
       $web->iniClases('admin', "index libros actualizar");
       $web->smarty->assign('libros', $libros[0]);
-      $web->smarty->assign('upload_libros', true);
+      $web->smarty->assign('upload_libros', 'UPDATE');
       $web->smarty->assign('portada', $libros[0]['portada']);
-      
-      // $web->getSmartyAssigns();
-      
       $web->smarty->display('form_libros.html');
       die();
       break;
@@ -202,11 +199,6 @@ function delete_book()
 function mInsertBook()
 {
   global $web;
-  
-  // echo "<pre>";
-  // print_r($_POST);
-  // $web->debug($_FILES);
-  
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
@@ -234,9 +226,9 @@ function mInsertBook()
   if (!$web->query($sql, $tmp)) {
     message("index libros insertar", 'danger', "No fue posible guardar el libro");
   }
-  
-  if(!empty($_FILES['portada']['name'])) {
-    mUploadNewFile($web->getLastCveLibro()[0][0], 1); 
+
+  if (!empty($_FILES['portada']['name'])) {
+    mUploadNewFile($web->getLastCveLibro()[0][0], 1);
   } else {
     header('Location: libros.php?msg=1');
   }
@@ -248,7 +240,7 @@ function mInsertBook()
 function mUploadNewFile($cvelibro, $typeMessage)
 {
   global $web;
-  $web->deleteOldBanner($cvelibro);  
+  $web->deleteOldBanner($cvelibro);
   $extension      = $web->getExtension($_FILES['portada']['name']);
   $nombreTemporal = $_FILES['portada']['tmp_name'];
   $rutaArchivo    = $web->route . $cvelibro . "." . $extension;
@@ -267,11 +259,11 @@ function mUploadNewFile($cvelibro, $typeMessage)
 function mUpdateBook()
 {
   global $web;
-  
+
   // echo "<pre>";
   // print_r($_POST);
   // $web->debug($_FILES);
-  
+
   if (!isset($_POST['autor']) ||
     !isset($_POST['titulo']) ||
     !isset($_POST['editorial']) ||
@@ -302,9 +294,18 @@ function mUpdateBook()
     message("index libros actualizar", 'danger', "No fue posible actualizar el libro", $_POST['cvelibro']);
   }
 
-  if(!empty($_FILES['portada']['name'])) {
+  if (!empty($_FILES['portada']['name'])) {
     mUploadNewFile($_POST['cvelibro'], 2);
   } else {
-    header('Location: libros.php?msg=2');
+    if (isset($_POST['onoffswitch'])) {
+      // portada por defecto
+      $web->deleteOldBanner($_POST['cvelibro']);
+      $sql = "UPDATE libro SET portada='' WHERE cvelibro=?";
+      if (!$web->query($sql, $_POST['cvelibro'])) {
+        header('Location: libros.php?msg=3');
+      } else {
+        header('Location: libros.php?msg=2');
+      }
+    }
   }
-} 
+}

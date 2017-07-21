@@ -45,8 +45,6 @@
      oContexto.drawImage(oCamara[0], 0, 0, w, h);
      var canvas = document.getElementById("foto");
      var img = canvas.toDataURL("image/jpeg");
-     // email = $("#email").val();
-     //window.open("google.com.mx", "nuevo", "directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=400, height=400");
      $.ajax({
        type: "POST",
        url: "foto.php?accion=camara",
