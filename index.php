@@ -10,7 +10,10 @@ if (isset($_GET['m'])) {
       $web->simple_message('warinig', 'No se ha iniciado sesión');
       break;
     case 2:
-      $web->simple_message('warning', 'Falta información del foro');
+      $web->simple_message('warning', 'Falta información para poder mostrar el foro');
+      break;
+    case 3:
+      $web->simple_message('danger', 'Foro-Libro no encontrado');
       break;
   }
 }

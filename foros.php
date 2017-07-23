@@ -16,7 +16,7 @@ for ($i = 0; $i < $totalLibros; $i++) {
   $portada               = explode("/", $web->checkPortada($libros[$i]['cvelibro']));
   $numElements           = count($portada);
   $libros[$i]['portada'] = ($numElements > 1) ? $portada[($numElements - 1)] : $portada[0];
-
+  
   $web->smarty->assign('libro', $libros[$i]);
   $tmp[$i] = $web->smarty->fetch('foro.component.html');
 }
@@ -34,14 +34,9 @@ for ($i = 0; $i < $pages; $i++) {
   $libros[$i] = $html;
 }
 
-// $web->debug($libros);
-
 $web->smarty->assign('fin', $pages - 1);
 $web->smarty->assign('pages', $pages);
 $web->smarty->assign('per_page', $per_page);
-
-// $web->getSmartyAssigns();
-
 $web->smarty->assign('libros', $libros);
 $web->smarty->display('foros.html');
 
