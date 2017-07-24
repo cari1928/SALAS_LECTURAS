@@ -21,18 +21,18 @@ if (isset($_GET['accion'])) {
       break;
 
     case "actualizar_form":
-      if(!isset($_GET['info1'])) {
+      if (!isset($_GET['info1'])) {
         $web->simple_message('warning', 'Falta información. Por favor, no altere la estructura de la interfaz');
         break;
       }
-      
-      $sql = "SELECT * FROM msj WHERE cvemsj=?";
+
+      $sql   = "SELECT * FROM msj WHERE cvemsj=?";
       $aviso = $web->DB->GetAll($sql, $_GET['info1']);
-      if(!isset($aviso[0])) {
+      if (!isset($aviso[0])) {
         $web->simple_message('danger', 'No fue posible encontrar el aviso');
         break;
       }
-      
+
       $web->iniClases('admin', 'index avisos actualizar');
       $web->smarty->assign('aviso_header', true);
       $web->smarty->assign('aviso', $aviso[0]);
@@ -58,7 +58,7 @@ if (isset($_GET['accion'])) {
 }
 
 $web->iniClases('admin', "index avisos");
-$sql = "SELECT cvemsj, introduccion, tipomsj.descripcion, fecha, expira FROM msj
+$sql = "SELECT cvemsj, introduccion, fecha, expira FROM msj
   INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
   WHERE msj.tipo='PU' AND cveperiodo=?
   ORDER BY cvemsj";
@@ -73,27 +73,28 @@ $web->smarty->display('avisos.html');
 /**********************************************************************************************
  * FUNCIONES
  **********************************************************************************************/
- function mInsert() {
+function mInsert()
+{
   global $web;
   global $cveperiodo;
   if (!isset($_POST['introduccion']) ||
     !isset($_POST['descripcion']) ||
     !isset($_POST['expira'])) {
-      mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'nuevo');
+    mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'nuevo');
   }
   if ($_POST['introduccion'] == "" ||
     $_POST['descripcion'] == "" ||
     $_POST['expira'] == "") {
-      mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'nuevo');
+    mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'nuevo');
   }
-  $sql        = "INSERT INTO msj(introduccion, descripcion, tipo, fecha, expira, cveperiodo) 
+  $sql = "INSERT INTO msj(introduccion, descripcion, tipo, fecha, expira, cveperiodo)
     VALUES(?, ?, 'PU', ?, ?, ?)";
   $parameters = array(
     $_POST['introduccion'],
     $_POST['descripcion'],
     date('Y-m-j'),
     $_POST['expira'],
-    $cveperiodo);  
+    $cveperiodo);
   if (!$web->query($sql, $parameters)) {
     mMessage('danger', 'Ocurrió un error al crear el aviso', 'nuevo');
   } else {
@@ -104,24 +105,26 @@ $web->smarty->display('avisos.html');
 /**
  * $type === nuevo | actualizar
  */
-function mMessage($alert, $msg, $type=null) {
+function mMessage($alert, $msg, $type = null)
+{
   global $web;
-  
+
   $html = ($type == 'nuevo' || $type == 'actualizar') ? 'form_avisos.html' : 'avisos.html';
   $web->simple_message($alert, $msg);
-  $web->iniClases('admin', 'index avisos '.$type);
+  $web->iniClases('admin', 'index avisos ' . $type);
   $web->smarty->display($html);
   die();
 }
 
-function mShowMessage() {
+function mShowMessage()
+{
   global $web;
-  if(isset($_GET['m'])) {
+  if (isset($_GET['m'])) {
     switch ($_GET['m']) {
       case 1:
         $web->simple_message('info', 'Se publicó el aviso correctamente');
         break;
-      
+
       case 2:
         $web->simple_message('info', 'Se actualizó el aviso correctamente');
         break;
@@ -129,22 +132,23 @@ function mShowMessage() {
   }
 }
 
-function mUpdate() {
+function mUpdate()
+{
   global $web;
   if (!isset($_POST['introduccion']) ||
     !isset($_POST['descripcion']) ||
     !isset($_POST['expira']) ||
     !isset($_POST['cvemsj'])) {
-      mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'actualizar');
+    mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'actualizar');
   }
   if ($_POST['introduccion'] == "" ||
     $_POST['descripcion'] == "" ||
     $_POST['expira'] == "" ||
     $_POST['cvemsj'] == "") {
-      mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'actualizar');
+    mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'actualizar');
   }
-  
-  $sql = "UPDATE msj SET introduccion=?, descripcion=?, expira=? WHERE cvemsj=?";
+
+  $sql        = "UPDATE msj SET introduccion=?, descripcion=?, expira=? WHERE cvemsj=?";
   $parameters = array(
     $_POST['introduccion'],
     $_POST['descripcion'],
@@ -158,7 +162,8 @@ function mUpdate() {
   }
 }
 
-function mDelete() {
+function mDelete()
+{
   global $web;
   if (!isset($_GET['info1'])) {
     $web->simple_message('warning', 'Falta información, por favor no altere la estructura de la interfaz');
@@ -180,7 +185,7 @@ function mDelete() {
     $web->simple_message('danger', 'No se pudo eliminar el aviso');
     return;
   }
-  
+
   $web->simple_message('info', 'Eliminado con éxito');
   return;
 }

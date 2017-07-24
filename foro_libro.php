@@ -13,25 +13,19 @@ if (!isset($libro[0])) {
   die();
 }
 
-$nombre_fichero = "/home/ubuntu/workspace/Images/portadas/" . $libro[0]['portada'];
-$libro[0]['portada'] = (!file_exists($nombre_fichero)) ? "no_disponible.jpg" : $libro[0]['portada'];  
+$nombre_fichero      = "/home/ubuntu/workspace/Images/portadas/" . $libro[0]['portada'];
+$libro[0]['portada'] = (!file_exists($nombre_fichero)) ? "no_disponible.jpg" : $libro[0]['portada'];
 
-$sql         = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
+$sql = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
                          WHERE cvelibro=? AND cverespuesta IS NULL";
 $comentarios = $web->DB->GetAll($sql, $_GET['info']);
 
-$sql        = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
+$sql = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
                         WHERE cvelibro=? AND cverespuesta IS NOT NULL";
 $respuestas = $web->DB->GetAll($sql, $_GET['info']);
-//echo $sql;
-//echo $_GET['info'];
-//die();
 if (isset($respuestas[0])) {
-  //$web->debug($respuestas);
   foreach ($respuestas as $respuesta) {
     for ($i = 0; $i < count($comentarios); $i++) {
-      //$web->debug_line($respuesta['cverespuesta']);
-      //$web->debug_line($comentarios[$i]['cvecomentario']);
       if ($respuesta['cverespuesta'] == $comentarios[$i]['cvecomentario']) {
         if (isset($comentarios[$i]['respuesta'][0])) {
           $comentarios[$i]['respuesta'][count($comentarios[$i]['respuesta'])] = $respuesta;
@@ -44,12 +38,11 @@ if (isset($respuestas[0])) {
   }
 }
 
-$no_comentarios = 0;
+$num_comentarios = 0;
 if (isset($comentarios[0])) {
-  $no_comentarios = sizeof($comentarios);
+  $num_comentarios = sizeof($comentarios);
   $web->smarty->assign('comentarios', $comentarios);
-  $web->smarty->assign('no_comentarios', $no_comentarios);
-  //$web->debug($comentarios);
 }
+$web->smarty->assign('num_comentarios', $num_comentarios);
 $web->smarty->assign('libro', $libro[0]);
 $web->smarty->display('foro_libro.html');

@@ -56,24 +56,24 @@ class Sistema extends Conexion
   /**
    * Muestra informacion de los mensajes publicos
    */
-  public function msj($sql, $array=array())
+  public function msj($sql, $array = array())
   {
     $datos = $this->DB->GetAll($sql, $array);
     if (!isset($datos[0])) {
       return 'e1';
     }
-    
+
     // ¿para qué es nombrescolumnas?
     $nombrescolumnas = array_keys($datos[0]);
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
-    
+
     $this->smarty->assign('msj', $datos);
-    $sql = "SELECT nombre FROM usuarios WHERE cveusuario=?";
+    $sql     = "SELECT nombre FROM usuarios WHERE cveusuario=?";
     $usuario = $this->DB->GetAll($sql, $datos[0][4]);
-    if(!isset($usuario[0])) {
+    if (!isset($usuario[0])) {
       return 'e2';
     }
-    
+
     $this->smarty->assign('promotor', $usuario);
     return $this->smarty->fetch('msj.component.html');
   }
@@ -840,16 +840,6 @@ class Sistema extends Conexion
     $sql     = "update usuarios set foto = ? where cveusuario = ?";
     $this->query($sql, array($_SESSION['cveUser'] . ".jpg", $_SESSION['cveUser']));
     file_put_contents("/home/ubuntu/workspace/fotos/" . $_SESSION['cveUser'] . ".jpg", $image);
-    //para mysql
-    //$image = mysql_escape_string($image);
-    //par postgres
-    //$image = pg_escape_bytea($image); y -> '{$image}'
-    //   $sql = "      UPDATE  empleado
-    //                    SET foto = '$image'
-    //                    WHERE id_empleado = $id ";
-    //   echo $sql;
-    // $this->query($sql);
-
   }
 
   public function status($status, $mensaje)

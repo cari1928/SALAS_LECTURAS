@@ -8,20 +8,20 @@ include 'sistema.php';
 //   if(!isset($mensaje[0])) {
 //     message('danger', 'No fue posible obtener el aviso');
 //   }
-  
+
 //   $web->smarty->assign('aviso', $mensaje[0]);
 //   $web->smarty->display('mensajes_publicos.html');
 //   die();
 // }
 
-$date  = getdate();
-$fecha = date('Y-m-j');
+$date       = getdate();
+$fecha      = date('Y-m-j');
 $cveperiodo = $web->periodo();
 if ($cveperiodo == "") {
   message('warning', "No hay periodo actual");
 }
 
-$sql   = "SELECT cvemsj, introduccion, msj.descripcion, usuarios.nombre, fecha, expira FROM msj
+$sql = "SELECT cvemsj, introduccion, msj.descripcion, usuarios.nombre, fecha, expira FROM msj
   INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
   LEFT JOIN usuarios ON usuarios.cveusuario = msj.emisor
   WHERE tipomsj.cvetipomsj='PU' AND expira >= ? AND cveperiodo=?
@@ -34,6 +34,9 @@ if (!isset($mensajes[0])) {
 $web->smarty->assign('mensajes', $mensajes);
 $web->smarty->display('mensajes_publicos.html');
 
+/**********************************************************************************************
+ * FUNCIONES
+ **********************************************************************************************/
 /**
  * Método para mostrar el template form_alumnos cuando ocurre algún error
  * @param  String $alert     Tipo de mensaje
