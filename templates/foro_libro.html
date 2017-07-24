@@ -69,13 +69,13 @@
                   	    <li class="media">
                           <div class="post-comment">
                             <a class="pull-left" href="#">
-                              <img class="media-object" src="../Images/portadas/2.jpg" alt="">
+                              <img class="media-object" src="../fotos/{$comentario.foto}" alt="">
                             </a>
                             <div class="media-body">
-                              <span><i class="fa fa-user"></i>Posted by <a href="#">Endure</a></span>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliq Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>
+                              <span><i class="fa fa-user"></i>publicado por <a href="#">{$comentario.nombre}</a></span>
+                              <p>{$comentario.contenido}</p>
                               <ul class="nav navbar-nav post-nav">
-                                <li><a href="#"><i class="fa fa-clock-o"></i>February 11,2014</a></li>
+                                <li><a href="#"><i class="fa fa-clock-o"></i>{$comentario.fecha}</a></li>
                                 <li><a href="#"><i class="fa fa-reply"></i>Reply</a></li>
                               </ul>
                             </div>

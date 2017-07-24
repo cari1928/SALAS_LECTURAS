@@ -16,12 +16,17 @@ if (!isset($libro[0])) {
 $nombre_fichero = "/home/ubuntu/workspace/Images/portadas/" . $libro[0]['portada'];
 $libro[0]['portada'] = (!file_exists($nombre_fichero)) ? "no_disponible.jpg" : $libro[0]['portada'];  
 
-$sql         = "SELECT * FROM comentario WHERE cvelibro=? AND cverespuesta IS NULL";
+$sql         = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
+                         WHERE cvelibro=? AND cverespuesta IS NULL";
 $comentarios = $web->DB->GetAll($sql, $_GET['info']);
 
-$sql        = "SELECT * FROM comentario WHERE cvelibro=? AND cverespuesta IN NOT NULL";
+$sql        = "SELECT * FROM comentario WHERE cvelibro=? AND cverespuesta IS NOT NULL";
 $respuestas = $web->DB->GetAll($sql, $_GET['info']);
+//echo $sql;
+//echo $_GET['info'];
+//die();
 if (isset($respuestas[0])) {
+  //$web->debug($respuestas);
   foreach ($respuestas as $respuesta) {
     for ($i = 0; $i < count($comentarios); $i++) {
       if ($respuesta->cverespuesta == $comentarios[$i]['cvecomentario']) {
@@ -34,6 +39,7 @@ if (isset($respuestas[0])) {
 
     }
   }
+  $web->debug($comentarios);
 }
 
 $no_comentarios = 0;
