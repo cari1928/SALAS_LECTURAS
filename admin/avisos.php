@@ -63,8 +63,6 @@ $sql = "SELECT cvemsj, introduccion, tipomsj.descripcion, fecha, expira FROM msj
   WHERE msj.tipo='PU' AND cveperiodo=?
   ORDER BY cvemsj";
 $avisos = $web->DB->GetAll($sql, $cveperiodo);
-
-//Por si no existen mensajes para mostrar
 if (!isset($avisos[0])) {
   mMessage('warning', 'No hay mensajes actuales');
 }
@@ -77,6 +75,7 @@ $web->smarty->display('avisos.html');
  **********************************************************************************************/
  function mInsert() {
   global $web;
+  global $cveperiodo;
   if (!isset($_POST['introduccion']) ||
     !isset($_POST['descripcion']) ||
     !isset($_POST['expira'])) {
@@ -87,12 +86,14 @@ $web->smarty->display('avisos.html');
     $_POST['expira'] == "") {
       mMessage('warning', 'Falta información. Por favor, no altere la estructura de la interfaz', 'nuevo');
   }
-  $sql        = "INSERT INTO msj(introduccion, descripcion, tipo, fecha, expira) VALUES(?, ?, 'PU', ?, ?)";
+  $sql        = "INSERT INTO msj(introduccion, descripcion, tipo, fecha, expira, cveperiodo) 
+    VALUES(?, ?, 'PU', ?, ?, ?)";
   $parameters = array(
     $_POST['introduccion'],
     $_POST['descripcion'],
     date('Y-m-j'),
-    $_POST['expira']);
+    $_POST['expira'],
+    $cveperiodo);  
   if (!$web->query($sql, $parameters)) {
     mMessage('danger', 'Ocurrió un error al crear el aviso', 'nuevo');
   } else {
@@ -153,6 +154,7 @@ function mUpdate() {
     mMessage('danger', 'Ocurrió un error al actualizar el aviso', 'actualizar');
   } else {
     header('Location: avisos.php?m=2');
+    die();
   }
 }
 

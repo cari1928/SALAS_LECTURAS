@@ -56,18 +56,25 @@ class Sistema extends Conexion
   /**
    * Muestra informacion de los mensajes publicos
    */
-  public function msj($sql, $array = array())
+  public function msj($sql, $array=array())
   {
     $datos = $this->DB->GetAll($sql, $array);
     if (!isset($datos[0])) {
-      return "No se encuentra informacion";
+      return 'e1';
     }
+    
+    // ¿para qué es nombrescolumnas?
     $nombrescolumnas = array_keys($datos[0]);
     $this->smarty->assign('nombrecolumna', $nombrescolumnas[1]);
+    
     $this->smarty->assign('msj', $datos);
-
     $sql = "SELECT nombre FROM usuarios WHERE cveusuario=?";
-    $this->smarty->assign('promotor', $this->DB->GetAll($sql, $datos[0][4]));
+    $usuario = $this->DB->GetAll($sql, $datos[0][4]);
+    if(!isset($usuario[0])) {
+      return 'e2';
+    }
+    
+    $this->smarty->assign('promotor', $usuario);
     return $this->smarty->fetch('msj.component.html');
   }
 

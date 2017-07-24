@@ -12,6 +12,7 @@
 {if isset($avisos)}
 	<table class='table table-hover display' id="example" cellspacing="0" width="100%">
 		<tr class='info'>		
+			<th style="vertical-align:middle"><center>CLAVE</center></th>
 			<th style="vertical-align:middle"><center>INTRODUCCION</center></th>
 			<th style="vertical-align:middle"><center>TIPO</center></th>
 			<th style="vertical-align:middle"><center>FECHA</center></th>
@@ -21,10 +22,11 @@
 		</tr>
 		{foreach $avisos as $aviso}
 			<tr>
-				<td><center>{$aviso.introduccion}</center></td>
-				<td><center>{$aviso.descripcion}</center></td>
-				<td><center>{$aviso.fecha}</center></td>
-				<td><center>{$aviso.expira}</center></td>
+				<td style="vertical-align:middle"><center>{$aviso.cvemsj}</center></td>
+				<td style="vertical-align:middle"><center>{$aviso.introduccion}</center></td>
+				<td style="vertical-align:middle"><center>{$aviso.descripcion}</center></td>
+				<td style="vertical-align:middle"><center>{$aviso.fecha}</center></td>
+				<td style="vertical-align:middle"><center>{$aviso.expira}</center></td>
 				<td><center>
 	        <a href="avisos.php?accion=actualizar_form&info1={$aviso.cvemsj}">
 						<img src="../Images/edit.png">
@@ -67,8 +69,8 @@
 		    });
 	    } );
     
-  } );
-</script>
+	  } );
+	</script>
 {/if}
 
 {include file='footer.html'}

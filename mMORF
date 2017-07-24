@@ -1,0 +1,20 @@
+ cvemsj |           introduccion           | descripcion | nombre |   fecha    |   expira   | tipo 
+--------+----------------------------------+-------------+--------+------------+------------+------
+      4 | Prueba                           | Individual  | DIOS   | 2017-06-16 | 2017-06-17 | I
+      5 | Bienvenido                       | Individual  | DIOS   | 2017-06-25 | 2017-06-30 | I
+      6 | Menso!!                          | Individual  | DIOS   | 2017-06-25 | 2017-06-30 | I
+      7 | PRUEBA                           | Individual  | DIOS   | 2017-06-29 | 2017-06-30 | I
+      8 | PRUEBA 2                         | Individual  | DIOS   | 2017-06-30 | 2017-07-01 | I
+      9 | hola que ace                     | Individual  | DIOS   | 2017-06-30 | 2017-07-01 | I
+     10 | prueba 4                         | Individual  | DIOS   | 2017-06-30 | 2017-07-01 | I
+     11 | prueba mensaje grupal 1          | Grupal      | DIOS   | 2017-07-04 | 2017-07-31 | G
+     12 | prueba grupal  4 con archivo     | Grupal      | DIOS   | 2017-07-05 | 2017-07-31 | G
+     13 | prueba grupal  4 con archivo     | Grupal      | DIOS   | 2017-07-05 | 2017-07-31 | G
+     14 | prueba 4 msj individual mensaje  | Individual  | DIOS   | 2017-07-05 | 2017-07-31 | I
+     15 | prueba 4 msj grupal con archivo  | Grupal      | DIOS   | 2017-07-05 | 2017-07-31 | G
+     16 | p_imagen                         | Grupal      | DIOS   | 2017-07-09 | 2017-07-30 | G
+     17 | Prueba-Imagen                    | Grupal      | DIOS   | 2017-07-09 | 2017-07-29 | G
+     18 | Prueba Archivo                   | Individual  | DIOS   | 2017-07-09 | 2017-07-28 | I
+     19 | Pruebas                          | Público     |        | 2017-07-24 | 2017-07-29 | PU
+(16 rows)
+

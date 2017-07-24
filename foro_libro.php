@@ -20,7 +20,8 @@ $sql         = "SELECT * FROM comentario inner join usuarios on usuarios.cveusua
                          WHERE cvelibro=? AND cverespuesta IS NULL";
 $comentarios = $web->DB->GetAll($sql, $_GET['info']);
 
-$sql        = "SELECT * FROM comentario WHERE cvelibro=? AND cverespuesta IS NOT NULL";
+$sql        = "SELECT * FROM comentario inner join usuarios on usuarios.cveusuario = comentario.cveusuario
+                        WHERE cvelibro=? AND cverespuesta IS NOT NULL";
 $respuestas = $web->DB->GetAll($sql, $_GET['info']);
 //echo $sql;
 //echo $_GET['info'];
@@ -29,7 +30,9 @@ if (isset($respuestas[0])) {
   //$web->debug($respuestas);
   foreach ($respuestas as $respuesta) {
     for ($i = 0; $i < count($comentarios); $i++) {
-      if ($respuesta->cverespuesta == $comentarios[$i]['cvecomentario']) {
+      //$web->debug_line($respuesta['cverespuesta']);
+      //$web->debug_line($comentarios[$i]['cvecomentario']);
+      if ($respuesta['cverespuesta'] == $comentarios[$i]['cvecomentario']) {
         if (isset($comentarios[$i]['respuesta'][0])) {
           $comentarios[$i]['respuesta'][count($comentarios[$i]['respuesta'])] = $respuesta;
         } else {
@@ -39,13 +42,13 @@ if (isset($respuestas[0])) {
 
     }
   }
-  $web->debug($comentarios);
 }
 
 $no_comentarios = 0;
 if (isset($comentarios[0])) {
   $no_comentarios = sizeof($comentarios);
   $web->smarty->assign('comentarios', $comentarios);
+  $web->smarty->assign('no_comentarios', $no_comentarios);
   //$web->debug($comentarios);
 }
 $web->smarty->assign('libro', $libro[0]);

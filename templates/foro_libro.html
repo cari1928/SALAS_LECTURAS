@@ -82,18 +82,18 @@
                           </div>
                           
                           {if isset($comentario.respuesta)}
-                            {foreach $comentarios as $comentario}
+                            {foreach $comentario.respuesta as $respuesta}
                               <div class="parrent">
                                 <ul class="media-list">
                                   <li class="post-comment reply">
                                     <a class="pull-left" href="#">
-                                      <img class="media-object" src="fotos/{$comentario.foto}" alt="">
+                                      <img class="media-object" src="fotos/{$respuesta.foto}" alt="">
                                     </a>
                                     <div class="media-body">
-                                      <span><i class="fa fa-user"></i>Comentario de <a href="#">{$comentario.nombre}</a></span>
-                                      <p>{$comentario.contenido} </p>
+                                      <span><i class="fa fa-user"></i>Comentario de <a href="#">{$respuesta.nombre}</a></span>
+                                      <p>{$respuesta.contenido} </p>
                                       <ul class="nav navbar-nav post-nav">
-                                          <li><a href="#"><i class="fa fa-clock-o"></i>{$comentario.fecha}</a></li>
+                                          <li><a href="#"><i class="fa fa-clock-o"></i>{$respuesta.fecha}</a></li>
                                       </ul>
                                     </div>
                                   </li>
