@@ -1,5 +1,4 @@
 <?php
-
 include '../sistema.php';
 
 if ($_SESSION['roles'] != 'U') {
@@ -26,7 +25,7 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'archivo':
-      $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info'];
+      $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $_GET['info'];
       if (!file_exists($nombre_fichero)) {
         header('Location: grupos.php?aviso=5'); //El archivo no existe
       }
@@ -41,7 +40,7 @@ if (isset($_GET['accion'])) {
  * FUNCIONES
  *************************************************************************************************/
 /**
- *  
+ *
  */
 function mMessage($web, $type, $msg)
 {
@@ -51,11 +50,12 @@ function mMessage($web, $type, $msg)
 }
 
 /**
- *  
+ *
  */
-function mListado() {
+function mListado()
+{
   global $web, $cveperiodo;
-  
+
   if (!isset($_GET['info'])) {
     mMessage($web, 'warning', 'Falta información');
   }
@@ -75,7 +75,8 @@ function mListado() {
   AND cveperiodo=?
   AND cveletra in (SELECT cve FROM abecedario WHERE letra=?)
   AND expira > NOW()";
-  $mensajes = $web->DB->GetAll($sql, array($_SESSION['cveUser'], $cveperiodo, $_GET['info']));
+  $parameters = array($_SESSION['cveUser'], $cveperiodo, $_GET['info']);
+  $mensajes   = $web->DB->GetAll($sql, $parameters);
   if (!isset($mensajes[0])) {
     mMessage($web, 'danger', 'No hay mensajes');
   }
@@ -84,11 +85,12 @@ function mListado() {
 }
 
 /**
- *  
+ *
  */
-function mLeer() {
-  global $web, $cveperiodo;
-  
+function mLeer()
+{
+  global $web, $cveperiodo, $accion;
+
   $cvemsj = "";
   if (isset($_GET['info'])) {
     $cvemsj = $_GET['info'];

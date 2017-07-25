@@ -150,20 +150,22 @@ header("Location: grupos.php");
  * FUNCIONES
  **********************************************************************************************/
 /**
- *  
+ *
  */
-function mMessage($alert, $msg, $html) {
-$web->simple_message($alert, $msg);
-$web->smarty->display($html);
-die();
+function mMessage($alert, $msg, $html)
+{
+  $web->simple_message($alert, $msg);
+  $web->smarty->display($html);
+  die();
 }
 
 /**
- *  
+ *
  */
-function mRedactar() {
+function mRedactar()
+{
   global $web, $periodo, $para;
-  
+
   $sql   = "SELECT cve FROM abecedario WHERE letra=?";
   $datos = $web->DB->GetAll($sql, $_GET['info']);
   if (!isset($datos[0])) {
@@ -185,11 +187,12 @@ function mRedactar() {
 }
 
 /**
- *  
+ *
  */
-function mRedactarIndividual() {
+function mRedactarIndividual()
+{
   global $web, $periodo, $accion;
-  
+
   $receptor = "";
   if (isset($_GET['info2'])) {
     $receptor = $_GET['info2'];
@@ -229,12 +232,13 @@ function mRedactarIndividual() {
 }
 
 /**
- *  
+ *
  */
-function mEnviarIndividual() {
+function mEnviarIndividual()
+{
   global $web, $periodo;
   $web = new RedactaControllers;
-  
+
   $receptor = $cveletra = $encabezado = $contenido = $nombre = "";
   if (isset($_GET['receptor'])) {
     $receptor = $_GET['receptor'];
@@ -242,7 +246,7 @@ function mEnviarIndividual() {
   if (isset($_GET['para'])) {
     $cveletra = $_GET['para'];
   }
-  if(!isset($_POST)) {
+  if (!isset($_POST)) {
     mMessage('danger', "No se pudo mandar el mensaje", 'redacta.html');
   }
 
@@ -255,28 +259,28 @@ function mEnviarIndividual() {
     header('Location: grupos.php?aviso=4'); //No existe el destinatario o no hay permiso
   }
 
-  $max_size   = 2000000;
+  $max_size = 2000000;
   if ($_FILES['archivo']['size'] > 0) {
     if ($_FILES['archivo']['size'] <= $max_size) {
 
       $dir_subida = "/home/ubuntu/workspace/archivos_msj/" . $periodo . "/";
       $nombre     = $_FILES['archivo']['name'];
-      $data = $web->getNameAndExtension($nombre);
-      $fileRoute = $dir_subida . $receptor . "_".$data[0]."_"; //prepara la ruta
-      $numFiles = $web->countFiles($fileRoute); //cuenta cuántos archivos ya hay con esa ruta
-      $fileRoute .= ($numFiles+1).$data[1]; //completa la ruta agregando el número de archivo y extensión
-      
+      $data       = $web->getNameAndExtension($nombre);
+      $fileRoute  = $dir_subida . $receptor . "_" . $data[0] . "_"; //prepara la ruta
+      $numFiles   = $web->countFiles($fileRoute); //cuenta cuántos archivos ya hay con esa ruta
+      $fileRoute .= ($numFiles + 1) . $data[1]; //completa la ruta agregando el número de archivo y extensión
+
       if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $fileRoute)) {
         header('Location: grupos.php?aviso=3'); // Ocurrio un error al enviar el mensaje
         die();
       }
-      
-      $nombre = explode("/", $fileRoute);
+
+      $nombre   = explode("/", $fileRoute);
       $nameSize = count($nombre);
-      $nombre = $nombre[($nameSize-1)];
+      $nombre   = $nombre[($nameSize - 1)];
     }
   }
-  
+
   $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, receptor, cveletra, cveperiodo, archivo)
     VALUES (?, ?, 'I', ?, ?, ?, ?, ?, ?, ?)";
   $parameters = array(
@@ -290,22 +294,27 @@ function mEnviarIndividual() {
     $periodo,
     $nombre,
   );
-  $web->query($sql, $parameters);
+  if (!$web->query($sql, $parameters)) {
+    header('Location: grupos.php?aviso=3'); // ocurrió un error
+    die();
+  }
+
   header('Location: grupos.php?aviso=2'); // Se envio el mensaje satisfactoriamente
   die();
 }
 
 /**
- *  
+ *
  */
-function mShowMessages() {
+function mShowMessages()
+{
   global $web;
   if (isset($_GET['aviso'])) {
     switch ($_GET['aviso']) {
       case 1:
         $web->simple_message('success', 'Se envío el mensaje satisfactoriamente');
         break;
-  
+
       case 2:
         $web->simple_message('warning', 'Ocurrió un error mientras se enviaba el mensaje');
         break;
