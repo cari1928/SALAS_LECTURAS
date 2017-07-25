@@ -16,18 +16,7 @@ if ($periodo == "") {
   mMessage('danger', 'No hay periodo actual', 'redacta.html');
 }
 
-if (isset($_GET['aviso'])) {
-
-  switch ($_GET['aviso']) {
-    case 1:
-      $web->simple_message('success', 'Se envío el mensaje satisfactoriamente');
-      break;
-
-    case 2:
-      $web->simple_message('warning', 'Ocurrió un error mientras se enviaba el mensaje');
-      break;
-  }
-}
+mShowMessages();
 
 if (isset($_GET['info'])) {
   $para = $_GET['info'];
@@ -160,12 +149,18 @@ header("Location: grupos.php");
 /**********************************************************************************************
  * FUNCIONES
  **********************************************************************************************/
+/**
+ *  
+ */
 function mMessage($alert, $msg, $html) {
 $web->simple_message($alert, $msg);
 $web->smarty->display($html);
 die();
 }
 
+/**
+ *  
+ */
 function mRedactar() {
   global $web, $periodo, $para;
   
@@ -189,6 +184,9 @@ function mRedactar() {
   mMessage('warning', 'No existe el destinatario o no tienes permiso para mandar este mensaje', 'redacta.html');
 }
 
+/**
+ *  
+ */
 function mRedactarIndividual() {
   global $web, $periodo, $accion;
   
@@ -230,15 +228,22 @@ function mRedactarIndividual() {
   mMessage('danger', "No existe el destinatario o no tienes permiso para mandar este mensaje", 'redacta.html');
 }
 
+/**
+ *  
+ */
 function mEnviarIndividual() {
   global $web, $periodo;
+  $web = new RedactaControllers;
   
-  $receptor = $cveletra = "";
+  $receptor = $cveletra = $encabezado = $contenido = $nombre = "";
   if (isset($_GET['receptor'])) {
     $receptor = $_GET['receptor'];
   }
   if (isset($_GET['para'])) {
     $cveletra = $_GET['para'];
+  }
+  if(!isset($_POST)) {
+    mMessage('danger', "No se pudo mandar el mensaje", 'redacta.html');
   }
 
   $sql = "SELECT * FROM lectura
@@ -250,61 +255,60 @@ function mEnviarIndividual() {
     header('Location: grupos.php?aviso=4'); //No existe el destinatario o no hay permiso
   }
 
-  if(!isset($_POST)) {
-    mMessage('danger', "No se pudo mandar el mensaje", 'redacta.html');
-  }
-
-  $encabezado = $contenido = "";
   $max_size   = 2000000;
   if ($_FILES['archivo']['size'] > 0) {
     if ($_FILES['archivo']['size'] <= $max_size) {
 
       $dir_subida = "/home/ubuntu/workspace/archivos_msj/" . $periodo . "/";
       $nombre     = $_FILES['archivo']['name'];
-      $fileRoute = $dir_subida . $receptor . "_".$nombre."_1";
+      $data = $web->getNameAndExtension($nombre);
+      $fileRoute = $dir_subida . $receptor . "_".$data[0]."_"; //prepara la ruta
+      $numFiles = $web->countFiles($fileRoute); //cuenta cuántos archivos ya hay con esa ruta
+      $fileRoute .= ($numFiles+1).$data[1]; //completa la ruta agregando el número de archivo y extensión
       
-      $web->debug_line($fileRoute);
-      $web->debug($_FILES);
-      
-      if (file_exists($fileRoute)) {
-        // PENDIENTE, CONTAR CUANTOS ARCHIVOS YA HAY, PARA QUE EL PROMOTOR PUEDA ENVIAR MÁS DE UN MENSAJE A UN ALUMNO
-        header('Location: grupos.php?aviso=1'); // ya existe un archivo con este mismo nombre
+      if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $fileRoute)) {
+        header('Location: grupos.php?aviso=3'); // Ocurrio un error al enviar el mensaje
         die();
       }
-
-      if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir_subida . $nombre)) {
-        $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, receptor, cveletra, cveperiodo, archivo)
-          VALUES (?, ?,'I', ?,'" . date('Y-m-j') . "', ?, ?, ?, ?, ?)";
-        $parameters = array(
-          $_POST['introduccion'],
-          $_POST['descripcion'],
-          $_SESSION['cveUser'],
-          $_POST['expira'],
-          $receptor,
-          $cveletra,
-          $periodo,
-          $nombre,
-        );
-        $web->query($sql, $parameters);
-        header('Location: grupos.php?aviso=2'); // Se envio el mensaje satisfactoriamente
-      } else {
-        header('Location: grupos.php?aviso=3'); // Ocurrio un error al enviar el mensaje
-      }
-      die();
-    } else {
-      $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, receptor, cveletra, cveperiodo)
-        VALUES (?, ?,'I', ?,'" . date('Y-m-j') . "', ?, ?, ?, ?)";
-      $parameters = array(
-        $_POST['introduccion'],
-        $_POST['descripcion'],
-        $_SESSION['cveUser'],
-        $_POST['expira'],
-        $receptor,
-        $cveletra,
-        $periodo,
-      );
-      $web->query($sql, $parameters);
+      
+      $nombre = explode("/", $fileRoute);
+      $nameSize = count($nombre);
+      $nombre = $nombre[($nameSize-1)];
     }
   }
+  
+  $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, receptor, cveletra, cveperiodo, archivo)
+    VALUES (?, ?, 'I', ?, ?, ?, ?, ?, ?, ?)";
+  $parameters = array(
+    $_POST['introduccion'],
+    $_POST['descripcion'],
+    $_SESSION['cveUser'],
+    date('Y-m-j'),
+    $_POST['expira'],
+    $receptor,
+    $cveletra,
+    $periodo,
+    $nombre,
+  );
+  $web->query($sql, $parameters);
+  header('Location: grupos.php?aviso=2'); // Se envio el mensaje satisfactoriamente
   die();
+}
+
+/**
+ *  
+ */
+function mShowMessages() {
+  global $web;
+  if (isset($_GET['aviso'])) {
+    switch ($_GET['aviso']) {
+      case 1:
+        $web->simple_message('success', 'Se envío el mensaje satisfactoriamente');
+        break;
+  
+      case 2:
+        $web->simple_message('warning', 'Ocurrió un error mientras se enviaba el mensaje');
+        break;
+    }
+  }
 }
