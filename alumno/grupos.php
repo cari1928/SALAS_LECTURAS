@@ -30,4 +30,23 @@ if (isset($tablegrupos[0])) {
   $web->simple_message('danger', 'No ha registrado algún grupo');
 }
 
+mShowMessages();
+
 $web->smarty->display('vergrupos.html');
+
+/*************************************************************************************************
+ * FUNCIONES
+ *************************************************************************************************/
+ function mShowMessages() {
+   global $web;
+   
+   if(isset($_GET['aviso'])) {
+     switch ($_GET['aviso']) {
+       
+       case 5:
+         $web->simple_message('danger', 'El archivo seleccionado no existe');
+         break;
+         
+     }
+   }
+ }

@@ -2,11 +2,14 @@
 {$ruta}
 {if isset($msg)}{include file='../mensajes.html'}{/if}
 
+<h3>Mensajes</h3>
+
 {if isset($mensajes)}
   <table class='table table-striped display' cellspacing="0" width="100%">
     
 		<tr class='info'>    
       <th width="500px"><center>ASUNTO</center></th>
+      <th><center>TIPO</center></th>
       <th><center>FECHA</center></th>
       <th><center>EXPIRA</center></th>
       <th><center>VISUALIZAR</center></th>
@@ -15,6 +18,7 @@
     {foreach $mensajes as $msj}
       <tr>
         <td><center>{$msj.introduccion}</center></td>
+        <td><center>{$msj.descripcion}</center></td>
         <td><center>{$msj.fecha}</center></td>
         <td><center>{$msj.expira}</center></td>
         <td><center><a href="msj.php?accion=leer&info={$msj.cvemsj}">
@@ -64,7 +68,7 @@
               {if isset($archivo)}
                 <div class="form-group" align="center">
                   <a style="text-decoration:none; color:black; padding-right:10px" 
-                    href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}{else}#{/if}">
+                    href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}&info2={$mensaje[0].cveletra}{else}#{/if}">
                     <img src="../Images/docs.png"> {$archivo}
                   </a>
                 </div>

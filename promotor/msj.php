@@ -33,9 +33,9 @@ switch ($accion) {
     $mensaje = $web->DB->GetAll($sql);
     $web->smarty->assign('mensaje', $mensaje);
     $web->smarty->assign('accion', $accion);
-    //$web->debug($mensaje);
+    
     if ($mensaje[0]['archivo'] != '') {
-      $nombre_fichero = "/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $mensaje[0]['archivo'];
+      $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $mensaje[0]['archivo'];
       if (!file_exists($nombre_fichero)) {
         $mensaje[0]['archivo'] = "El archivo " . $mensaje[0]['archivo'] . " ha sido eliminado";
         $web->smarty->assign('eliminado', true);

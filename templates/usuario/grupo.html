@@ -2,15 +2,6 @@
 {$ruta}
 {if isset($msg)}{include file='../mensajes.html'}{/if}
 
-<style type="text/css">
-	.links a
-	{
-		text-decoration: none; 
-		color: black; 
-		padding-right: 10px
-	}
-</style>
-
 {if isset($info)}
 	<center>
 		<div class="form-group" style ="background-color:#f0f0f0">
@@ -35,8 +26,12 @@
   		</a>
 		{/if}
 		
-		<a href="redacta.php?accion=redactar&info={$info.letra}">
-			<img src="../Images/sobre.png"> Mensaje Grupal
+		<a href="msj.php?accion=listado&info={$grupo}">
+			<img src="../Images/sobre.png"> Mensajes
+		</a>
+		
+		<a href="grupo.php?accion=form_libro&info1={$alumno.cvelectura}" style="text-decoration:none" >
+			<img src="../Images/libros.png" width="30"> Libros
 		</a>
 
 	</div>
@@ -51,7 +46,6 @@
 			<th><center>REPORTE</center></th>
 			<th><center>ACTIVIDADES</center></th>
 			<th><center>TERMINADO</center></th>
-			<th><center>OPCIONES</center></th>
 		</tr>
 
 		{foreach $datos as $alumno}
@@ -117,14 +111,6 @@
 							</div>
 						</div>
 						</br>
-					</td>
-					<td>
-						<a href="msj.php?accion=listado&info={$grupo}" style="text-decoration:none" >
-							<img src="../Images/sobre.png">
-						</a>
-						<a href="grupo.php?accion=form_libro&info1={$alumno.cvelectura}" style="text-decoration:none" >
-							<img src="../Images/libros.png" width="30">
-						</a>
 					</td>
 				</form>
 			</tr>

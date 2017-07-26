@@ -13,7 +13,7 @@
           <div class="panel panel-default">
           
             <div class="panel-heading">
-              <h3 class="panel-title"> Aviso {$type} </h3>
+              <h3 class="panel-title"> Mensaje {$type} </h3>
             </div>
             
             <div class="panel-body">
@@ -72,7 +72,7 @@
           <div class="panel panel-default">
             
             <div class="panel-heading">
-              <h3 class="panel-title"> Aviso {$type} </h3>
+              <h3 class="panel-title"> Mensaje {$type} </h3>
             </div>
             
             <div class="panel-body">
@@ -112,10 +112,12 @@
               {/if}
               
               {if isset($archivo)}
-                <a style="text-decoration:none; color:black; padding-right:10px" 
-                  href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}{else}#{/if}">
-                  <img src="../Images/docs.png"> {$archivo}
-                </a>
+                <div class="form-group" align="center">
+                  <a style="text-decoration:none; color:black; padding-right:10px" 
+                    href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}{else}#{/if}">
+                    <img src="../Images/docs.png"> {$archivo}
+                  </a>
+                </div>
               {/if}
               
             </div>
