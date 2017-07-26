@@ -8,16 +8,15 @@ if ($_SESSION['roles'] != 'P') {
 $web->iniClases('promotor', "index vergrupos mesnajes");
 $grupos = $web->grupos($_SESSION['cveUser']);
 $web->smarty->assign('grupos', $grupos);
+
 $cveperiodo = $web->periodo();
 if ($cveperiodo == "") {
   message('danger', 'No hay periodos actuales', $web);
 }
-$accion = "";
 
 if (!isset($_GET['cvemsj']) && !isset($_GET['info'])) {
   header('location: index.php');
 }
-
 if (isset($_GET['accion'])) {
   $accion = $_GET['accion'];
 }

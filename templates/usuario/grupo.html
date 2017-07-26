@@ -2,6 +2,15 @@
 {$ruta}
 {if isset($msg)}{include file='../mensajes.html'}{/if}
 
+<style type="text/css">
+	.links a
+	{
+		text-decoration: none; 
+		color: black; 
+		padding-right: 10px
+	}
+</style>
+
 {if isset($info)}
 	<center>
 		<div class="form-group" style ="background-color:#f0f0f0">
@@ -17,11 +26,20 @@
 {/if}
 
 {if isset($datos)}
+	
+	<div class="links" style="float:right; padding-bottom:10px">
+		
+		{if isset($formato_preguntas)}
+			<a href="grupo.php?accion=formato_preguntas"> 
+	  		<img src="../Images/reporte.png"> Formato-Reporte
+  		</a>
+		{/if}
+		
+		<a href="redacta.php?accion=redactar&info={$info.letra}">
+			<img src="../Images/sobre.png"> Mensaje Grupal
+		</a>
 
-	{if isset($formato_preguntas)}
-		<a href="grupo.php?accion=formato_preguntas"> 
-  	<img src="../Images/reporte.png"></a>
-	{/if}
+	</div>
 
 	<table class='table table-striped' width='500'>
 		

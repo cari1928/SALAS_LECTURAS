@@ -31,7 +31,7 @@ if (isset($_GET['accion'])) {
       }
       header("Content-disposition: attachment; filename=" . $_GET['info']);
       header("Content-type: MIME");
-      readfile("/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info']);
+      readfile("/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $_GET['info']);
       break;
   }
 }
