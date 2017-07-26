@@ -21,10 +21,6 @@ if (isset($_GET['accion'])) {
       mListado();
       break;
 
-    // case 'listadoI':
-    //   mListadoIndividual();
-    //   break;
-
     case 'leer':
       mLeer();
       break;
@@ -100,41 +96,6 @@ function mListado()
     mMessage('danger', 'No hay mensajes');
   }
   
-  $web->smarty->assign('mensajes', $mensajes);
-  $web->smarty->display('msj.html');
-}
-
-/**
- *
- */
-function mListadoIndividual()
-{
-  global $web, $cveperiodo;
-
-  if (!isset($_GET['info'])) {
-    mMessage('warning', 'Falta información');
-  }
-
-  $sql = "SELECT * FROM laboral
-  WHERE cveletra in (SELECT cve FROM abecedario WHERE letra=?)
-  AND cveletra in (SELECT cveletra FROM lectura WHERE cveletra in (SELECT cve FROM abecedario WHERE letra=?))
-  AND laboral.cveperiodo=?";
-  $grupo = $web->DB->GetAll($sql, array($_GET['info'], $_GET['info'], $cveperiodo));
-  if (!isset($grupo[0])) {
-    mMessage('warning', 'El grupo no existe o no cuenta con los permisos para acceder');
-  }
-
-  $sql = "SELECT cvemsj, introduccion, tipomsj.descripcion, fecha, expira FROM msj
-  INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
-  WHERE receptor=?
-  AND cveperiodo=?
-  AND cveletra in (SELECT cve FROM abecedario WHERE letra=?)
-  AND expira > NOW()";
-  $parameters = array($_SESSION['cveUser'], $cveperiodo, $_GET['info']);
-  $mensajes   = $web->DB->GetAll($sql, $parameters);
-  if (!isset($mensajes[0])) {
-    mMessage('danger', 'No hay mensajes');
-  }
   $web->smarty->assign('mensajes', $mensajes);
   $web->smarty->display('msj.html');
 }

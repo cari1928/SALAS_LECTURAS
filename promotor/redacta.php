@@ -199,7 +199,10 @@ function mEnviarIndividual()
     header('Location: grupos.php?aviso=4'); //No existe el destinatario o no hay permiso
   }
   
-  $nombre = mUploadFiles();
+  $sql = "SELECT * FROM abecedario WHERE cve=?";
+  $data = $web->DB->GetAll($sql, $cveletra);
+  $nombre = mUploadFiles('I', $data[0]['letra'], $receptor);
+  
   $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, receptor, cveletra, cveperiodo, archivo)
     VALUES (?, ?, 'I', ?, ?, ?, ?, ?, ?, ?)";
   $parameters = array(
@@ -219,6 +222,7 @@ function mEnviarIndividual()
   }
 
   header('Location: grupos.php?aviso=2'); // Se envio el mensaje satisfactoriamente
+  die(); //no funciona sin esto
 }
 
 /**
@@ -258,6 +262,7 @@ function mEnviarGrupal() {
   }
   
   $nombre = mUploadFiles('G', $datos[0]['letra']);
+  
   $sql = "INSERT INTO msj(introduccion, descripcion, tipo, emisor, fecha, expira, cveletra, cveperiodo, archivo)
     VALUES (?, ?, 'G', ?, ?, ?, ?, ?, ?)";
   $parameters = array(
@@ -283,22 +288,22 @@ function mEnviarGrupal() {
  * Sube el archivo solo si es necesario
  * @param $type === 'I' | 'G'
  */
-function mUploadFiles($type, $letra) {
+function mUploadFiles($type, $letra, $receptor=null) {
   global $web, $periodo;
   $web = new RedactaControllers;
   $max_size = 2000000;
   
   if ($_FILES['archivo']['size'] > 0) {
     if ($_FILES['archivo']['size'] <= $max_size) {
-      $dir_subida = "/home/ubuntu/workspace/archivos_msj/" . $periodo . "/" . $letra . "/";
+      $fileRoute = "/home/ubuntu/workspace/archivos_msj/" . $periodo . "/" . $letra . "/";
       $nombre     = $_FILES['archivo']['name'];
       $data       = $web->getNameAndExtension($nombre);
       
       //prepara la ruta
       if($type == 'I') {
-        $fileRoute  = $dir_subida . $receptor . "_" . $data[0] . "_";
+        $fileRoute  .= $receptor . "_" . $data[0] . "_";
       } else {
-        $fileRoute  = $dir_subida . $data[0] . "_"; 
+        $fileRoute  .= $data[0] . "_"; 
       }
       
       $numFiles   = $web->countFiles($fileRoute); //cuenta cuántos archivos ya hay con esa ruta
