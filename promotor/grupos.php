@@ -114,7 +114,7 @@ function mShowMessages() {
         break;
   
       case 2:
-        $web->simple_message('info', 'Se publicó el mensaje satisfactoriamente');
+        $web->simple_message('info', 'Mensaje publicado');
         break;
   
       case 3:
@@ -127,6 +127,18 @@ function mShowMessages() {
         
       case 5:
         $web->simple_message('warning', 'El archivo no existe o fue eliminado');
+        break;
+        
+      case 6:
+        $web->simple_message('warning', 'Hacen falta datos para mostrar los mensajes');
+        break;
+        
+      case 7:
+        $web->simple_message('warning', 'No existe el mensaje seleccionado');
+        break;
+        
+      case 8:
+        $web->simple_message('warning', 'No existe el grupo seleccionado');
         break;
     }
   }

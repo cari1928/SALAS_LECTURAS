@@ -47,41 +47,7 @@ switch ($accion) {
     break;
 
   case 'ver':
-    $grupo = $periodo = "";
-    if (isset($_GET['info'])) {
-      $grupo = $_GET['info'];
-    }
-
-    $periodo = $web->periodo($web);
-    if ($periodo != "") {
-      $sql = "SELECT cvemsj, introduccion, tipomsj.descripcion AS tipo, e.nombre, fecha, expira, abecedario.letra AS letra
-        FROM msj
-        INNER JOIN usuarios e ON e.cveusuario = msj.emisor
-        INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
-        INNER JOIN abecedario ON msj.cveletra = abecedario.cve
-        WHERE msj.tipo='G' AND abecedario.letra=? AND msj.cveperiodo=? AND emisor=?
-          AND expira >='" . date('Y-m-j') . "'";
-      $parameters = array(
-        $grupo,
-        $periodo,
-        $_SESSION['cveUser']);
-      $datos = $web->DB->GetAll($sql, $parameters);
-      $web->smarty->assign('datos', $datos);
-
-      $sql = "SELECT cvemsj, introduccion, tipomsj.descripcion AS tipo, e.nombre AS nombree,
-        r.nombre AS nombrer, fecha, expira
-        FROM msj
-        INNER JOIN usuarios e ON e.cveusuario = msj.emisor
-        INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
-        INNER JOIN usuarios r ON msj.receptor = r.cveusuario
-        WHERE emisor=? AND expira >='" . date('Y-m-j') . "' AND tipomsj.cvetipomsj='I'";
-      $datosI = $web->DB->GetAll($sql, $_SESSION['cveUser']);
-      $web->smarty->assign('datosI', $datosI);
-    } else {
-      $web->smarty->assign('datos', "No se puede acceder a los mensajes");
-    }
-    $web->smarty->display('mensajes.html');
-    exit();
+    mListado();
     break;
 }
 
@@ -320,4 +286,34 @@ function mUploadFiles($type, $letra, $receptor=null) {
   }
   
   return '';
+}
+
+/**
+ * 
+ */
+function mListado() {
+  global $web, $periodo;
+  $web->iniClases('promotor', "index grupos mensajes");
+  
+  $grupo = "";
+  if (isset($_GET['info'])) {
+    $grupo = $_GET['info'];
+  }
+
+  $sql = "SELECT cvemsj, introduccion, tipomsj.descripcion AS tipo, e.nombre, fecha, expira FROM msj
+    INNER JOIN usuarios e ON e.cveusuario = msj.emisor
+    INNER JOIN tipomsj ON tipomsj.cvetipomsj = msj.tipo
+    WHERE msj.cveperiodo=? AND emisor=? AND expira >= ? 
+    AND cveletra IN (SELECT cve FROM abecedario WHERE letra=?)
+    ORDER BY fecha DESC";
+  $parameters = array(
+    $periodo,
+    $_SESSION['cveUser'], 
+    date('Y-m-j'),
+    $grupo);
+  $datos = $web->DB->GetAll($sql, $parameters);
+  $web->smarty->assign('grupo', $grupo);
+  $web->smarty->assign('datos', $datos);
+  $web->smarty->display('mensajes.html');
+  exit();
 }

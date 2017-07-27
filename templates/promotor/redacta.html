@@ -57,9 +57,7 @@
             </div><!--end panel-body-->
           
           </div> <!--end panel panel-defaul-->
-          
-          <!--<div class="small-6 columns" style="margin-top:15px;"></div>-->
-          <!--<div class="small-6 columns"></div>-->
+
         </form>
       {/if} {/if}
       
@@ -114,8 +112,8 @@
               {if isset($archivo)}
                 <div class="form-group" align="center">
                   <a style="text-decoration:none; color:black; padding-right:10px" 
-                    href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}{else}#{/if}">
-                    <img src="../Images/docs.png"> {$archivo}
+                    href="{if !isset($eliminado)}msj.php?accion=archivo&info={$archivo}&info2={$mensaje[0].cveletra}{else}#{/if}">
+                    <img src="../Images/{if !isset($eliminado)}docs.png{else}file_error.png{/if}"> {$archivo}
                   </a>
                 </div>
               {/if}
@@ -123,14 +121,8 @@
             </div>
           </div>
           
-          <div class="small-6 columns" style="margin-top:15px;"></div>
-          <div class="small-6 columns"></div>
         </form>
-      {else} {if !isset($cveperiodo)}
-        <div class="small-6 columns">
-          <label>No se a especificado destinatario</label>
-        </div>
-      {/if} {/if}
+      {/if}
       
     </div>
   </div>

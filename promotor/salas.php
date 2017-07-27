@@ -268,7 +268,7 @@ function mSchedule()
   die();
 }
 
-/*
+/**
  *
  */
 function mCreateFolders($letra) {
