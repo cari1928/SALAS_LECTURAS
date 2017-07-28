@@ -16,7 +16,7 @@ if ($cveperiodo == "") {
 
 if (isset($_GET['accion'])) {
   switch ($_GET['accion']) {
-    
+
     case 'listado':
       mListado();
       break;
@@ -26,17 +26,17 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'archivo':
-      if(!isset($_GET['info']) ||
-      !isset($_GET['info2'])) {
+      if (!isset($_GET['info']) ||
+        !isset($_GET['info2'])) {
         mMessage('warning', 'Hacen falta datos');
       }
-      
-      $sql = "SELECT * FROM abecedario WHERE cve=?";
+
+      $sql  = "SELECT * FROM abecedario WHERE cve=?";
       $data = $web->DB->GetAll($sql, $_GET['info2']);
-      if(!isset($data[0])) {
+      if (!isset($data[0])) {
         mMessage('warning', 'No hay mensajes para este grupo');
       }
-      
+
       $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $data[0]['letra'] . "/" . $_GET['info'];
       if (!file_exists($nombre_fichero)) {
         header('Location: grupos.php?aviso=5'); //El archivo no existe
@@ -55,7 +55,7 @@ if (isset($_GET['accion'])) {
 /**
  *
  */
-function mMessage($type, $msg, $html='msj.html')
+function mMessage($type, $msg, $html = 'msj.html')
 {
   global $web;
   $web->simple_message($type, $msg);
@@ -89,13 +89,13 @@ function mListado()
   AND (tipo='G' OR tipo='I')
   AND cveletra in (SELECT cve FROM abecedario WHERE letra=?)
   AND expira > NOW()
-  ORDER BY fecha DESC"; 
+  ORDER BY fecha DESC";
   $parameters = array($cveperiodo, $_GET['info']);
   $mensajes   = $web->DB->GetAll($sql, $parameters);
   if (!isset($mensajes[0])) {
     mMessage('danger', 'No hay mensajes');
   }
-  
+
   $web->smarty->assign('mensajes', $mensajes);
   $web->smarty->display('msj.html');
 }
@@ -114,16 +114,16 @@ function mLeer()
 
   $sql     = "SELECT * FROM msj WHERE cvemsj=?";
   $mensaje = $web->DB->GetAll($sql, $cvemsj);
-  if(!isset($mensaje[0])) {
+  if (!isset($mensaje[0])) {
     mMessage('warning', 'No hay mensajes');
   }
-  
-  $sql = "SELECT * FROM abecedario WHERE cve=?";
+
+  $sql  = "SELECT * FROM abecedario WHERE cve=?";
   $data = $web->DB->GetAll($sql, $mensaje[0]['cveletra']);
-  if(!isset($data[0])) {
+  if (!isset($data[0])) {
     mMessage('warning', 'No hay mensajes para este grupo');
   }
-  
+
   $web->smarty->assign('mensaje', $mensaje);
   $web->smarty->assign('accion', $accion);
 

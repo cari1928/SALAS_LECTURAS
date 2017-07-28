@@ -215,7 +215,7 @@ function register_room()
   if (!verificaciones(3, $web, $cveperiodo)) {break;}
 
   verificaciones(4, $web, array('cveperiodo' => $cveperiodo, 'grupo' => $grupo, 'nombre' => $nombre, 'cvelibro_grupal' => $cvelibro));
-  
+
   mCreateFolders($letra[0]['letra']);
 
   header('Location: grupos.php');
@@ -269,13 +269,12 @@ function mSchedule()
 }
 
 /**
- *
+ * crea la carpeta necesaria para guardar los recursos de los avisos grupales e individuales para este nuevo grupo
  */
-function mCreateFolders($letra) {
-	global $web, $cveperiodo;
-	
-	// crea la carpeta necesaria para guardar los recursos de los avisos grupales e individuales para este nuevo grupo
-	if(!mkdir("/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $letra, 7777, true)) {
-		$web->simple_message('warning', 'No fue posible crear los recursos necesarios');
-	}
+function mCreateFolders($letra)
+{
+  global $web, $cveperiodo;
+  if (!mkdir("/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $letra, 7777, true)) {
+    $web->simple_message('warning', 'No fue posible crear los recursos necesarios');
+  }
 }

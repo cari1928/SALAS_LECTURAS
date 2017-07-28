@@ -117,6 +117,9 @@ if (!isset($salones[0])) {
 
 $web->smarty->display("salas.html");
 
+/**********************************************************************************************
+ * FUNCIONES
+ **********************************************************************************************/
 /**
  * Método para mostrar el template form_alumnos cuando ocurre algún error
  * @param  String $iniClases    Ruta a mostrar en links

@@ -14,7 +14,7 @@ if ($cveperiodo == "") {
   header('Location: grupos.php'); //grupos.php ya tiene un mensaje listo para este caso
   die();
 }
-if (!isset($_GET['cvemsj']) && 
+if (!isset($_GET['cvemsj']) &&
   !isset($_GET['info'])) {
   header('location: index.php');
 }
@@ -29,19 +29,19 @@ switch ($accion) {
     break;
 
   case 'archivo':
-    if(!isset($_GET['info']) || 
-    !isset($_GET['info2'])) {
+    if (!isset($_GET['info']) ||
+      !isset($_GET['info2'])) {
       header('Location: grupos.php?aviso=6');
       die();
     }
-    
-    $sql = "SELECT * FROM abecedario WHERE cve=?";
+
+    $sql  = "SELECT * FROM abecedario WHERE cve=?";
     $data = $web->DB->GetAll($sql, $_GET['info2']);
-    if(!isset($data[0])) {
+    if (!isset($data[0])) {
       header('Location: grups.php?aviso=8');
       die();
     }
-    
+
     $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $data[0]['letra'] . "/" . $_GET['info'];
     if (!file_exists($nombre_fichero)) {
       header('Location: grupos.php?aviso=5'); //El archivo no existe
@@ -56,32 +56,33 @@ switch ($accion) {
 /**********************************************************************************************
  * FUNCIONES
  **********************************************************************************************/
- /**
-  * 
-  */
-function mRead() {
+/**
+ *
+ */
+function mRead()
+{
   global $web, $cveperiodo, $accion;
-  
-  if(!isset($_GET['info'])) {
+
+  if (!isset($_GET['info'])) {
     header('Location: grupos.php?aviso=6');
     die();
   }
   $cvemsj = $_GET['info'];
-  
+
   $sql     = "SELECT * FROM msj WHERE cvemsj=" . $cvemsj;
   $mensaje = $web->DB->GetAll($sql);
-  if(!isset($mensaje[0])) {
+  if (!isset($mensaje[0])) {
     header('Location: grupos.php?aviso=7');
   }
-  
-  $sql = "SELECT * FROM abecedario WHERE cve=?";
+
+  $sql  = "SELECT * FROM abecedario WHERE cve=?";
   $data = $web->DB->GetAll($sql, $mensaje[0]['cveletra']);
   $web->smarty->assign('mensaje', $mensaje);
   $web->smarty->assign('accion', $accion);
-  
+
   if ($mensaje[0]['archivo'] != '') {
     $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $data[0]['letra'] . "/" . $mensaje[0]['archivo'];
-    
+
     if (!file_exists($nombre_fichero)) {
       $mensaje[0]['archivo'] = "El archivo " . $mensaje[0]['archivo'] . " ha sido eliminado";
       $web->smarty->assign('eliminado', true);
@@ -89,7 +90,7 @@ function mRead() {
 
     $web->smarty->assign('archivo', $mensaje[0]['archivo']);
   }
-  
+
   $web->smarty->assign('avisos', true);
   $web->smarty->display('redacta.html');
   exit();
