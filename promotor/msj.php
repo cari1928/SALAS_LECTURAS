@@ -43,17 +43,13 @@ switch ($accion) {
     }
     
     $nombre_fichero = "/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $data[0]['letra'] . "/" . $_GET['info'];
-    
-    $web->debug_line($nombre_fichero);
-    die();
-    
     if (!file_exists($nombre_fichero)) {
       header('Location: grupos.php?aviso=5'); //El archivo no existe
       die();
     }
     header("Content-disposition: attachment; filename=" . $_GET['info']);
     header("Content-type: MIME");
-    readfile("/home/ubuntu/workspace/archivos/msj/" . $cveperiodo . "/" . $_GET['info']);
+    readfile("/home/ubuntu/workspace/archivos_msj/" . $cveperiodo . "/" . $data[0]['letra'] . "/" . $_GET['info']);
     break;
 }
 
