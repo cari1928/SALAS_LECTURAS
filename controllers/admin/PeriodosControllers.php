@@ -37,6 +37,9 @@ class PeriodosControllers extends Sistema
         case 2:
           $this->simple_message('info', 'Datos actualizados correctamente');
           break;
+        case 3:
+          $this->simple_message('info', 'Periodo eliminado correctamente');
+          break;
       }
     }
   }
@@ -83,38 +86,6 @@ class PeriodosControllers extends Sistema
   }
   
   /**
-   * Elimina un periodo
-   */
-  public function deletePeriodo($cveperiodo) {
-    $sql = "DELETE FROM lista_libros WHERE cveperiodo=?";
-    return $this->query($sql, $cveperiodo);
-  }
-  
-  /**
-   * Elimina una evaluación
-   */
-  public function deleteEvaluacion($cvelectura) {
-    $sql = "DELETE FROM evaluacion WHERE cvelectura=?";
-    return $this->query($sql, $cvelectura);
-  }
-  
-  /**
-   * Elimina una lectura
-   */
-  public function deleteLectura($cvelectura) {
-    $sql = "DELETE FROM lectura WHERE cvelectura=?";
-    return $web->query($sql, $cvelectura);
-  }
-  
-  /**
-   * Elimina de la tabla laboral
-   */
-  public function deleteLaboral($cveperiodo) {
-    $sql = "DELETE FROM laboral WHERE cveperiodo=?";
-    return $web->query($sql, $cveperiodo);  
-  }
-  
-  /**
    * Obtiene los grupos y cvelectura de un periodo específico
    */
   public function getGrupos($cveperiodo) {
@@ -129,4 +100,47 @@ class PeriodosControllers extends Sistema
     $sql      = "SELECT cvelectura FROM lectura WHERE cveletra=?";
     return $this->DB->GetAll($sql, $cveletra);
   }
+  
+  /**
+   * Elimina un periodo
+   * **Se modificó la BD para que, cuando se elimine un elemento de la tabla periodo, automáticamente se eliminan datos de:
+   * lista_libros
+   * evaluacion -> lectura
+   * laboral -> sala
+   * msj
+   * observacion
+   * periodos
+   * **No es un trigger, se modificaron los foreign keys de dichas tablas con la propiedad ON DELETE CASCADE
+   * El código sql utilizado está en Evernote, buscar por el título: Eliminar en cascada postgres
+   */
+  public function deletePeriodo($cveperiodo) {
+    $sql = "DELETE FROM periodo WHERE cveperiodo=?";
+    return $this->query($sql, $cveperiodo);
+  }
+  
+  /**
+   * Elimina directorios correspondientes a la cveperiodo dentro de archivos/mensajes, pdf y periodos
+   */
+  public function deleteFiles($cveperiodo) {
+    $route = "/home/ubuntu/workspace/archivos/";
+    
+    $tmp = $route . "mensajes/" . $cveperiodo; //elimina la carpeta de mensajes
+    $this->delTree($tmp);
+    $tmp = $route . "pdf/" . $cveperiodo; //elimina la carpeta de reportes pdf
+    $this->delTree($tmp);
+    $tmp = $route . "periodos/" . $cveperiodo; //elimina la carpeta de reportes pdf
+    $this->delTree($tmp);
+  }
+  
+  /**
+   * Elimina un directorio junto con su contenido
+   * Usa recursividad
+   */
+  public function delTree($dir) { 
+   $files = array_diff(scandir($dir), array('.','..')); 
+    foreach ($files as $file) { 
+      (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file"); 
+    } 
+    return rmdir($dir); 
+  } 
 }

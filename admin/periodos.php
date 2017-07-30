@@ -117,7 +117,6 @@ function deletePeriodo()
   switch ($web->valida_pass($_SESSION['cveUser'])) {
     case 1:
       mMessage('index periodos', 'danger', 'No se especificó la contraseña de seguridad', 'periodos.html');
-
     case 2:
       mMessage('index periodos', 'danger', 'La contraseña de seguridad ingresada no es válida', 'periodos.html');
   }
@@ -132,41 +131,17 @@ function deletePeriodo()
   }
 
   $web->DB->startTrans();
-  if(!$web->deletePeriodo($_GET['info1'])) {
-    mMessage('index periodos', 'danger', 'No fue posible eliminar el periodo', 'periodos.html');
-  }
-
-  //obtener los grupos y cvelectura de ese periodo
-  $grupos = $web->getGrupos($_GET['info1']);
-  for ($i = 0; $i < sizeof($grupos); $i++) {
-    $lecturas = $web->getLecturas($grupos[$i]['cveletra']);
-
-    //elimina de evaluacion y lectura por cada cvelectura
-    for ($j = 0; $j < sizeof($lecturas); $j++) {
-      $web->deleteEvaluacion($lecturas[$j]['cvelectura']);
-      $web->deleteLectura($lecturas[$j]['cvelectura']);
+    if(!$web->deletePeriodo($_GET['info1'])) {
+      mMessage('index periodos', 'danger', 'No fue posible eliminar el periodo seleccionado', 'periodos.html');
     }
-  }
-
-  //elimina de laboral, msg, sala y periodo
-  $web->deleteLaboral($_GET['info1']);
-  $sql = "DELETE FROM msj WHERE cveperiodo=?";
-  $web->query($sql, $_GET['info1']);
-  $sql = "DELETE FROM sala WHERE cveperiodo=?";
-  $web->query($sql, $_GET['info1']);
-  $sql = "DELETE FROM periodo WHERE cveperiodo=?";
-  $web->query($sql, $_GET['info1']);
+    
+    $web->deleteFiles($_GET['info1']); //elimina carpetas y archivos relacionados con el periodo
   
-  // PENDIENTE, ELIMINAR CARPETAS
-
-  if ($web->DB->HasFailedTrans()) {
-    $web->simple_message('danger', 'No fue posible completar la operación');
-    $web->DB->CompleteTrans();
-    return false;
-  }
-
+    if ($web->DB->HasFailedTrans()) {
+      mMessage('index periodos', 'danger', 'No fue posible eliminar el periodo seleccionado', 'periodos.html');
+    }
   $web->DB->CompleteTrans();
-  header('Location: periodos.php');
+  header('Location: periodos.php?aviso=3');
 }
 
 /**
