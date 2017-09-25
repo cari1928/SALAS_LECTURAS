@@ -62,14 +62,8 @@
   
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <a style="color:white; font-size:14px" class="navbar-brand" href="salas.php">Crear Grupo</a>  
-        <form class="navbar-form navbar-left" role="Search" action="busqueda.php" method="get">
-          <div class="form-group">
-            <input type="text" class="form-control" placeholder="Buscar" name="q">
-          </div>
-          <button type="submit" class="btn btn-default">Buscar</button>           
-        </form>    
-          
+        <a class="navbar-brand" style="color: white"> {$nombrecuenta}</a>
+        
         <ul class="nav navbar-nav navbar-right">       
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color:white">
@@ -82,7 +76,10 @@
           </li>
         </ul>     
   
-        <ul class="nav navbar-nav navbar-right">       
+        <ul class="nav navbar-nav navbar-right">     
+          <li><a style="color:white; font-size:14px" href="foros.php">Foros</a></li>
+          <li><a style="color:white; font-size:14px" href="salas.php">Crear Grupo</a></li>
+          
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true" style="color:white">
               Grupos<span class="caret"></span>
@@ -95,9 +92,8 @@
           {if isset($bandera)}
             <a style="color:white; font-size:14px" class="navbar-brand" href="redacta.php?accion=ver&info={$info.letra}">Mensajes</a> 
           {/if}
-        </li></ul> 
-        
-        <label class="navbar-brand"><p style="color: white">{$nombrecuenta}</p></label>
+        </li></ul>
+
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>

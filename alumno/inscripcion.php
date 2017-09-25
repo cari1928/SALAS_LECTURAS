@@ -28,6 +28,7 @@ if (isset($_GET['info'])) {
     die();
   }
 
+  //REVISA SI YA ESTÁ INSCRITO
   $query = "SELECT * FROM lectura
   WHERE nocontrol=? AND cveletra IN
     (SELECT cve FROM abecedario
@@ -60,7 +61,7 @@ if (isset($_GET['info'])) {
     $sql          = "SELECT letra FROM abecedario WHERE cve=?";
     $letra_folder = $web->DB->GetAll($sql, $datos[0]['cveletra']);
     if (isset($letra_folder[0][0])) {
-      mkdir("../periodos/" . $cveperiodo . "/" . $letra_folder[0][0] . "/" . $_SESSION['cveUser'], 0777);
+      mkdir("../archivos/periodos/" . $cveperiodo . "/" . $letra_folder[0][0] . "/" . $_SESSION['cveUser'], 0777);
     }
   }
   $web->DB->CompleteTrans();
@@ -100,3 +101,14 @@ if (sizeof($datos) == 1) {
 }
 
 $web->smarty->display("inscripcion.html");
+
+/************************************************************************************
+ * FUNCIONES
+ ************************************************************************************/
+ /**
+  * Listado de libros
+  */
+function bookList() {
+  global $web;
+  
+}

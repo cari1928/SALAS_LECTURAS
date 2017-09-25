@@ -104,7 +104,6 @@ function verificaciones($op, $web, $elementos = null)
           break;
 
         case 3: //checa que no se duplique periodo, horas y dias con la ubicación
-          // $cveperiodo = $web->periodo();
           if ($_POST['datos']['horas' . $i . '_' . $j] != -1) {
             $sql = "SELECT * FROM laboral
               INNER JOIN sala on laboral.cvesala = sala.cvesala
@@ -128,7 +127,7 @@ function verificaciones($op, $web, $elementos = null)
             $web->query($sql, $parametros);
             $sql   = "SELECT letra FROM abecedario WHERE cve=?";
             $letra = $web->DB->GetAll($sql, $elementos['grupo']);
-            mkdir("../periodos/" . $elementos['cveperiodo'] . "/" . $letra[0]['letra'], 0777);
+            mkdir("../archivos/periodos/" . $elementos['cveperiodo'] . "/" . $letra[0]['letra'], 0777);
             if ($web->DB->HasFailedTrans()) {
               $web->simple_message('danger', 'No fue posible registrar el grupo, contacte al administrador');
               return false;
@@ -147,8 +146,8 @@ function verificaciones($op, $web, $elementos = null)
   }
 }
 
-/*
- *
+/**
+ * Creación del grupo
  */
 function register_room()
 {
@@ -212,7 +211,7 @@ function register_room()
   $letra  = $web->DB->GetAll($sql, $grupo);
   $nombre = "SALA - " . $letra[0]['letra'];
 
-  if (!verificaciones(3, $web, $cveperiodo)) {break;}
+  if (!verificaciones(3, $web, $cveperiodo)) { return false; }
 
   verificaciones(4, $web, array('cveperiodo' => $cveperiodo, 'grupo' => $grupo, 'nombre' => $nombre, 'cvelibro_grupal' => $cvelibro));
 

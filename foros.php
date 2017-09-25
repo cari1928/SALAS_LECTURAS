@@ -2,6 +2,7 @@
 include 'sistema.php';
 
 $web = new ForoControllers;
+$web->iniClases(null, "index foros");
 
 $libros      = $web->getAllLibros();
 $totalLibros = count($libros);
@@ -18,6 +19,7 @@ for ($i = 0; $i < $totalLibros; $i++) {
   $libros[$i]['portada'] = ($numElements > 1) ? $portada[($numElements - 1)] : $portada[0];
 
   $web->smarty->assign('libro', $libros[$i]);
+  $web->smarty->assign('route', "");
   $tmp[$i] = $web->smarty->fetch('foro.component.html');
 }
 
@@ -34,10 +36,12 @@ for ($i = 0; $i < $pages; $i++) {
   $libros[$i] = $html;
 }
 
+$web->smarty->assign('rol', $rol);
 $web->smarty->assign('fin', $pages - 1);
 $web->smarty->assign('pages', $pages);
 $web->smarty->assign('per_page', $per_page);
 $web->smarty->assign('libros', $libros);
+$web->smarty->assign('foros', true);
 $web->smarty->display('foros.html');
 
 /************************************************************************************

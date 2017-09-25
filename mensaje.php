@@ -1,5 +1,6 @@
 <?php
 include 'sistema.php';
+$web->smarty->assign('mensajes_publicos', true);
 
 $date       = getdate();
 $fecha      = date('Y-m-j');

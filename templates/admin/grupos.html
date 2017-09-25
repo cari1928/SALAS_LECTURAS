@@ -2,6 +2,14 @@
 {$ruta} 
 {if isset($msg)}{include file='../mensajes.html'}{/if}
 
+<table class='table'>
+	<tr><td colspan='4' align='right'>
+		<a href='grupos.php?accion=add_group&step=1'>
+			<img src='../Images/add.png'/>
+		</a>
+	</td></tr>
+</table>
+
 {if isset($tablegrupos)}
 	<table class="table table-hover">
 		
