@@ -95,7 +95,7 @@ if (!isset($datos[0])) {
 
 $datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
 $datos        = array('data' => $datos);
-
+//$web->debug($datos);
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
 
@@ -154,7 +154,6 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
 
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = json_encode($datos);
-
 $file = fopen("TextFiles/alumnos.txt", "w");
 fwrite($file, $datos);
 
