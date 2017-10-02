@@ -42,11 +42,12 @@ $web->smarty->display('vergrupos.html');
    
    if(isset($_GET['aviso'])) {
      switch ($_GET['aviso']) {
-       
-       case 5:
-         $web->simple_message('danger', 'El archivo seleccionado no existe');
-         break;
-         
+      case 5:
+        $web->simple_message('danger', 'El archivo seleccionado no existe');
+        break;
+      case 9:
+        $web->simple_message('info', 'Se ha inscrito correctamente al grupo');
+        break;
      }
    }
  }

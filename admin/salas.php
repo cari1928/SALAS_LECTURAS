@@ -38,20 +38,19 @@ if (isset($_GET['accion'])) {
       break;
 
     case 'insert':
-      if (!isset($_POST['datos']['cvesala']) ||
+      if (!isset($_POST['datos']['disponible']) ||
         !isset($_POST['datos']['ubicacion'])) {
         mMessage("index salas nuevo", 'warning', "No alteres la estructura de la interfaz", 'form_salas.html');
       }
-      if ($_POST['datos']['cvesala'] == "" ||
+      if ($_POST['datos']['disponible'] == "" ||
         $_POST['datos']['ubicacion'] == "") {
         mMessage("index salas nuevo", 'warning', "Llena todos los campos", 'form_salas.html');
       }
 
-      $sql        = "INSERT INTO sala (cvesala, ubicacion, cveperiodo) values(?, ?, ?)";
+      $sql        = "INSERT INTO sala (ubicacion, disponible) values(?, ?)";
       $tmp        = array(
-        $_POST['datos']['cvesala'],
-        $_POST['datos']['ubicacion'],
-        $cveperiodo);
+        $_POST['datos']['ubicacion'], 
+        $_POST['datos']['disponible']);
       if (!$web->query($sql, $tmp)) {
         mMessage("index salas nuevo", 'danger', 'No se pudo completar la operación', 'form_salas.html');
       }
@@ -61,23 +60,27 @@ if (isset($_GET['accion'])) {
 
     case 'update':
       if (!isset($_POST['datos']['cvesala']) ||
-        !isset($_POST['datos']['ubicacion'])) {
+        !isset($_POST['datos']['ubicacion']) ||
+        !isset($_POST['datos']['disponible'])) {
         mMessage("index salas actualizar", 'warning', "No alteres la estructura de la interfaz", 'form_salas.html', $_GET['accion']);
       }
       if ($_POST['datos']['cvesala'] == "" ||
-        $_POST['datos']['ubicacion'] == "") {
+        $_POST['datos']['ubicacion'] == "" ||
+        $_POST['datos']['disponible'] == "") {
         mMessage("index salas actualizar", 'warning', "Llena todos los campos", 'form_salas.html', $_GET['accion']);
       }
 
-      $sql        = "UPDATE sala SET ubicacion=? WHERE cvesala=?";
+      $sql        = "UPDATE sala SET ubicacion=?, disponible=? WHERE cvesala=?";
       $parameters = array(
         $_POST['datos']['ubicacion'],
-        $_POST['cvesala']);
+        $_POST['datos']['disponible'],
+        $_POST['datos']['cvesala']);
       if (!$web->query($sql, $parameters)) {
-        mMessage("index salas", 'danger', 'No se pudo completar la operación', 'salas.html');
+        mMessage("index salas", 'danger', 'No se pudo completar la operación', 'salas.html'); 
       }
 
       header('Location: salas.php?aviso=2'); //cambios guardados correctamente
+      die(); //sin esto no funciona
       break;
 
     case 'delete':
@@ -89,8 +92,8 @@ if (isset($_GET['accion'])) {
 $web->iniClases('admin', "index salas");
 mShowMessages();
 
-$sql     = 'SELECT cvesala, ubicacion FROM sala WHERE cveperiodo=? ORDER BY cvesala';
-$salones = $web->DB->GetAll($sql, $cveperiodo);
+$sql     = 'SELECT cvesala, ubicacion, disponible FROM sala ORDER BY cvesala';
+$salones = $web->DB->GetAll($sql);
 if (!isset($salones[0])) {
   $web->simple_message('warning', "No hay salones registrados");
 } else {
@@ -156,33 +159,33 @@ function deleteSala($web)
   }
 
   //obtener cveletra
-  $sql    = "select distinct cveletra from laboral where cvesala=?";
+  $sql    = "SELECT DISTINCT cveletra FROM laboral WHERE cvesala=?";
   $grupos = $web->DB->GetAll($sql, $_GET['info1']);
 
   //obtener la cvelectura de cada sala
   for ($i = 0; $i < sizeof($grupos); $i++) {
-    $sql      = "select distinct cvelectura from lectura where cveletra=?";
+    $sql      = "SELECT DISTINCT cvelectura FROM lectura WHERE cveletra=?";
     $lecturas = $web->DB->GetAll($sql, $grupos[$i]['cveletra']);
 
     for ($j = 0; $j < sizeof($lecturas); $j++) {
       //eliminar de evaluacion y lista_libros
-      $sql = "delete from evaluacion where cvelectura=?";
+      $sql = "DELETE FROM evaluacion WHERE cvelectura=?";
       $web->query($sql, $lecturas[$j]['cvelectura']);
-      $sql = "delete from lista_libros where cvelectura=?";
+      $sql = "DELETE FROM lista_libros WHERE cvelectura=?";
       $web->query($sql, $lecturas[$j]['cvelectura']);
     }
 
     //eliminar de lectura y msj
-    $sql = "delete from lectura where cveletra=?"; //cveletra más rapido que cvelectura
+    $sql = "DELETE FROM lectura WHERE cveletra=?"; //cveletra más rapido que cvelectura
     $web->query($sql, $grupos[$i]['cveletra']);
-    $sql = "delete from msj where cveletra=?";
+    $sql = "DELETE FROM msj WHERE cveletra=?";
     $web->query($sql, $grupos[$i]['cveletra']);
   }
 
   //eliminar de laboral y sala
-  $sql = "delete from laboral where cvesala=?";
+  $sql = "DELETE FROM laboral WHERE cvesala=?";
   $web->query($sql, $_GET['info1']);
-  $sql = "delete from sala where cvesala=?";
+  $sql = "DELETE FROM sala WHERE cvesala=?";
   if (!$web->query($sql, $_GET['info1'])) {
     $web->simple_message('danger', 'No se pudo completar la operación', $web);
     return false;
