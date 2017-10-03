@@ -65,7 +65,7 @@ if (isset($_GET['accion'])) {
 $sql = "SELECT letra, la.nombre, ubicacion
   FROM lectura le
   INNER JOIN abecedario abc ON abc.cve = le.cveletra
-  INNER JOIN laboral la ON la.cveletra = abc.cve  
+  INNER JOIN laboral la ON la.cveletra = abc.cve
   INNER JOIN sala s ON s.cvesala = la.cvesala
   WHERE la.cveperiodo=? AND le.cveperiodo=? AND nocontrol=?
   ORDER BY letra";

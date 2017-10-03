@@ -5,7 +5,7 @@ if ($_SESSION['roles'] != 'U') {
   $web->checklogin();
 }
 
-$web = new InscripcionControllers;
+$web    = new InscripcionControllers;
 $grupos = $web->grupos($_SESSION['cveUser']);
 $web->iniClases('usuario', "index inscripcion");
 $web->smarty->assign('grupos', $grupos);
@@ -43,7 +43,7 @@ if (isset($_GET['info'])) {
     $web->smarty->display("inscripcion.html");
     die();
   }
-  
+
   $lectura_folder = $web->getReading($_SESSION['cveUser'], $cveperiodo);
   if (isset($lectura_folder[0])) {
     $letra_folder = $web->getLetter($datos[0]['cveletra']);
@@ -62,7 +62,7 @@ if (sizeof($datos) == 1) {
   $web->simple_message('warning', 'Ya está registrado a un grupo, no puede registrar más');
 
 } else {
-  
+
   $web->DB->SetFetchMode(ADODB_FETCH_ASSOC);
   $datos = array('data' => $web->listGroups($cveperiodo));
 
@@ -72,7 +72,7 @@ if (sizeof($datos) == 1) {
 
   $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $datos = json_encode($datos);
-  $file = fopen("TextFiles/inscripcion.txt", "w");
+  $file  = fopen("TextFiles/inscripcion.txt", "w");
   fwrite($file, $datos);
   $web->smarty->assign('datos', $datos);
 }

@@ -47,9 +47,9 @@ if (isset($_GET['accion'])) {
         mMessage("index salas nuevo", 'warning', "Llena todos los campos", 'form_salas.html');
       }
 
-      $sql        = "INSERT INTO sala (ubicacion, disponible) values(?, ?)";
-      $tmp        = array(
-        $_POST['datos']['ubicacion'], 
+      $sql = "INSERT INTO sala (ubicacion, disponible) values(?, ?)";
+      $tmp = array(
+        $_POST['datos']['ubicacion'],
         $_POST['datos']['disponible']);
       if (!$web->query($sql, $tmp)) {
         mMessage("index salas nuevo", 'danger', 'No se pudo completar la operación', 'form_salas.html');
@@ -76,7 +76,7 @@ if (isset($_GET['accion'])) {
         $_POST['datos']['disponible'],
         $_POST['datos']['cvesala']);
       if (!$web->query($sql, $parameters)) {
-        mMessage("index salas", 'danger', 'No se pudo completar la operación', 'salas.html'); 
+        mMessage("index salas", 'danger', 'No se pudo completar la operación', 'salas.html');
       }
 
       header('Location: salas.php?aviso=2'); //cambios guardados correctamente
@@ -196,16 +196,17 @@ function deleteSala($web)
 
 /**
  * Muestra mensajes de error o información
- */ 
-function mShowMessages() {
+ */
+function mShowMessages()
+{
   global $web;
-  
-  if(isset($_GET['aviso'])) {
+
+  if (isset($_GET['aviso'])) {
     switch ($_GET['aviso']) {
       case 1:
         $web->simple_message('info', 'Sala guardada correctamente');
         break;
-        
+
       case 2:
         $web->simple_message('info', 'Cambios guardados correctamente');
         break;

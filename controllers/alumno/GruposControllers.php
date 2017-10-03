@@ -7,13 +7,15 @@ class GruposControllers extends Sistema
     parent::__construct();
     $this->smarty->setCompileDir('../templates_c'); //para que no aparezca la carpeta alumno/templates_c
   }
-  
-  public function getReading($cvelectura) {
-    $sql     = "SELECT * FROM lectura WHERE cvelectura=?";
+
+  public function getReading($cvelectura)
+  {
+    $sql = "SELECT * FROM lectura WHERE cvelectura=?";
     return $this->DB->GetAll($sql, $cvelectura);
   }
-  
-  public function getBooks($nocontrol, $cvelectura) {
+
+  public function getBooks($nocontrol, $cvelectura)
+  {
     $sql = "SELECT libro.cvelibro, titulo, estado FROM lista_libros
       INNER JOIN estado ON estado.cveestado = lista_libros.cveestado
       INNER JOIN lectura ON lista_libros.cvelectura = lectura.cvelectura
@@ -22,18 +24,21 @@ class GruposControllers extends Sistema
       ORDER BY titulo";
     return $this->DB->GetAll($sql, array($nocontrol, $cvelectura));
   }
-  
-  public function getLetter($cvelectura) {
+
+  public function getLetter($cvelectura)
+  {
     $sql = "SELECT letra FROM abecedario WHERE cve IN (SELECT cveletra FROM lectura WHERE cvelectura=?)";
     return $this->DB->GetAll($sql, $cvelectura);
   }
-  
-  public function getBook($cvelibro) {
-    $sql             = "SELECT * FROM libro WHERE cvelibro=?";
+
+  public function getBook($cvelibro)
+  {
+    $sql = "SELECT * FROM libro WHERE cvelibro=?";
     return $this->DB->GetAll($sql, $cvelibro);
   }
-  
-  public function getReadingMesh($cvelectura, $cveperiodo) {
+
+  public function getReadingMesh($cvelectura, $cveperiodo)
+  {
     $sql = "SELECT * FROM lectura
       INNER JOIN abecedario ON lectura.cveletra = abecedario.cve
       INNER JOIN laboral ON laboral.cveletra = abecedario.cve
@@ -41,13 +46,15 @@ class GruposControllers extends Sistema
       AND lectura.cveperiodo=?";
     return $this->DB->GetAll($sql, array($cvelectura, $cveperiodo));
   }
-  
-  public function insertBookList($cvelibro, $cvelectura, $cveperiodo) {
+
+  public function insertBookList($cvelibro, $cvelectura, $cveperiodo)
+  {
     $sql = "INSERT INTO lista_libros(cvelibro, cvelectura, cveperiodo, cveestado, calif_reporte) VALUES (?, ?, ?, 1, 0)";
     return $this->query($sql, array($cvelibro, $cvelectura, $cveperiodo));
   }
-  
-  public function getGroups($letra, $cveperiodo, $nocontrol) {
+
+  public function getGroups($letra, $cveperiodo, $nocontrol)
+  {
     $sql = "SELECT distinct nocontrol FROM laboral
       INNER JOIN abecedario on abecedario.cve = laboral.cveletra
       INNER JOIN lectura on abecedario.cve = lectura.cveletra
@@ -55,8 +62,9 @@ class GruposControllers extends Sistema
       AND laboral.cveperiodo=? AND nocontrol=?";
     return $this->DB->GetAll($sql, array($letra, $cveperiodo, $nocontrol));
   }
-  
-  public function getInfoHeader($nocontrol, $cveperiodo, $letra) {
+
+  public function getInfoHeader($nocontrol, $cveperiodo, $letra)
+  {
     $sql = "SELECT distinct letra, laboral.nombre AS \"nombre_grupo\", sala.ubicacion, fechainicio, fechafinal,
       nocontrol, usuarios.nombre AS \"nombre_promotor\" FROM laboral
       INNER JOIN sala ON laboral.cvesala = sala.cvesala
@@ -68,8 +76,9 @@ class GruposControllers extends Sistema
       ORDER BY letra";
     return $this->DB->GetAll($sql, array($nocontrol, $cveperiodo, $letra));
   }
-  
-  public function getDataUsers($letra, $cveperiodo, $nocontrol) {
+
+  public function getDataUsers($letra, $cveperiodo, $nocontrol)
+  {
     $sql = "SELECT distinct usuarios.nombre, asistencia, comprension, reporte, asistencia, actividades,
       participacion, terminado, nocontrol, cveeval, lectura.cveperiodo, lectura.cvelectura
       FROM lectura

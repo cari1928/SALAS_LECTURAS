@@ -401,13 +401,13 @@ class Sistema extends Conexion
       $sql = "SELECT letra, la.nombre, ubicacion
         FROM lectura le
         INNER JOIN abecedario abc ON abc.cve = le.cveletra
-        INNER JOIN laboral la ON la.cveletra = abc.cve  
+        INNER JOIN laboral la ON la.cveletra = abc.cve
         INNER JOIN sala s ON s.cvesala = la.cvesala
         WHERE la.cveperiodo=? AND le.cveperiodo=? AND nocontrol=?
         ORDER BY letra";
       $datos_rs = $this->DB->GetAll($sql, array($periodo, $periodo, $_SESSION['cveUser']));
     }
-    
+
     if (sizeof($datos_rs) == 0) {
       return "No existentes";
     } else {
@@ -794,12 +794,12 @@ class Sistema extends Conexion
    * @param  array $array Arreglo a mostrar
    * @return Contenido del arreglo
    */
-  public function debug($array, $opt=true)
+  public function debug($array, $opt = true)
   {
     echo "<pre>";
     print_r($array);
-    if($opt) {
-      die(); 
+    if ($opt) {
+      die();
     }
   }
 

@@ -78,7 +78,7 @@ $web->smarty->display("grupo.html");
  **********************************************************************************************/
 /**
  * Habilta el bloque de mensaje
- */ 
+ */
 function message($alert, $msg)
 {
   global $web;
@@ -90,10 +90,11 @@ function message($alert, $msg)
 /**
  * Ejecuta el case form_libro
  * Muestra el formulario para que el alumno seleccione sus libros
- */ 
-function form_libro() {
+ */
+function form_libro()
+{
   global $web;
-  
+
   if (!isset($_GET['info1'])) {
     message('danger', 'Información incompleta');
   }
@@ -132,10 +133,10 @@ function form_libro() {
   die();
 }
 
-
-function fileinput() {
+function fileinput()
+{
   global $web, $cveperiodo;
-  
+
   if (!isset($_GET['info1'])) {
     message('danger', 'Información incompleta');
   }
@@ -165,7 +166,7 @@ function fileinput() {
     message('danger', 'El libro no existe');
   }
 
-  $nombre = $cvelibro_subida[0][0] . "_" . $_SESSION['cveUser'] . ".pdf";
+  $nombre = $cvelibro_subida[0][2] . "_" . $_SESSION['cveUser'] . ".pdf";
   if (move_uploaded_file($_FILES['datos']['tmp_name']['archivo'], $dir_subida . $nombre)) {
     message('success', 'Se subió el reporte satisfactoriamente');
   } else {
@@ -173,9 +174,10 @@ function fileinput() {
   }
 }
 
-function insert() {
+function insert()
+{
   global $web, $cveperiodo;
-  
+
   if (!isset($_POST['datos']['cvelibro']) ||
     !isset($_POST['datos']['cvelectura'])) {
     message("danger", "No alteres la estructura de la interfaz");
