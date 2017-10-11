@@ -22,17 +22,6 @@
     </tfoot>
   </table>
   
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#example').DataTable( {
-        "ajax": "TextFiles/promosala.txt",
-        "columns": [
-          { "data": "cvesala" },
-          { "data": "ubicacion" }
-        ]
-      } );
-    } );
-  </script>
 {/if}{/if}
 
 {if isset($cvesala)}
@@ -187,11 +176,7 @@
       {$libros}
     </div>
     
-    <div class="form-group" align='right'>
-      <input type="submit" class="btn btn-primary"/>  
-    </div>
     
-  </form>
 {/if}
 
 {if isset($promodisponibles)}
@@ -204,27 +189,24 @@
       <tr>
         <th>CLAVE</th>
         <th>PROMOTOR</th>
+        <th>SELECCION</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
         <th>CLAVE</th>
         <th>PROMOTOR</th>
+        <th>SELECCION</th>
       </tr>
     </tfoot>
   </table>
   
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#example').DataTable( {
-        "ajax": "TextFiles/promodisponibles.txt",
-        "columns": [
-          { "data": "cveusuario" },
-          { "data": "nombre" }
-        ]
-      } );
-    } );
-  </script>
+  <div class="form-group" align='right' style="margin-top: 25px">
+    <input type="submit" value="Guardar" class="btn btn-primary btn-block"/>  
+  </div>
+    
+  </form>
+  
 {/if}
 
 {include file='footer.html'}
