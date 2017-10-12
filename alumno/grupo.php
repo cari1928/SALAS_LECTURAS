@@ -93,7 +93,7 @@ function message($alert, $msg)
  */
 function form_libro()
 {
-  global $web;
+  global $web, $cveperiodo;
 
   if (!isset($_GET['info1']) || !isset($_GET['info2'])) {
     message('danger', 'Información incompleta');
@@ -124,7 +124,7 @@ function form_libro()
     if (sizeof($libros) < 5) {
       $web->simple_message('warning', 'Debe seleccionar mínimo 5 libros');
     }
-    
+
     $libros = existsReports($libros, $lectura); // CHECAR SI HA SUBIDO LOS REPORTES DE LOS LIBROS
     $web->smarty->assign('libros', $libros);
   }
@@ -209,22 +209,23 @@ function insert()
 }
 
 /**
- * 
- */ 
-function existsReports($libros, $lectura) {
+ *
+ */
+function existsReports($libros, $lectura)
+{
   global $web, $cveperiodo;
-  
+
   $dir_subida = $web->route .
-    $cveperiodo . "/" .
-    $web->getLetter($lectura[0][0])[0][0] . "/" .
+  $cveperiodo . "/" .
+  $web->getLetter($lectura[0][0])[0][0] . "/" .
     $_SESSION['cveUser'] . "/";
-  
+
   for ($i = 0; $i < count($libros); $i++) {
-    if(file_exists($dir_subida .$libros[$i][0]. "_" . $_SESSION['cveUser'] . ".pdf")) {
-      $libros[$i][3] = 1;
+    if (file_exists($dir_subida . $libros[$i][0] . "_" . $_SESSION['cveUser'] . ".pdf")) {
+      $libros[$i][3]         = 1;
       $libros[$i]['reporte'] = 1;
     } else {
-      $libros[$i][3] = 0;
+      $libros[$i][3]         = 0;
       $libros[$i]['reporte'] = 0;
     }
   }
@@ -232,44 +233,46 @@ function existsReports($libros, $lectura) {
 }
 
 /**
- * 
+ *
  */
-function down() {
+function down()
+{
   global $web, $cveperiodo;
-  
-  if(!isset($_GET['info2'])) {
+
+  if (!isset($_GET['info2'])) {
     header('Location: grupo.php?e=1');
     die();
   }
-  if(!isset($_GET['info'])) {
-    header('Location: grupo.php?info1='.$_GET['info2']."&e=2");
+  if (!isset($_GET['info'])) {
+    header('Location: grupo.php?info1=' . $_GET['info2'] . "&e=2");
     die();
   }
-  
+
   $file = "formato_reporte.pdf";
-  $dir = $web->route_pdf . $cveperiodo . "/";
-  if($_GET['info'] != 1) {
-    if(!isset($_GET['info3'])) {
-      header('Location: grupo.php?info1='.$_GET['info2']."&e=2");
+  $dir  = $web->route_pdf . $cveperiodo . "/";
+  if ($_GET['info'] != 1) {
+    if (!isset($_GET['info3'])) {
+      header('Location: grupo.php?info1=' . $_GET['info2'] . "&e=2");
       die();
     }
-    $dir = $cveperiodo . "/". $_GET['info2'] . "/" . $_SESSION['cveUser'] . "/";
+    $dir  = $cveperiodo . "/" . $_GET['info2'] . "/" . $_SESSION['cveUser'] . "/";
     $file = $web->getFile($dir, $_GET['info3']);
-    $dir = $web->route . $dir;
+    $dir  = $web->route . $dir;
   }
-  
-  header("Content-disposition: attachment; filename=".$file);
+
+  header("Content-disposition: attachment; filename=" . $file);
   header("Content-type: MIME");
-  readfile($dir. $file);
+  readfile($dir . $file);
 }
 
 /**
- * 
+ *
  */
-function showMessages() {
+function showMessages()
+{
   global $web;
-  
-  if(isset($_GET['e'])) {
+
+  if (isset($_GET['e'])) {
     switch ($_GET['e']) {
       case 1:
         $web->simple_message('danger', 'No fue posible localizar el grupo');

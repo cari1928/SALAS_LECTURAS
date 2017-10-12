@@ -18,9 +18,8 @@ if (isset($_GET['accion'])) {
     case 'form_insert':
       $web->iniClases('admin', "index alumnos nuevo");
 
-      $sql   = "select cveespecialidad, nombre from especialidad
-      where cveespecialidad <> 'O'
-      order by nombre";
+      $sql = "SELECT cveespecialidad, nombre FROM especialidad
+      WHERE cveespecialidad <> 'O' ORDER BY nombre";
       $combo = $web->combo($sql, null, '../');
 
       $web->smarty->assign('cmb_especialidad', $combo);
@@ -95,7 +94,7 @@ if (!isset($datos[0])) {
 
 $datos_libros = $web->DB->GetAll($sql_libros, $parameters_b);
 $datos        = array('data' => $datos);
-//$web->debug($datos);
+
 //se preparan los campos extra (estado_credito, eliminar, actualizar y mostrar)
 for ($i = 0; $i < sizeof($datos['data']); $i++) {
 
@@ -154,6 +153,7 @@ for ($i = 0; $i < sizeof($datos['data']); $i++) {
 
 $web->DB->SetFetchMode(ADODB_FETCH_NUM);
 $datos = json_encode($datos);
+
 $file = fopen("TextFiles/alumnos.txt", "w");
 fwrite($file, $datos);
 
@@ -443,7 +443,7 @@ function form_update_student($web)
     return false;
   }
 
-  $sql   = "select * from especialidad
+  $sql = "select * from especialidad
   where cveespecialidad <> 'O'
   order by nombre";
   $combo = $web->combo($sql, $alumno[0]['cveespecialidad']);
@@ -522,7 +522,7 @@ function show_groups($web)
   }
 
   $web->smarty->assign('tablegrupos', $tablegrupos);
-  
+
   $web->smarty->display('grupos.html');
   die();
 }
