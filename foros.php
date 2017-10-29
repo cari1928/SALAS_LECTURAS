@@ -6,7 +6,7 @@ $web->iniClases(null, "index foros");
 
 $libros      = $web->getAllLibros();
 $totalLibros = count($libros);
-$per_page    = 3;
+$per_page    = 5;
 $pages       = ceil($totalLibros / $per_page);
 $tmp         = array();
 
@@ -43,7 +43,3 @@ $web->smarty->assign('per_page', $per_page);
 $web->smarty->assign('libros', $libros);
 $web->smarty->assign('foros', true);
 $web->smarty->display('foros.html');
-
-/************************************************************************************
- * FUNCIONES
- ************************************************************************************/
