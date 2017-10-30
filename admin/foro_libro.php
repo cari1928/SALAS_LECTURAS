@@ -1,5 +1,6 @@
 <?php
 include '../sistema.php';
+
 $web = new ForoControllers;
 $web->smarty->setCompileDir('../templates_c'); //para que no aparezca la carpeta admin/templates_c
 $web->iniClases("admin", "index foros foro");
@@ -40,25 +41,16 @@ switch ($_GET['action']) {
 function showForo() {
   global $web;
   
-  $sql   = "SELECT * FROM libro WHERE cvelibro=?";
-  $libro = $web->DB->GetAll($sql, $_GET['info']);
+  $libro = $web->getAll('*', array('cvelibro'=>$_GET['info']), 'libro');
   if (!isset($libro[0])) {
-    header('Location: index.php?m=3'); //el libro no existe en nuestra base de datos
-    die();
+    header('Location: index.php?m=3'); die();//el libro no existe en nuestra base de datos
   }
   
-  $nombre_fichero      = "/home/ubuntu/workspace/Images/portadas/" . $libro[0]['portada'];
-  $libro[0]['portada'] = (!file_exists($nombre_fichero)) ? "no_disponible.jpg" : $libro[0]['portada'];
-  
-  $sql = "SELECT * FROM comentario
-  INNER JOIN usuarios ON usuarios.cveusuario=comentario.cveusuario
-  WHERE cvelibro=? AND cverespuesta IS NULL";
-  $comentarios = $web->DB->GetAll($sql, $_GET['info']);
-  
-  $sql = "SELECT * FROM comentario
-  INNER JOIN usuarios ON usuarios.cveusuario=comentario.cveusuario
-  WHERE cvelibro=? AND cverespuesta IS NOT NULL";
-  $respuestas = $web->DB->GetAll($sql, $_GET['info']);
+  $nombre_fichero      = $web->route_portadas . $libro[0]['portada'];
+  $libro[0]['portada'] = (!file_exists($nombre_fichero) || empty($libro[0]['portada'])) 
+    ? "no_disponible.jpg" : $libro[0]['portada'];
+  $comentarios = $web->getComments($_GET['info']); 
+  $respuestas = $web->getAnswers($_GET['info']);
   
   if (isset($respuestas[0])) {
     foreach ($respuestas as $respuesta) {
@@ -86,6 +78,9 @@ function showForo() {
   $web->smarty->display('foro/foro_libro.html');
 }
 
+/**
+ * 
+ */
 function showMessages() {
   global $web;
   

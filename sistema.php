@@ -39,6 +39,7 @@ class Sistema extends Conexion
   public $route_periodos = "/home/ubuntu/workspace/archivos/periodos/";
   public $route_pdf      = "/home/ubuntu/workspace/archivos/pdf/";
   public $route_images   = "/home/ubuntu/workspace/Images/";
+  public $route_portadas   = "/home/ubuntu/workspace/Images/portadas/";
 
   public function combo($query, $selected = null, $ruta = "", $parameters = array(), $redireccion = null)
   {
