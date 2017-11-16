@@ -10,33 +10,15 @@
   <table id="example" class="display" cellspacing="0" width="100%">
     <thead>
       <tr>
-        <th style="vertical-align:middle"><center>#</center></th>
         <th style="vertical-align:middle"><center>UBICACION</center></th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <th style="vertical-align:middle"><center>#</center></th>
         <th style="vertical-align:middle"><center>UBICACION</center></th>
       </tr>
     </tfoot>
   </table>
-  
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#example').DataTable( {
-        "ajax": "TextFiles/promosala.txt",
-        "columns": [
-          { "data": "cvesala" },
-          { "data": "ubicacion" }
-        ],
-        "columnDefs": [ {
-					"className": "dt-center", 
-					"targets": "_all"
-				}]
-      } );
-    } );
-  </script>
 {/if}{/if}
 
 {if isset($cvesala)}
@@ -188,11 +170,24 @@
     
     <div class="form-group">
       <h3>Seleccione el libro grupal:</h3>
-      {$libros}
+      <table id="example2" class="display" cellspacing="0" width="100%">
+    		<thead>
+          <tr>
+            <th><center>LIBRO</center></th>
+    				<th><center>SELECCION</center></th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th><center>LIBRO</center></th>
+    				<th><center>SELECCION</center></th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
     
     <div class="form-group" align='right'>
-      <input type="submit" class="btn btn-primary" value="Guardar"/>  
+      <input type="submit" class="btn btn-primary btn-block" value="Guardar"/>  
     </div>
     
   </form>

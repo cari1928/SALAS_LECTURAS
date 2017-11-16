@@ -4,15 +4,11 @@ $(document).ready(function()
   {
     "ajax": "../admin/TextFiles/promosala.txt",
     "columns": [
-    {
-      "data": "cvesala"
-    },
-    {
-      "data": "ubicacion"
-    }],
+      { "data": "cvesala" },
+      { "data": "ubicacion" }
+    ], 
     "columnDefs": [
-    {
-      "className": "dt-center",
+      { "className": "dt-center",
       "targets": "_all"
     }]
   });

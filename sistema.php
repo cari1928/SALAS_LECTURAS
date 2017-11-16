@@ -914,10 +914,10 @@ class Sistema extends Conexion
       $sql .= " ORDER BY " . $this->setOrderColumns($arrOrder);
     }
 
-    // if($table == 'horario') {
-    //   $this->debug_line($sql, false);
-    //   $this->debug($this->getParameters($arrWhere, $whColumns), false);
-    // }
+    if($table == 'horario') {
+      $this->debug_line($sql, false);
+      $this->debug($this->getParameters($arrWhere, $whColumns), false);
+    }
 
     return $this->DB->GetAll($sql, $this->getParameters($arrWhere, $whColumns));
   }
@@ -944,9 +944,11 @@ class Sistema extends Conexion
     $sql = "";
     for ($i = 0; $i < count($whColumns); $i++) {
 
-      $sql .= ($type == 1) ? $whColumns[$i] . "=?" : (($type == 2) ? $whColumns[$i] : "?");
+      $sql .= 
+      ($type == 1 || $type == 2) ? $whColumns[$i] . "=?" : "?";
+      
       if ($i != count($whColumns) - 1) {
-        $sql .= ($type == 1 || $type == 3) ? ", " : " AND ";
+        $sql .= ($type == 1) ? " AND " : ", ";
       }
     }
     return $sql;
@@ -983,7 +985,7 @@ class Sistema extends Conexion
   {
     $columns   = $this->getFields($arrColumns);
     $whColumns = $this->getFields($arrWhere);
-    $sql       = "UPDATE " . $table . " SET " . $this->setWhereColumns($columns);
+    $sql       = "UPDATE " . $table . " SET " . $this->setWhereColumns($columns,2);
     if (!is_null($arrWhere)) {
       $sql .= " WHERE " . $this->setWhereColumns($whColumns);
     }
@@ -1037,7 +1039,7 @@ class Sistema extends Conexion
     }
 
     // $this->debug($sql, false);
-    // $this->debug($cntWhColumns, false);
+    // $this->debug($cntWhColumns);
 
     return $this->query($sql, $cntWhColumns);
   }
@@ -1054,8 +1056,8 @@ class Sistema extends Conexion
 
     $sql .= "(" . $this->setColumns($heaColumns) . ") VALUES(" . $this->setWhereColumns($cntColumns, 3) . ");";
 
-    $this->debug($sql, false);
-    $this->debug($cntColumns, false);
+    // $this->debug($sql, false);
+    // $this->debug($cntColumns);
 
     return $this->query($sql, $cntColumns);
   }

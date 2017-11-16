@@ -173,9 +173,40 @@
     
     <div class="form-group">
       <h3>Seleccione libro grupal:</h3>
-      {$libros}
+      <table id="example2" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>CLAVE</th>
+            <th>LIBRO</th>
+            <th>SELECCIÓN</th>
+          </tr>
+        </thead>
+        <tfoot>
+          <tr>
+            <th>CLAVE</th>
+            <th>LIBRO</th>
+            <th>SELECCIÓN</th>
+          </tr>
+        </tfoot>
+      </table>    
     </div>
     
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#example2').DataTable({
+          "ajax": "TextFiles/grupos_libro_grupal.txt",
+          "columns": [
+            { "data": "cvelibro" },
+            { "data": "titulo" },
+            { "data": "radio" }
+          ], 
+          "columnDefs": [{ 
+            "className": "dt-center",
+            "targets": "_all"
+          }]
+        });
+      });
+    </script>
     
 {/if}
 
@@ -189,14 +220,14 @@
       <tr>
         <th>CLAVE</th>
         <th>PROMOTOR</th>
-        <th>SELECCION</th>
+        <th>SELECCIÓN</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
         <th>CLAVE</th>
         <th>PROMOTOR</th>
-        <th>SELECCION</th>
+        <th>SELECCIÓN</th>
       </tr>
     </tfoot>
   </table>

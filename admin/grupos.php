@@ -47,8 +47,6 @@ for ($i = 0; $i < sizeof($grupos); $i++) {
   }
 }
 
-// $web->debug($grupos);
-
 $web->smarty->assign('tablegrupos', $grupos);
 $web->smarty->assign('bandera', 'index_grupos');
 $web->smarty->display('grupos.html');
@@ -86,11 +84,13 @@ function showMessages()
 function add_group()
 {
   global $web, $cveperiodo;
+  
   $step = $_GET['step'];
   switch ($step) {
     case '1':
       $web->DB->SetFetchMode(ADODB_FETCH_ASSOC);
-      $datos = array('data' => $web->getAll(array('cvesala', 'ubicacion'), array('disponible' => 't'), 'sala', array('cvesala')));
+      $salas = $web->getAll(array('cvesala', 'ubicacion'), array('disponible' => 't'), 'sala', array('cvesala'));
+      $datos = array('data' => $salas);
       for ($i = 0; $i < sizeof($datos['data']); $i++) {
         $datos['data'][$i]['cvesala'] =
           "<a href='grupos.php?accion=add_group&step=2&info=" . $datos['data'][$i]['cvesala'] . "'>" . $datos['data'][$i]['cvesala'] . "</a>";
@@ -129,22 +129,29 @@ function add_group()
 
       //Obtener lista de los promotores disponibles
       $web->DB->SetFetchMode(ADODB_FETCH_ASSOC);
+      $libros = $web->getAll(array('cvelibro, titulo'), null, 'libro', array('titulo'));
       $datos = array('data' => $web->getPromotores($cveperiodo));
+      $datos_libros = array('data'=>$libros);
 
       for ($i = 0; $i < sizeof($datos['data']); $i++) {
-        $datos['data'][$i]['seleccion'] =
-          "<input id='r4' type='radio' class='btn btn-default' value='" . $datos['data'][$i]['cveusuario'] . "' name='datos[promotor]'>";
+        $datos['data'][$i]['seleccion'] = "<input type='radio' name='datos[promotor]'
+          value='" . $datos['data'][$i]['cveusuario'] . "' />";
+      }
+      for ($i = 0; $i < count($datos_libros['data']); $i++) {
+        $datos_libros['data'][$i]['radio'] = "<input type='radio' name='datos[cvelibro]' 
+          value='".$datos_libros['data'][$i]['cvelibro']."' />";
       }
 
       $web->DB->SetFetchMode(ADODB_FETCH_NUM);
       $datos = json_encode($datos);
+      $datos_libros = json_encode($datos_libros);
+      
       $file  = fopen("TextFiles/promodisponibles.txt", "w");
       fwrite($file, $datos);
-
-      $sql    = 'SELECT cvelibro, titulo FROM libro ORDER BY titulo';
-      $libros = $web->combo($sql, null, "../");
+      $file = fopen("TextFiles/grupos_libro_grupal.txt", "w");
+      fwrite($file, $datos_libros);
+      
       $web->smarty->assign('cvesala', $_GET['info']);
-      $web->smarty->assign('libros', $libros);
       $web->smarty->assign('horas', 'horas');
       $web->smarty->assign('promodisponibles', $datos);
       break;
@@ -202,17 +209,12 @@ function add_group()
         return false;
       }
 
-      if (!isset($_POST['datos']['1'])) {
-        $web->simple_message('danger', 'No altere la estructura de la interfaz');
+      if (!isset($_POST['datos']['cvelibro'])) {
+        $web->simple_message('danger', 'ERR0015, No altere la estructura de la interfaz');
         return false;
       }
 
-      if ($_POST['datos']['cvelibro'] == -1) {
-        $web->simple_message('danger', 'Seleccione un libro grupal');
-        return false;
-      }
-
-      $cvelibro = $_POST['datos'][1];
+      $cvelibro = $_POST['datos']['cvelibro'];
       $grupo    = $web->getGrupos($cveperiodo);
       $grupo    = ($grupo[0]['cveletra'] + 1);
 
@@ -227,19 +229,20 @@ function add_group()
         'nombre'          => $nombre,
         'cvelibro_grupal' => $cvelibro));
 
-      // $web->debug($horarios, false);
       $cvehorario1 = $horarios[1][0][0];
       $cvehorario2 = $horarios[2][0][0];
-
-      if (!$web->insertLaboral(
-        $cveperiodo, $_POST['datos']['cvesala'],
-        $grupo,
-        $nombre,
-        $_POST['datos']['promotor'],
-        $cvelibro,
-        $cvehorario1,
-        $cvehorario2)) {
-        $web->simple_message('danger', 'No fue posible registrar el grupo, contacte al administrador');
+      
+      $res = $web->insert('laboral', array(
+        'cveperiodo'=>$cveperiodo,
+        'cvesala'=>$_POST['datos']['cvesala'],
+        'cveletra'=>$grupo,
+        'nombre'=>$nombre,
+        'cvepromotor'=>$_POST['datos']['promotor'],
+        'cvelibro_grupal'=>$cvelibro,
+        'cvehorario1'=>$cvehorario1,
+        'cvehorario2'=>$cvehorario2));
+      if (!res) {
+        $web->simple_message('danger', 'ERR0016, No fue posible registrar el grupo, contacte al administrador');
         return false;
       }
 
@@ -311,11 +314,16 @@ function verificaciones($op, $elementos = null)
 
         case 4: //insert final
           if ($_POST['datos']['horas' . $i . '_' . $j] != -1) {
-            $horario = $web->getAll(array('cvehorario'), array('cvehora' => $_POST['datos']['horas' . $i . '_' . $j], 'cvedia' => $i), 'horario');
-
+            
             $flag = false;
+            //getAll
+            $horario = $web->getAll(
+              array('cvehorario'), 
+              array('cvehora' => $_POST['datos']['horas' . $i . '_' . $j], 'cvedia' => $i), 
+              'horario'
+            );
             if (!isset($horario[0])) {
-              $res  = $web->insertHorario($_POST['datos']['horas' . $i . '_' . $j], $i);
+              $res = $web->insert('horario', array('cvehora'=>$_POST['datos']['horas' . $i . '_' . $j], 'cvedia'=> $i));
               $flag = true;
             }
 
@@ -362,19 +370,15 @@ function delete_group()
   }
 
   $web->DB->startTrans();
-  $lecturas = $web->getLectura($cveperiodo, $cveletra[0]['cve']);
+  $lecturas = $web->getAll('*', array('cveperiodo'=>$cveperiodo, 'cveletra'=>$cveletra[0]['cve']), 'lectura');
   for ($i = 0; $i < sizeof($lecturas); $i++) {
     //elimina de evaluacion, lista_libros, lectura
-    $web->delete('evaluacion', array('cvelectura' => $lecturas[$i]['cvelectura']));
-    $web->delete('lista_libros', array('cvelectura' => $lecturas[$i]['cvelectura']));
-    $web->delete('lectura', array('cvelectura' => $lecturas[$i]['cvelectura']));
+    $web->delLecturaData(array('cvelectura' => $lecturas[$i]['cvelectura']));
   }
 
-  //funcion en postgres, elimina de msj, observación y laboral
-  $web->delete('msj', array('cveperiodo' => $cveperiodo, 'cveletra' => $cveletra[0]['cve']));
-  $web->delete('observacion', array('cveperiodo' => $cveperiodo, 'cveletra' => $cveletra[0]['cve']));
-  $web->delete('laboral', array('cveperiodo' => $cveperiodo, 'cveletra' => $cveletra[0]['cve']));
-
+  //elimina de msj, observación y laboral
+  $web->delExtraData(array('cveperiodo' => $cveperiodo, 'cveletra' => $cveletra[0]['cve']));
+  
   if ($web->DB->HasFailedTrans()) {
     header('Location: grupos.php?a=3');die();
   }

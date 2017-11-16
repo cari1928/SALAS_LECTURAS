@@ -9,39 +9,27 @@ class AdminGruposControllers extends Sistema
     $this->smarty->setCompileDir('../templates_c'); //para que no aparezca la carpeta admin/templates_c
   }
 
+  /**
+   * 
+   */
   public function getGrupos($cveperiodo)
   {
     $sql = "SELECT COALESCE(MAX(cveletra),0) as cveletra FROM laboral WHERE cveperiodo=?";
     return $this->DB->GetAll($sql, $cveperiodo);
   }
 
-  public function insertLaboral($cveperiodo, $cvesala, $cveletra, $nombre, $cvepromotor, $cvelibro_grupal, $cvehorario1, $cvehorario2)
-  {
-    $sql = "INSERT INTO laboral(cveperiodo, cvesala, cveletra, nombre, cvepromotor, cvelibro_grupal, cvehorario1, cvehorario2)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    // $this->debug($sql, false);
-    // $this->debug(array($cveperiodo, $cvesala, $cveletra, $nombre, $cvepromotor, $cvelibro_grupal, $cvehorario1, $cvehorario2), false);
-
-    return $this->query($sql, array($cveperiodo, $cvesala, $cveletra, $nombre, $cvepromotor, $cvelibro_grupal, $cvehorario1, $cvehorario2));
-  }
-
-  public function insertHorario($cvehora, $cvedia)
-  {
-    $sql = "INSERT INTO horario(cvehora, cvedia) VALUES(?, ?)";
-
-    // $this->debug($sql, false);
-    // $this->debug(array($cvehora, $cvedia), false);
-
-    return $this->query($sql, array($cvehora, $cvedia));
-  }
-
+  /**
+   * 
+   */
   public function getMaxCveHorario()
   {
     $sql = "SELECT cvehorario FROM horario ORDER BY cvehorario DESC LIMIT 1";
     return $this->DB->GetAll($sql);
   }
 
+  /**
+   * 
+   */
   public function getPromotores($cveperiodo)
   {
     $sql = "SELECT cveusuario, usuarios.nombre
@@ -56,6 +44,9 @@ class AdminGruposControllers extends Sistema
     return $this->DB->GetAll($sql, $cveperiodo);
   }
 
+  /**
+   * 
+   */
   public function getHoras($cvedia, $cvesala, $cveperiodo)
   {
     $sql = "SELECT cvehoras, hora_inicial, hora_final FROM horas
@@ -77,6 +68,9 @@ class AdminGruposControllers extends Sistema
     return $this->DB->GetAll($sql, array($cvedia, $cvesala, $cveperiodo, $cvedia, $cvesala, $cveperiodo));
   }
 
+  /**
+   * 
+   */
   public function getAllGrupos($cveperiodo)
   {
     $sql = "SELECT DISTINCT abecedario.letra, usuarios.cveusuario AS \"nocontrol\", usuarios.nombre AS \"nombre_promotor\",
@@ -95,6 +89,9 @@ class AdminGruposControllers extends Sistema
     return $this->DB->GetAll($sql, $cveperiodo);
   }
 
+  /**
+   * 
+   */
   public function getSalas($cveperiodo, $cvehora, $cvedia, $cvesala)
   {
     $sql = "SELECT * FROM laboral
@@ -106,17 +103,9 @@ class AdminGruposControllers extends Sistema
     return $this->DB->GetAll($sql, array($cveperiodo, $cvehora, $cvedia, $cvehora, $cvedia, $cvesala));
   }
 
-  public function getLectura($cveperiodo, $cveletra)
-  {
-    $sql = "SELECT * FROM lectura
-      WHERE cveperiodo=? AND cveletra=?";
-
-    // $this->debug($sql, false);
-    // $this->debug(array($cveperiodo, $cveletra), false);
-
-    return $this->DB->GetAll($sql, array($cveperiodo, $cveletra));
-  }
-
+  /**
+   * 
+   */
   public function getSchedule($cveperiodo)
   {
     $sql = "SELECT distinct dia.cvedia, abc.letra, dia.nombre, hrs.hora_inicial, hrs.hora_final FROM laboral la
@@ -127,6 +116,26 @@ class AdminGruposControllers extends Sistema
       WHERE la.cveperiodo=?
       ORDER BY letra, dia.cvedia, hrs.hora_inicial";
     return $this->DB->GetAll($sql, $cveperiodo);
+  }
+  
+  /**
+   * Elimina de las siguientes tablas:
+   * Evaluacion, Lista_Libros y Lectura
+   */
+  public function delLecturaData($array) {
+    $this->delete('evaluacion', $array);
+    $this->delete('lista_libros', $array);
+    $this->delete('lectura', $array);    
+  }
+  
+  /**
+   * Elimina de las siguientes tablas:
+   * msj, observacion, laboral
+   */
+  public function delExtraData($array) {
+    $this->delete('msj', $array);
+    $this->delete('observacion', $array);
+    $this->delete('laboral', $array);
   }
 
 }

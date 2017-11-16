@@ -43,15 +43,16 @@ if (sizeof($grupos) == 3) {
 
 } else {
   $web->DB->SetFetchMode(ADODB_FETCH_ASSOC);
-  $salasDisponibles = $web->getAll(array('cvesala', 'ubicacion'), array('disponible' => 't'), 'sala', array('cvesala'));
-  // $web->debug($salasDisponibles, false);
-
+  $salasDisponibles = $web->getAll(array('ubicacion', 'cvesala'), array('disponible' => 't'), 'sala', array('cvesala'));
+  
   $datos = array('data' => $salasDisponibles);
   for ($i = 0; $i < sizeof($datos['data']); $i++) {
-    $datos['data'][$i]['cvesala'] = "<a href='salas.php?accion=horario&info=" . $datos['data'][$i]['cvesala'] . "'>" .
-      $datos['data'][$i]['cvesala'] . "</a>";
+    $datos['data'][$i]['ubicacion'] = "<a href='salas.php?accion=horario&info=" . $datos['data'][$i]['cvesala'] . "'>" .
+      $datos['data'][$i]['ubicacion'] . "</a>";
+    
+    unset($datos['data'][$i]['cvesala']);
   }
-
+  
   $web->DB->SetFetchMode(ADODB_FETCH_NUM);
   $datos = json_encode($datos);
   $file  = fopen("TextFiles/promosala.txt", "w");
@@ -59,6 +60,7 @@ if (sizeof($grupos) == 3) {
   $web->smarty->assign('datos', $datos);
 }
 
+$web->smarty->assign('promosala', true);
 $web->smarty->display("promosala.html");
 
 /**********************************************************************************************
@@ -86,6 +88,7 @@ function verificaciones($op, $elementos = null)
       switch ($op) {
         case 1: //checa existencia de campos y que sean numéricos
           if (!isset($_POST['datos']['horas' . $i . '_' . $j]) ||
+          	!isset($_POST['datos']['cvelibro']) ||
             !is_numeric($_POST['datos']['horas' . $i . '_' . $j])) {
             header('Location: salas.php?accion=horario&info=' . $_POST['datos']['cvesala'] . '&e=2');
             die();
@@ -181,8 +184,8 @@ function mRegisterRoom()
 {
   global $web, $cveperiodo;
   $flag = true;
-
-  if (!verificaciones(1)) {return false;} //checa existencia de campos y que sean numéricos
+  
+  if (!verificaciones(1)) { return false; } //checa existencia de campos y que sean numéricos
 
   for ($i = 1; $i <= 6 && $flag; $i++) {
     if ($_POST['datos']['horas' . $i . '_0'] == $_POST['datos']['horas' . $i . '_1'] &&
@@ -270,11 +273,24 @@ function mSchedule()
       $web->smarty->assign('horas' . $i, $horas);
     }
   }
-
-  $sql    = 'SELECT cvelibro, titulo FROM libro ORDER BY titulo';
-  $libros = $web->combo($sql, null, "../");
+  
+  // se prepara la tabla de los libros
+  $web->DB->SetFetchMode(ADOB_FETCH_ASSOC);
+  $datos = $web->getAll(array('titulo', 'cvelibro'), null, 'libro', array('titulo'));
+  $datos = array('data'=> $datos);
+  
+  // agrega los radio button
+  for ($i = 0; $i < sizeof($datos['data']); $i++) {
+    $datos['data'][$i]['radio'] = "<input id='r4' type='radio' 
+      value='" . $datos['data'][$i]['cvelibro'] . "' name='datos[cvelibro]'>";
+  }
+	
+	$web->DB->SetFetchMode(ADOB_FETCH_NUM);
+	$datos = json_encode($datos);
+	$file = fopen("TextFiles/promosala_libros.txt", "w");
+	fwrite($file, $datos);
+  
   $web->smarty->assign('cvesala', $_GET['info']);
-  $web->smarty->assign('libros', $libros);
   $web->smarty->assign('horas', 'horas');
   $web->smarty->display("promosala.html");
   die();
@@ -304,10 +320,10 @@ function mMessages()
         $web->simple_message('danger', 'No duplique los horarios en un mismo día');
         break;
       case 2:
-        $web->simple_message('danger', 'No alteres la estructura de la interfaz');
+        $web->simple_message('danger', 'Por favor, ingrese todos los datos solicitados');
         break;
       case 3:
-        $web->simple_message('danger', 'Por favor, seleccione dos hora');
+        $web->simple_message('danger', 'Por favor, seleccione dos horas');
         break;
       case 4:
         $web->simple_message('danger', 'Por favor, seleccione un libro grupal');
