@@ -113,7 +113,7 @@ function form_libro()
       title='Seleccionar Libro'>".$datos['data'][$i]['titulo']."</a>";
       
     $datos['data'][$i][4] = "<center><a href='grupo.php?accion=insert&info=".$datos['data'][$i]['cvelibro']."&info2=".$_GET['info1']."'
-      title='Seleccionar Libro'><img width='50%' src='../Images/portadas/".$datos['data'][$i][4]."'></a></center>";
+      title='Seleccionar Libro'><img width='50%' src='../Images/portadas/".$datos['data'][$i][4]."' alt='Seleccionar'></a></center>";
       
     unset($datos['data'][$i]['cvelibro']);
     unset($datos['data'][$i][0]);

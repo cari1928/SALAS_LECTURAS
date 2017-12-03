@@ -137,5 +137,5 @@ class AdminGruposControllers extends Sistema
     $this->delete('observacion', $array);
     $this->delete('laboral', $array);
   }
-
+  
 }

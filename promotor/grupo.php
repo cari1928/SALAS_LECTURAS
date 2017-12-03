@@ -1,6 +1,7 @@
 <?php
-
 include "../sistema.php";
+
+// limitar la asignación de calificación cuando el estado es en espera y no terminado
 
 if ($_SESSION['roles'] != 'P') {
   $web->checklogin();
@@ -24,33 +25,26 @@ if (isset($_GET['accion'])) {
     case 'estado':
       estado();
       break;
-
     case 'libros':
       libros();
       break;
-
     case 'reporte':
       reporte();
       break;
-
     case 'calificar_reporte': //info1 = cvelista, info2 = cvelectura, info3 = nocontrol
       calificar_reporte();
       break;
-
     case 'formato_preguntas':
       header("Content-disposition: attachment; filename=formato_preguntas.pdf");
       header("Content-type: MIME");
       readfile($web->route_pdf . $cveperiodo . "/formato_preguntas.pdf");
       break;
-
     case 'form_observaciones':
       m_formObservaciones();
       break;
-
     case 'observacion':
       m_Observaciones();
       break;
-
     case 'lista_asistencia':
       mListaAsistencia();
       break;
@@ -70,7 +64,6 @@ if (!isset($grupo_promotor[0])) {
 if ($grupo_promotor[0]['cvepromotor'] != $_SESSION['cveUser']) {
   message('danger', 'Permiso denegado', $web);
 }
-
 if (isset($_POST['datos'])) {
   if (!isset($_POST['datos']['cveeval']) ||
     !isset($_POST['datos']['comprension']) ||
@@ -112,7 +105,7 @@ if (isset($_POST['datos'])) {
     'actividades'   => $_POST['datos']['actividades']),
     array('cveeval' => $_POST['datos']['cveeval']), 'evaluacion');
 
-  if (!promTerminado($web, 'cveeval', $_POST['datos']['cveeval'])) {
+  if (!promTerminado('cveeval', $_POST['datos']['cveeval'])) {
     $web->simple_message('warning', 'No se pudo calcular el promedio final');
   }
 
@@ -161,10 +154,12 @@ function message($alert, $msg)
 }
 
 /**
- *
+ * Cálculo de la calificación del reporte
  */
-function promReporte($web)
+function promReporte()
 {
+  global $web;
+  
   $cvelectura    = $_GET['info2'];
   $cali_reportes = $web->getAll('*', array('cvelectura' => $cvelectura), 'lista_libros');
   $prom          = 0;
@@ -188,10 +183,11 @@ function promReporte($web)
 /**
  *
  */
-function promTerminado($web, $campo, $valor)
+function promTerminado($campo, $valor)
 {
-  $sql            = "SELECT * FROM evaluacion WHERE " . $campo . "=?";
-  $calificaciones = $web->DB->GetAll($sql, $valor);
+  global $web;
+  
+  $calificaciones = $web->getAll('*', array($campo=>$valor), 'evaluacion');
   if (!isset($calificaciones[0])) {
     return false;
   }
@@ -419,7 +415,10 @@ function mSetMessage($pdf, $header, $msg)
 }
 
 /**
- *
+ * Muestra la interfaz de libros para un alumno
+ * info  = cvelectura
+ * info2 = nocontrol
+ * info3 = grupo-letra
  */
 function libros()
 {
@@ -443,11 +442,13 @@ function libros()
   } else {
     $letra_subida = $web->getAll(array('letra'), array('cve' => $libros[0]["cveletra"]), 'abecedario');
     for ($i = 0; $i < count($libros); $i++) {
-      $dir            = $web->route_periodos . $libros[$i]["cveperiodo"] . "/" . $letra_subida[0][0] . "/" . $libros[$i]["nocontrol"] . "/";
-      $nombre_fichero = $libros[$i]["cvelibro"] . "_" . $libros[$i]["nocontrol"] . ".pdf";
-      if (file_exists($dir . $nombre_fichero)) {
+      $dir            = $libros[$i]["cveperiodo"] . "/" . $letra_subida[0][0] . "/" . $libros[$i]["nocontrol"] . "/";
+      $nombre_fichero = $web->getFile($dir, $libros[$i]["cvelibro"], $libros[$i]["nocontrol"]);
+      $dir = $web->route_periodos . $dir . $nombre_fichero;
+      if (file_exists($dir)) {
         $libros[$i]["archivoExiste"] = $nombre_fichero;
       }
+    
 
       $estados               = $web->getAll('*', null, 'estado');
       $selected              = $libros[$i]['cveestado'];
@@ -486,8 +487,7 @@ function reporte()
 {
   global $web, $cveperiodo;
 
-  if (!isset($_GET['info']) ||
-    !isset($_GET['info2'])) {
+  if (!isset($_GET['info']) || !isset($_GET['info2'])) {
     header('Location: grupos.php?e=9');die();
   }
 
@@ -552,12 +552,8 @@ function estado()
 
 function calificar_reporte()
 {
-  global $web;
+  global $web, $cveperiodo;
 
-  $cveperiodo = $web->periodo();
-  if ($cveperiodo == "") {
-    message('danger', 'No hay periodos actuales', $web);
-  }
   if (!isset($_POST['calificacion']) || !isset($_GET['info1']) ||
     !isset($_GET['info3']) || !isset($_GET['info3'])) {
     message('danger', 'Falta información', $web);
@@ -572,7 +568,8 @@ function calificar_reporte()
   if (!isset($existencia[0])) {
     message('danger', 'No existe el alumno', $web);
   }
-
+  
+  // verifica que el promotor tenga permiso para ver este grupo
   $existencia = $web->getLaboral($_GET['info2'], $cveperiodo);
   if (!isset($existencia[0])) {
     message('danger', 'No tienes permisos', $web);
@@ -583,6 +580,16 @@ function calificar_reporte()
   if ($_POST['calificacion'] > 100 || $_POST['calificacion'] < 0) {
     message('danger', 'Envíe una califición válida', $web);
   }
+  
+  // verificar el estado del libro
+  $estado = $web->getAll(
+    array('cveestado'), 
+    array('cvelista'=>$_GET['info1']), 
+    'lista_libros'
+  )[0]['cveestado'];
+  if($estado == 1 || $estado == 4) {
+    die('pendiente');
+  }
 
   $web->update(array('calif_reporte' => $_POST['calificacion']), array('cvelista' => $_GET['info1']), 'lista_libros');
   $redirect = array(
@@ -592,7 +599,7 @@ function calificar_reporte()
     'info3'  => $_GET['info4'],
     'm'      => 1,
   );
-  if (promReporte($web) && promTerminado($web, 'cvelectura', $_GET['info2'])) {
+  if (promReporte() && promTerminado('cvelectura', $_GET['info2'])) {
     $redirect['a'] = 2;
   }
   header('Location: grupo.php?' . http_build_query($redirect));die();

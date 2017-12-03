@@ -1,16 +1,17 @@
 {include file="header.html"}
 {$ruta} 
 {include file='../number_style.html'}
-{if isset($msg)}{include file='../mensajes.html'}{/if}
 
 {if isset($info)}
 	<center><div class="form-group" style ="background-color:#f0f0f0"><label>
+		Grupo: {$info.letra}<br>
 		Sala: {$info.nombre}<br>
 		Ubicación: {$info.ubicacion}<br>
 		Periodo: {$info.fechainicio} - {$info.fechafinal}<br>
-		Grupo: {$info.letra}
 	</div></center>
 {/if}
+
+{if isset($msg)}{include file='../mensajes.html'}{/if}
 
 {if !isset($libros)}
 
@@ -61,7 +62,9 @@
 				<tr> 
 					 <form class='form-inline' action='grupo.php?info1={$info.letra}' method='post'>
 						 <input type="hidden" name="datos[cveeval]" value="{$alumno.cveeval}"> 
-						 <td width='500' style="vertical-align:middle"> {$alumno.nombre} </td>
+						 <td width='500' style="vertical-align:middle"><center>
+						 	{$alumno.nombre} 
+						 </center></td>
 						 <td width='500'>
 						 	<div id="myprogress" style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">	
 						 		<div id="mybar" 
@@ -165,45 +168,32 @@
 {/if}
 
 {if isset($libros)}
+	<h2>Lista de libros y reportes</h2>
 	<table class='table'>
 		<tr>
 			<td colspan='4' align='right'>
-				<a href='libros.php?info={$cvelectura}&info2={$nocontrol}&info3={$grupo}'>
-					<img src='../Images/add.png'/> 
+				<a href='libros.php?info={$cvelectura}&info2={$nocontrol}&info3={$grupo}'
+					style="text-decoration:none; color:black">
+					<img src='../Images/add_book.png'/> Asignar Libro
 				</a>
 			</td>
 		</tr> 
 	</table>
 
-	<div class="page-header">
-    <h2>Lista de Libros del Alumno</h2>
-  </div>
-
-  <table class='table table-striped' width='500'>
-    
+  <table class='table table-striped'>
     <tr>
 			<th><center>TITULO</center></th>
 			<th><center>ESTADO</center></th>
-			<th><center>REPORTE</center></th>
-			<th width='500'><center>CALIFICACIÓN</center></th>
+			<th width="25%"><center>CALIFICACIÓN</center></th>
+			<th width="15%"><center>OPCIONES</center></th>
 		</tr>
 
 		{foreach $libros as $libro}
 			<tr>
-				<form class='form-inline' 
-					action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={$libro.cvelectura}&info3={$libro.nocontrol}&info4={$grupo}" 
-					method='post'>
+				<form class='form-inline' method='post'
+					action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={$libro.cvelectura}&info3={$libro.nocontrol}&info4={$grupo}">
 					<td style="vertical-align:middle"><center>{$libro.titulo}</center></td>
 					<td style="vertical-align:middle"><center>{$libro.combo}</center></td>
-					<td style="vertical-align:middle"><center>
-						{if isset($libro.archivoExiste)}
-							<a href="grupo.php?accion=reporte&info={$libro.archivoExiste}&info2={$grupo}"> 
-					  	<img src="../Images/reporte.png"></a>
-						{else}
-							<img src="../Images/noexiste.png"></a>
-						{/if}
-					</center></td>
-					
 					<td style="vertical-align:middle" width='500'>
 						<center>
 						 	<div id="myprogress" style=" position: relative; width: 130px; height: 30px; background-color: #ddd;">	
@@ -221,6 +211,14 @@
 							<input type="submit" style='display: none'/>
 					 	</center>
 					</td>
+					<td style="vertical-align:middle"><center>
+						{if isset($libro.archivoExiste)}
+							<a href="grupo.php?accion=reporte&info={$libro.archivoExiste}&info2={$grupo}"> 
+					  	<img src="../Images/download.png"></a>
+						{else}
+							<img src="../Images/noexiste.png"></a>
+						{/if}
+					</center></td>
 
 				</form>
 			</tr>

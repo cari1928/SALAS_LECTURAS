@@ -2,11 +2,15 @@
 {$ruta}
 {if isset($msg)} {include file='../mensajes.html'} {/if}
 
+<h3>Listado de Libros</h3>
+Busque el libro en la siguiente lista y asígnelo al estudiante. <br/>
+En caso de no encontrarlo, puede agregar uno nuevo.
 <table class='table'>
 	<tr>
 		<td colspan='4' align='right'>
-			<a href='libros.php?accion=form_add&info={$cvelectura}&info2={$nocontrol}&info3={$grupo}'>
-				<img src='../Images/add.png'/> 
+			<a href='libros.php?accion=form_add&info={$cvelectura}&info2={$nocontrol}&info3={$grupo}'
+			  style="text-decoration:none; color:black">
+				<img src='../Images/add.png'/> Agregar Libro
 			</a>
 		</td>
 	</tr> 

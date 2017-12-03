@@ -68,8 +68,6 @@ for ($i = 0; $i < sizeof($books_next['data']); $i++) {
   }
 }
 
-// $web->debug($books_next);
-
 $books_next = json_encode($books_next);
 $file       = fopen("TextFiles/libros.txt", "w");
 fwrite($file, $books_next);

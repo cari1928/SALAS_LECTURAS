@@ -23,6 +23,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($nocontrol, $cveperiodo));
   }
 
+  /**
+   * 
+   */
   public function getBookList($cvelectura, $nocontrol)
   {
     $sql = "SELECT cveestado FROM lista_libros
@@ -31,6 +34,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($cvelectura, $nocontrol));
   }
 
+  /**
+   * 
+   */
   public function getLaboral($cvelectura, $cveperiodo)
   {
     $sql = "SELECT * FROM laboral
@@ -38,6 +44,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($cvelectura, $cveperiodo));
   }
 
+  /**
+   * 
+   */
   public function getPromoGroup($letra, $cveperiodo)
   {
     $sql = "SELECT cvepromotor FROM laboral
@@ -45,6 +54,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($letra, $cveperiodo));
   }
 
+  /**
+   * 
+   */
   public function getEvaluations($cvepromotor, $cveeval)
   {
     $sql = "SELECT * FROM evaluacion
@@ -55,6 +67,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($cvepromotor, $cveeval));
   }
 
+  /**
+   * 
+   */
   public function getInfoHeader($cvepromotor, $cveperiodo, $letra)
   {
     $sql = "SELECT distinct letra, nombre, ubicacion, fechainicio, fechafinal FROM laboral
@@ -66,6 +81,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($cvepromotor, $cveperiodo, $letra));
   }
 
+  /**
+   * 
+   */
   public function getDataTable($letra, $cveperiodo)
   {
     $sql = "SELECT distinct usuarios.nombre, comprension, participacion,
@@ -80,6 +98,9 @@ class GrupoControllers extends Sistema
     return $this->DB->GetAll($sql, array($letra, $cveperiodo));
   }
 
+  /**
+   * 
+   */
   public function getCveLetter($letra)
   {
     $sql = "SELECT DISTINCT laboral.cveletra FROM laboral

@@ -1065,17 +1065,24 @@ class Sistema extends Conexion
   /**
    *
    */
-  public function dbFunction($arrS, $function, $arrC)
+  public function getFile($dir, $cvelibro, $nocontrol)
   {
-    $cntColumns = array();
-    if ($arrS == '*') {
-      $sql = "SELECT * FROM " . $function . "(" . $this->setColumns($arrC) . ");";
-    } else {
-      $heaColumns = $this->getFields($arrC);
-      $cntColumns = $this->getContent($arrC, $heaColumns);
-      $sql        = "SELECT " . $this->setColumns($arrS) . " FROM " . $function . "(" . $this->setWhereColumns($cntColumns, 3) . ");";
+    //obtiene una lista de archivos dentro de un directorio
+    $files = array_diff(scandir($this->route_periodos . $dir), array('.', '..'));
+    foreach ($files as $file) {
+      //verifica si el nombre del archivo contiene la cvelibro y el nocontrol
+      
+      // $this->debug("File y Ruta", false);
+      // $this->debug($file, false);
+      
+      $ruta = '/' . $cvelibro . '_' . $nocontrol . '/';
+      // $this->debug($ruta, false);
+      
+      if (preg_match($ruta, $file)) {
+        return $file;
+      }
     }
-    return $this->query($sql, $cntColumns);
+    return null;
   }
 }
 

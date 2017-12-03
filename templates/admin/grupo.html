@@ -1,5 +1,6 @@
 {include file="header.html"}
 {$ruta}
+{include file='../number_style.html'}
 
 {if isset($info)}
   <center><div class="form-group" style ="background-color:#f0f0f0"><label>
@@ -18,10 +19,34 @@
 {if isset($msg)} {include file='../mensajes.html'} {/if}
 
 {if !isset($libros_promo)}
-  {if isset($datos)}
-    <div class="page-header">
-      <h2>Calificaciones</h2>
+  {if isset($datos) && !isset($libros)}
+
+    <div style="float:right; padding-bottom:10px">
+      {if isset($formato_reporte)}
+        <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+          <img src="../Images/reporte.png" alt="reporte"> Formato-Reporte
+        </a>
+      {/if}
+      <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+        <img src="../Images/lista_asistencia.png" alt="lista_asistencia">
+        Lista-Asistencia
+      </a>
+      {if isset($info)}
+        <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+          <img src="../Images/notas.png" alt="observaciones"> Observaciones
+        </a>
+        <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+          <img src="../Images/sobre.png" alt="mensaje"> Mensaje Grupal
+        </a>
+        <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+          <img src="../Images/sobre.png" alt="mensaje"> Mensajes
+        </a>
+        <a href="#" style="text-decoration:none; color:black; padding-right:10px">
+          <img src="../Images/reporte.png"/> Formato-Reporte
+        </a>
+      {/if}
     </div>
+
     <table class='table table-striped' width='500'>
       <tr>
         {if !isset($alumnos)}<th><center>ALUMNO</center></th>{/if}
@@ -31,16 +56,20 @@
           <th><center>ACTIVIDADES</center></th>
           <th><center>REPORTE</center></th>
           <th><center>TERMINADO</center></th>
-        {if !isset($cmb_libro)}<th><center>OPCIONES</center></th>{/if}
+        {if !isset($cmb_libro)}<th width="10%"><center>OPCIONES</center></th>{/if}
       </tr>
       {foreach $datos as $alumno}
         <tr> 
            <form class='form-inline' action='grupo.php?info1={$info.letra}' method='post' >
              <input type="hidden" name="datos[nocontrol]" value="{$alumno.nocontrol}" > 
              
-             {if !isset($alumnos)}<td width='500'><center>{$alumno.nombre}</center></td>{/if}
+              {if !isset($alumnos)}
+                <td width='500' style="vertical-align:middle"><center>
+                   {$alumno.nombre}
+                </center></td>
+              {/if}
              
-               <td width='500'>  
+              <td width='500'>  
                 <div id="myprogress" 
                   style=" position: relative; width: 100%; height: 30px; background-color: #ddd;">  
                   <div id="mybar" style="position: absolute; width: {$alumno.asistencia}% ;height: 100%; background-color: #4caf50;"> 
@@ -49,6 +78,11 @@
                     </div>
                   </div>
                 </div>
+                </br>
+  						 	<center>
+  						 		<input type="number" class="form-control" name="datos[asistencia]" required value = "{$alumno.asistencia}" 
+  						 		  style="width:65px ; display:block; "maxlength="3" max="0" min="100">
+  						 	</center>
                </td>
   
                <td width='500'>
@@ -60,6 +94,11 @@
                     </div>
                   </div>
                 </div>
+                </br>
+    						<center>
+    							<input type="number" class="form-control" name="datos[comprension]" required value = "{$alumno.comprension}" 
+    							  style="width:65px ; display:block; "maxlength="3" max="0" min="100">
+    						</center>
               </td>
   
               <td width='500'>
@@ -71,6 +110,11 @@
                     </div>
                   </div>
                 </div>
+                </br>
+  							<center>
+  								<input type="number" class="form-control" name="datos[participacion]" required value = "{$alumno.participacion}" 
+  								  style="width:65px ; display:block; "maxlength="3" max="0" min="100">
+  							</center>
               </td>
               
               <td width='500'>
@@ -82,6 +126,11 @@
                     </div>
                   </div>
                 </div>
+                </br>
+  						 	<center>
+  						 		<input type="number" class="form-control" name="datos[actividades]" required value = "{$alumno.actividades}" 
+  						 		  style="width:65px ; display:block; "maxlength="3" max="0" min="100">
+  						 	</center>
               </td>
             
               <td width='500'>
@@ -106,17 +155,18 @@
               </td>
             
             {if !isset($cmb_libro)} <!--Para que no se muestre en la sección del alumno-->
-              <td><center>
-                <a  class='delete' 
-                  href="grupo.php?accion=delete_alumno&info1={$alumno.letra}&info2={$alumno.nocontrol}"
-                  title="Eliminar Alumno">
+              <td style="vertical-align:middle"><center>
+                <a  class='delete' title="Eliminar Alumno" style="text-decoration:none; padding-right:5px" 
+                  href="grupo.php?accion=delete_alumno&info1={$alumno.letra}&info2={$alumno.nocontrol}">
                   <img src="../Images/cancelar.png">
                 </a>
-                <a href="grupo.php?accion={if isset($bandera)}{if $bandera eq 'index_grupos_libros'}{$bandera}{else}historial{/if}{else}libros{/if}&info1={$alumno.letra}&info2={$alumno.nocontrol}&info3={$alumno.cvepromotor}"
-                  title="Administrar Libros">
+                <a href="#" style="text-decoration:none; padding-right:3px">
+                  <img src="../Images/sobre.png" alt="mensaje">
+                </a>
+                <a href="grupo.php?accion={if isset($bandera)}{if $bandera eq 'index_grupos_libros'}{$bandera}{else}historial{/if}{else}libros{/if}&info1={$alumno.cvelectura}&info2={$alumno.nocontrol}&info3={$alumno.letra}"
+                  title="Administrar Libros" style="text-decoration:none">
                   <img src="../Images/libros.png">
                 </a>
-                
               </center></td>
             {/if}
           </form>
@@ -126,65 +176,59 @@
   {/if}
 {/if}
 
-{if isset($cmb_libro)}
-  <div class="page-header">
-    <h2>Libros</h2>
-  </div>
-  <form action="grupo.php?accion=insert" method="post">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Añadir Libro</h3>
-      </div>
-      <div class="panel-body">
-        {if isset($libros_promo)}
-        <input type="hidden" name="promotor" value="{$libros_promo}">
-        {/if}
-        <input type="hidden" name="datos[cvelectura]" value="{$cvelectura}">
-        <div class="form-group">
-          <label>Libro:</label>
-          {$cmb_libro}
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <button type="submit" class="btn btn-primary">Guardar</button>
-    </div>
-  </form>
+{if isset($btn_assign_book)}
+  <h2>Lista de libros y reportes</h2>
+  <table class="table">
+    <tr>
+      <td colspan="4" align="right">
+        <a href="grupo.php?accion=libros&info1={$cvelectura}&info2={$nocontrol}&info3={$grupo}" style="text-decoration:none; color:black">
+          <img src="../Images/add_book.png" alt="add"> Asignar Libro
+        </a>
+      </td>
+    </tr>
+  </table>
 {/if}
-
 {if isset($libros)}
-  <div class="page-header">
-    <h4>Lista de Libros</h4>
-  </div>
   <table class='table table-striped'>
     <tr>    
       <th width="100"><center>CLAVE</center></th>
       <th width="800"><center>TÍTULO</center></th>
-      <th width="300"><center>ELIMINAR</center></th>
-      <th width="300"><center>REPORTE</center></th>
-      <th width="300"><center>CALIFICACIÓN</center></th>
-      <th width="300"><center>ESTADO</center></th>
+      <th width="500"><center>ESTADO</center></th>
+      <th><center>CALIFICACIÓN</center></th>
+      <th width="300"><center>OPCIONES</center></th>
     </tr>
   {foreach $libros as $libro}
-    <tr>
-      <td><center>{$libro.cvelibro}</center></td>
-      <td><center>{$libro.titulo}</center></td>
-      <td>
-        <center><a href="grupo.php?accion=delete{if isset($libros_promo)}{if $libros_promo eq 'libros'}_promotor{/if}{/if}&info1={$libro.cvelibro}&info2={$cvelectura}" class="delete">
-        <img src="../Images/cancelar.png">
-      </a></center>
-      </td>
-      <td><center>
-        {if isset($libro.archivoExiste)}
-          <a href="grupo.php?accion=reporte&info={$libro.archivoExiste}&info1={$rInfo1}&info2={$rInfo2}&info3={$rInfo3}"> 
-          <img src="../Images/reporte.png"></a>
-        {else}
-          <img src="../Images/noexiste.png"></a>
-        {/if}
-      </center></td>
-      <td><center>{$libro.calif_reporte}</center></td>
-      <td><center>{$libro.estado}</center></td>
-    </tr>
+    <form class="form-inline" method="post"
+      action="grupo.php?accion=calificar_reporte&info1={$libro.cvelista}&info2={$libro.cvelectura}&info3={$libro.nocontrol}&info4={$grupo}">
+      <tr>
+        <td style="vertical-align:middle"><center>{$libro.cvelibro}</center></td>
+        <td style="vertical-align:middle"><center>{$libro.titulo}</center></td>
+        <td style="vertical-align:middle"><center>{$libro.combo}</center></td>
+        <td style="vertical-align:middle" width="500"><center>
+          <div id="myprogress" style="position:relative; width:130px; height:30px; background-color:#ddd;">	
+				 		<div id="mybar" style="position:absolute; width:{$libro.calif_reporte}%; height:100%; background-color:#4caf50;">
+				 			<div id="label" style="text-align:center; line-height:30px; color:white;">
+				 				{$libro.calif_reporte}% 
+				 			</div>
+				 		</div>
+				 	</div>
+			 		</br>
+					<input type="number" class="form-control" name="calificacion" required 
+						value="{$libro.calif_reporte}" style="width:65px; display:block;" 
+						maxlength="3" max="100" min="0"/>
+					<input type="submit" style='display: none'/>
+        </center></td>
+        <td style="vertical-align:middle"><center>
+          {if isset($libro.archivoExiste)}
+            <a href="grupo.php?accion=reporte&info1={$cvelectura}&info2={$nocontrol}&info3={$grupo}&info4={$libro.archivoExiste}"> 
+            <img src="../Images/download.png" style="padding-right:5px"></a>
+          {/if}
+          <a href="grupo.php?accion=delete{if isset($libros_promo)}{if $libros_promo eq 'libros'}_promotor{/if}{/if}&info1={$libro.cvelibro}&info2={$cvelectura}&info3={$nocontrol}&info4={$grupo}" class="delete">
+            <img src="../Images/cancelar.png">
+          </a>
+        </center></td>
+      </tr>
+    </form>
   {/foreach}
 </table>
 {/if}
